@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HLL Offensive – Default Garrisons</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="header-copy">
+        <h1 class="title">Offensive Default Garrisons</h1>
+        <p class="subtitle">Hell Let Loose — defender default garrisons are highlighted with the white garrison icon.</p>
+      </div>
+    </header>
+
+    <aside id="utilitySidebar" class="sidebar" aria-hidden="true">
+      <div class="sidebar-panel panel">
+        <div class="sidebar-head">
+          <div>
+            <p class="eyebrow">Toolkit</p>
+            <h2>HLL Utilities</h2>
+          </div>
+          <button id="sidebarClose" class="sidebar-close" type="button" aria-label="Close tools panel">✕</button>
+        </div>
+        <p class="sidebar-lede">
+          Utilities for Hell Let Loose crews.
+        </p>
+        <div class="sidebar-tool is-active">
+          <div>
+            <p class="eyebrow">Intel</p>
+            <h3>Default Garrisons Map</h3>
+            <p class="tool-copy">
+              Live overview of defender default garrisons for every offensive map. You’re currently viewing this tool.
+            </p>
+          </div>
+          <button class="cta is-current" type="button" disabled>
+            You’re here
+          </button>
+        </div>
+        <div class="sidebar-tool">
+          <div>
+            <p class="eyebrow">Support</p>
+            <h3>SPA Calculator</h3>
+            <p class="tool-copy">
+              Artillery elevation helper for Hell Let Loose. Generate firing solutions for Bishop, AVRE, Sherman, KV-2, Panzer III, and Sturmpanzer IV crews without spreadsheets.
+            </p>
+          </div>
+          <button id="spaCalculatorBtn" class="cta" type="button">
+            Launch Tool
+          </button>
+        </div>
+        <div class="sidebar-tool">
+          <div>
+            <p class="eyebrow">Support</p>
+            <h3>Artillery Map Calculator</h3>
+            <p class="tool-copy">
+              Streamlined targeting for conventional artillery batteries with presets for future updates. Coming soon—stay tuned.
+            </p>
+          </div>
+          <button class="cta is-disabled" type="button" disabled>
+            Coming Soon
+          </button>
+        </div>
+      </div>
+      <button
+        id="sidebarToggle"
+        class="sidebar-toggle"
+        type="button"
+        aria-controls="utilitySidebar"
+        aria-expanded="false"
+      >
+        <span class="sr-only">Open Intel Tools</span>
+        <span class="hamburger" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </aside>
+
+    <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
+
+    <div class="panel controls">
+      <label for="mapSelect">Map</label>
+      <select id="mapSelect"></select>
+      
+      <div class="faction-group">
+        <button id="btnAllFactions" class="toggle active" type="button">All</button>
+        <button id="btnAxis" class="toggle" type="button">Axis</button>
+        <button id="btnAllies" class="toggle" type="button">Allies</button>
+      </div>
+      <button id="themeToggle" class="toggle" type="button">Switch to Light mode</button>
+    </div>
+
+    <div class="panel map-wrap">
+      
+      <div id="mapLoader" class="map-loader">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading Intel...</div>
+      </div>
+      <div class="map-stage" id="mapStage">
+        <picture id="mapPicture" class="map-picture">
+          <source id="mapSourceWebp" type="image/webp">
+          <source id="mapSourcePng" type="image/png">
+          <img
+            id="mapImage"
+            class="map-image"
+            alt="TacMap"
+            loading="lazy"
+            decoding="async"
+            fetchpriority="low"
+          >
+        </picture>
+        <div id="gridOverlay" class="grid-overlay"></div>
+      </div>
+
+      <div id="markers" class="markers-layer"></div>
+
+      <div class="zoom-overlay">
+        <div id="zoomLevelIndicator" class="zoom-lbl">1x</div>
+        <div id="scaleWrapper" class="scale-wrapper">
+          <div class="scale-bar-graphic">
+            <div class="scale-tick t-start"></div>
+            <div class="scale-tick t-mid"></div>
+            <div class="scale-tick t-end"></div>
+          </div>
+          <div class="scale-labels">
+            <span class="scale-lbl l-start">0</span>
+            <span id="scaleTextMid" class="scale-lbl l-mid">125m</span>
+            <span id="scaleTextEnd" class="scale-lbl l-end">250m</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-version">
+      <p>Default Garrisons Map · v1.0 · 2025</p>
+    </div>
+
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

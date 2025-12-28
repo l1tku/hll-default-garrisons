@@ -1,0 +1,1085 @@
+@font-face {
+  font-family: "SpecialElite";
+  src: url("../fonts/SpecialElite.ttf") format("truetype");
+  font-display: swap;
+  border-right: 1px solid var(--panel-border);
+}
+
+@font-face {
+  font-family: "bolf-font";
+  src: url("../fonts/bolf-font.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "RobotoBlack";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/roboto/v50/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWuZtammT.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  --bg: radial-gradient(circle at 20% 20%, #1d1f27, #0f1116 55%);
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel-border: rgba(255, 255, 255, 0.06);
+  --control-border: rgba(255, 255, 255, 0.1);
+  --control-bg: rgba(255, 255, 255, 0.05);
+  --accent: #ffcc66;
+  --text: #e8edf5;
+  --muted: #aab3c2;
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --radius: 2px;
+  --font: "SpecialElite", "Segoe UI", "Inter", system-ui, -apple-system, sans-serif;
+  --sidebar-panel-width: min(360px, 85vw);
+  --sidebar-tab: 68px;
+}
+
+:root[data-theme="light"] {
+  --bg: radial-gradient(circle at 22% 28%, #f1e7d5, #e4d6b8 55%);
+  --panel: rgba(248, 241, 223, 0.95);
+  --panel-border: rgba(139, 111, 63, 0.4);
+  --control-border: rgba(92, 70, 40, 0.35);
+  --control-bg: rgba(92, 70, 40, 0.06);
+  --accent: #7a5c2b;
+  --text: #2b2416;
+  --muted: #5b4a2d;
+  --shadow: 0 14px 32px rgba(58, 43, 24, 0.18);
+  --font: "SpecialElite", "Georgia", "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 18px 48px;
+}
+
+.shell {
+  width: min(1200px, 100%);
+  display: grid;
+  gap: 18px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  white-space: nowrap;
+}
+
+header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: relative;
+  padding-left: 0;
+  min-height: 42px;
+}
+
+.header-copy {
+  flex: 1 1 auto;
+}
+
+.sidebar-toggle {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-left: none;
+  border-radius: 0 16px 16px 0;
+  width: var(--sidebar-tab);
+  height: var(--sidebar-tab);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+  align-self: flex-start;
+  margin-top: 0px;
+  margin-left: -1px;
+  z-index: 910;
+}
+
+.sidebar-toggle:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.sidebar-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hamburger {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: white;
+  border-radius: 999px;
+}
+
+@media (max-width: 700px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --sidebar-tab: 56px;
+    --sidebar-panel-width: min(320px, 82vw);
+  }
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: calc(var(--sidebar-panel-width, min(360px, 85vw)) + var(--sidebar-tab));
+  transform: translateX(calc(-1 * var(--sidebar-panel-width, min(360px, 85vw))));
+  transition: transform 0.3s ease;
+  z-index: 900;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  padding: 16px 0 24px;
+  backdrop-filter: blur(16px);
+}
+
+.sidebar-open #utilitySidebar {
+  transform: translateX(0);
+}
+
+.sidebar-panel {
+  width: var(--sidebar-panel-width, min(360px, 85vw));
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+.sidebar-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.sidebar-close {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s ease;
+}
+
+.sidebar-close:hover {
+  color: var(--accent);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+.sidebar-lede {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.sidebar-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid var(--control-border);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+:root[data-theme="light"] .sidebar-tool {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.sidebar-tool.is-active {
+  border-color: var(--accent);
+  background: rgba(255, 204, 102, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.sidebar-tool.is-active .eyebrow {
+  color: var(--accent);
+}
+
+.tool-copy {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.cta {
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #1b1203;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
+}
+
+.cta.is-disabled,
+.cta:disabled {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.ghost-link {
+  color: var(--text);
+  font-size: 13px;
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.ghost-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.site-version {
+  margin-top: 18px;
+  text-align: center;
+  color: var(--muted);
+  font-family: "SpecialElite", var(--font);
+  font-size: 12px;
+  letter-spacing: 0.6px;
+}
+
+:root[data-theme="light"] .site-version {
+  color: rgba(43, 36, 22, 0.65);
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px);
+  z-index: 800;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-open #sidebarBackdrop {
+  display: block;
+}
+
+.sidebar-backdrop[hidden] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-open .sidebar-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.title {
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  color: var(--accent);
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.faction-group {
+  display: flex;
+  gap: 8px;
+  margin-right: auto;
+}
+
+.faction-group .toggle {
+  min-width: 84px;
+  text-align: center;
+}
+
+.faction-group .toggle:nth-child(3) {
+  min-width: 70px;
+}
+
+.toggle.active {
+  background-color: var(--accent);
+  color: #1d1f27;
+  font-weight: 700;
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(255, 204, 102, 0.35);
+}
+
+:root[data-theme="light"] .toggle.active {
+  color: #f1e7d5;
+}
+
+@media (max-width: 600px) {
+  .faction-group {
+    margin-right: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--control-border);
+  background: var(--control-bg);
+  color: var(--text);
+  min-width: 200px;
+}
+
+select option {
+  background: #1a1d24;
+  color: #e8edf5;
+  opacity: 1;
+}
+
+:root[data-theme="light"] select option {
+  background: #f1e7d5;
+  color: #2b2416;
+  opacity: 1;
+}
+
+.toggle {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--control-border);
+  background: var(--control-bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+:root[data-theme="light"] .toggle {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.map-wrap {
+  --zoom: 1;
+  position: relative;
+  
+  /* TIGHT WRAPPING MAGIC */
+  display: inline-flex;
+  width: fit-content;
+  height: auto;
+  margin: 0 auto;
+  overflow: hidden;
+  
+  /* NEW: Removes the gap caused by the .panel class */
+  padding: 0;
+  
+  border-radius: var(--radius);
+  user-select: none;
+  border: 1px solid var(--panel-border);
+  background: transparent;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+.map-stage {
+  cursor: crosshair;
+}
+
+.map-wrap.dragging .map-stage {
+  cursor: grabbing;
+}
+
+.map-image {
+  display: block;
+  /* changed from height: 75vh to max-height so it shrinks to fit */
+  max-height: 75vh; 
+  height: auto;     
+  
+  width: auto;
+  max-width: 100vw;
+  
+  object-fit: contain;
+  
+  /* Changed from #06070b to transparent to remove the black bars */
+  background: transparent; 
+}
+
+.map-picture {
+  display: contents;
+}
+
+.map-stage {
+  width: max-content;
+  height: max-content;
+  transform-origin: 0 0;
+  /* Use translate3d to force hardware acceleration */
+  transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(var(--zoom));
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.map-stage.zoom-transition {
+  transition: transform 0.22s ease-out;
+}
+
+/* --- OPTIMIZED SVG GRID --- */
+.grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.grid-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  transition: opacity 0.15s;
+  will-change: opacity;
+}
+
+.grid-line {
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+  shape-rendering: crispEdges;
+}
+
+.subgrid-line {
+  stroke: rgba(0, 0, 0, 0.4);
+  stroke-width: 0.3px;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.detailed-grid .subgrid-line {
+  opacity: 1;
+}
+
+.grid-labels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+}
+
+.grid-label-cell {
+  position: relative;
+}
+
+.grid-label-text {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-family: "RobotoBlack", sans-serif;
+  font-weight: 900;
+  color: #ffffff;
+  font-size: 24px;
+  line-height: 1;
+  transform-origin: top left;
+  transform: scale(var(--inverse-zoom, 1));
+  text-shadow: 1px 1px 2px #000;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+/* NEW: Style for the Red Dots Overlay */
+.markers-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
+}
+
+/* --- UPDATED MARKER STYLES --- */
+
+.marker {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  transform: translate3d(-50%, -50%, 0);
+  cursor: pointer;
+  pointer-events: auto;
+  display: block;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* 1. THE PULSE ANIMATION KEYFRAMES */
+@keyframes enemy-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.55);
+    opacity: 0.95;
+  }
+  65% {
+    transform: translate(-50%, -50%) scale(2.6);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3.2);
+    opacity: 0;
+  }
+}
+
+/* 2. THE PULSING RING */
+.marker::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  transform: translate(-50%, -50%) scale(0.55);
+  transform-origin: center center;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background-color: rgba(255, 70, 70, 0.32);
+  border: 2px solid rgba(255, 90, 90, 0.75);
+  box-shadow: 0 0 18px rgba(255, 70, 70, 0.45);
+  animation: enemy-pulse 2s ease-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 3. THE ICON ITSELF */
+.marker > img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  display: block;
+  z-index: 2;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.65)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+  background: none;
+  border-radius: 50%;
+  transform-origin: center center;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease;
+}
+
+/* 4. HOVER EFFECT */
+.markers-layer:not(.has-selection) .marker:hover > img {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.markers-layer:not(.has-selection) .marker:hover::before {
+  animation: none;
+  transform: translate(-50%, -50%) scale(1.2);
+  opacity: 1;
+  background-color: rgba(255, 50, 50, 0.2);
+  box-shadow: 0 0 10px rgba(255, 50, 50, 0.8);
+  border: 1px solid rgba(255, 50, 50, 0.6);
+}
+
+/* --- NEW HTML LABEL STYLES --- */
+
+/* Soft base shadow */
+.marker::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 54px;
+  height: 18px;
+  transform: translate(-50%, -8%) scale(1);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.25) 45%, transparent 75%);
+  filter: blur(3px);
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.marker:hover::after,
+.marker.active::after {
+  opacity: 0.75;
+  transform: translate(-50%, -8%) scale(1.2);
+}
+
+/* Container for the label and buttons */
+.marker-label {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  margin-bottom: 14px;
+  
+  /* Visual styling */
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 4px 6px;
+  
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 120px; /* Ensures buttons don't jump around */
+  
+  /* Hidden by default */
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 100;
+}
+
+/* 1. ACTIVE STATE (High Priority) */
+/* Always show the label when active */
+.marker.active .marker-label {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transform: translateX(-50%) translateY(-5px);
+}
+
+/* 2. HOVER STATE (Conditional) */
+/* Only show hover label if NO selection is currently active */
+.markers-layer:not(.has-selection) .marker:hover .marker-label {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(-50%) translateY(-5px);
+}
+
+/* The Text Span */
+.label-text {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: "RobotoBlack", sans-serif;
+  text-align: center;
+  flex-grow: 1;
+  user-select: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.label-flag {
+  height: 18px;
+  width: auto;
+  max-width: 26px;
+  object-fit: contain;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0;
+  box-shadow: 0 0 6px rgba(0,0,0,0.5);
+}
+
+.label-copy {
+  display: inline-block;
+}
+
+/* The Arrow Buttons */
+.nav-arrow {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 4px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s, color 0.1s;
+}
+
+.nav-arrow:hover {
+  color: #ffffff;
+  transform: scale(1.2);
+  text-shadow: 0 0 5px var(--accent);
+}
+
+.nav-arrow:active {
+  transform: scale(0.95);
+}
+
+.legend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--control-bg);
+  border: 1px solid var(--control-border);
+}
+
+.chip img {
+  width: 20px;
+  height: 20px;
+}
+
+.note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.zoom-overlay {
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0;
+  background: transparent;
+  color: var(--text);
+  pointer-events: none;
+  z-index: 20;
+}
+
+:root[data-theme="light"] .zoom-overlay {
+  background: transparent;
+}
+
+.map-wrap.dragging {
+  cursor: grabbing;
+}
+
+.map-wrap.dragging .map-stage {
+  transition: none !important;
+}
+
+.scale-wrapper {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+.scale-bar-graphic {
+  position: relative;
+  height: 8px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(0, 0, 0, 0.6);
+  width: 100%;
+}
+
+.scale-bar-graphic::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 50%;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.scale-tick {
+  position: absolute;
+  bottom: -6px;
+  width: 2px;
+  height: 8px;
+  background: #fff;
+  z-index: 2;
+  text-shadow: 0 1px 2px black;
+}
+
+.t-start { left: 0; }
+.t-mid   { left: 50%; transform: translateX(-50%); }
+.t-end   { right: 0; }
+
+.scale-labels {
+  display: flex;
+  width: 100%;
+  height: 20px;
+  position: relative;
+  margin-top: 6px;
+}
+
+.zoom-lbl {
+  font-family: "RobotoBlack", sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000;
+  margin-bottom: 2px;
+  text-align: right;
+}
+
+.scale-lbl {
+  font-family: "RobotoBlack", sans-serif;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 0 3px #000, 0 0 3px #000;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.l-start { left: 0; }
+.l-mid   { left: 50%; }
+.l-end   { left: 100%; }
+
+@media (max-width: 720px) {
+  body { padding: 22px 14px; }
+  .map-wrap { border-radius: 10px; }
+  .marker { width: 36px; height: 36px; }
+}
+
+/* --- ACTIVE MARKER STATE --- */
+
+/* 1. Fix the Shadow (::after) to stay BEHIND the icon */
+.marker.active::after {
+  opacity: 0.8;     /* Slightly darker shadow when active */
+  z-index: 0;       /* IMPORTANT: Keep this at 0 so it stays behind the image */
+  transform: translate(-50%, -8%) scale(1.3); /* Grow the shadow slightly */
+  
+  /* Remove border/box-shadow from the shadow element, 
+     as it creates a weird box around the oval gradient */
+  border: none;     
+  box-shadow: none; 
+}
+
+/* 2. Highlight the icon */
+.marker.active > img {
+  transform: translate(-50%, -50%) scale(1.3);
+  filter: drop-shadow(0 0 8px rgba(255, 204, 60, 0.9));
+  z-index: 50; /* Image sits on top of the shadow */
+}
+
+/* 3. Change the pulse ring color for the active one */
+.marker.active::before {
+  border-color: var(--accent);
+  background-color: rgba(255, 204, 60, 0.3);
+  opacity: 1;
+  animation: none;
+  transform: translate(-50%, -50%) scale(1.3);
+  z-index: 1; /* Ring sits between shadow and image */
+}
+
+/* --- LOADING OVERLAY --- */
+.map-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 17, 22, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.map-loader.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--control-bg);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+.loading-text {
+  color: var(--accent);
+  font-family: "SpecialElite", sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Coordinate readout */
+.coord-readout {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-family: "RobotoBlack", sans-serif;
+  font-size: 13px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+
+.coord-readout.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Force clicks to pass through overlays so they hit the map */
+.map-overlay, 
+.grid-overlay, 
+.markers-layer {
+  pointer-events: none !important;
+}
+
+/* Allow clicking on the markers themselves */
+.marker {
+  pointer-events: auto !important;
+}
+
+/* css/style.css - Performance Patch */
+
+/* 1. HIDE THE HEAVY GRID WHILE ZOOMING */
+/* This is the #1 performance fix. It stops the expensive recalculations. */
+.is-interacting .grid-overlay {
+  opacity: 0;
+  transition: opacity 0.05s ease; /* Fade out instantly */
+}
+
+/* 2. DISABLE FANCY IMAGE SMOOTHING */
+/* While moving, use "pixelated" rendering which is 10x faster */
+.is-interacting .map-image {
+  image-rendering: pixelated; 
+}
+
+/* 3. DISABLE SHADOWS & BLURS */
+/* Shadows force the GPU to repaint the whole area every frame */
+.is-interacting .map-wrap {
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+/* 4. SIMPLIFY MARKERS */
+/* Hide the pulsing rings and shadows while zooming */
+.is-interacting .marker::before,
+.is-interacting .marker::after {
+  display: none !important;
+}
+.is-interacting .marker img {
+  filter: none !important; /* Removes the drop-shadow on the icon */
+}
+
+/* 5. SMOOTH RETURN */
+/* When you stop zooming, fade everything back in nicely */
+.grid-overlay, .marker, .map-wrap {
+  transition: opacity 0.15s, box-shadow 0.15s, filter 0.15s;
+}

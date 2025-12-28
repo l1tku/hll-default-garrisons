@@ -1,0 +1,1151 @@
+// Offensive tacmaps (all entries are offensive mode)
+const maps = {
+  EBR: { name: "Elsenborn Ridge", webp: "images/maps/TacMap_EBR_L_1944.webp", src: "images/maps/TacMap_EBR_L_1944.webp" },
+  MOR: { name: "Mortain", webp: "images/maps/TacMap_MOR_L_1944.webp", src: "images/maps/TacMap_MOR_L_1944.webp" },
+  SMO: { name: "Smolensk", webp: "images/maps/TacMap_SMO_L_1943.webp", src: "images/maps/TacMap_SMO_L_1943.webp" },
+  TOB: { name: "Tobruk", webp: "images/maps/TacMap_TOB_L_1942.webp", src: "images/maps/TacMap_TOB_L_1942.webp" },
+  CAR: { name: "Carentan", webp: "images/maps/map_Carentan.webp", src: "images/maps/map_Carentan.webp" },
+  DRI: { name: "Driel", webp: "images/maps/map_driel.webp", src: "images/maps/map_driel.webp" },
+  ELA: { name: "El Alamein", webp: "images/maps/map_elalamein.webp", src: "images/maps/map_elalamein.webp" },
+  FOY: { name: "Foy", webp: "images/maps/map_foy.webp", src: "images/maps/map_foy.webp" },
+  H4:  { name: "Hill 400", webp: "images/maps/map_hill400.webp", src: "images/maps/map_hill400.webp" },
+  HUR: { name: "Hurtgen Forest", webp: "images/maps/map_hurtgen.webp", src: "images/maps/map_hurtgen.webp" },
+  KHA: { name: "Kharkov", webp: "images/maps/map_kharkov.webp", src: "images/maps/map_kharkov.webp" },
+  KUR: { name: "Kursk", webp: "images/maps/map_kursk.webp", src: "images/maps/map_kursk.webp" },
+  OMA: { name: "Omaha Beach", webp: "images/maps/map_omaha.webp", src: "images/maps/map_omaha.webp" },
+  PHL: { name: "Purple Heart Lane", webp: "images/maps/map_purpleheartlane.webp", src: "images/maps/map_purpleheartlane.webp" },
+  REM: { name: "Remagen", webp: "images/maps/map_remagen.webp", src: "images/maps/map_remagen.webp" },
+  SMM: { name: "Sainte-Marie-du-Mont", webp: "images/maps/map_smdmv2.webp", src: "images/maps/map_smdmv2.webp" },
+  STA: { name: "Stalingrad", webp: "images/maps/map_stalingrad.webp", src: "images/maps/map_stalingrad.webp" },
+  SME: { name: "Sainte-Mère-Église", webp: "images/maps/map_stmereeglise.webp", src: "images/maps/map_stmereeglise.webp" },
+  UTA: { name: "Utah Beach", webp: "images/maps/map_utahbeach.webp", src: "images/maps/map_utahbeach.webp" }
+};
+
+/**
+ * Default garrison coordinates per map.
+ * x/y are percentages of the map image (0-100).
+ * Each map now holds coordinates for both factions.
+ */
+const garrisonsData = {
+  EBR: {
+    axis: [
+      { label: "New Garrison", x: 26.5764, y: 26.7752 },
+      { label: "New Garrison 2", x: 51.6233, y: 24.6752 },
+      { label: "New Garrison 3", x: 78.4453, y: 24.5701 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 73.3367, y: 78.0919 },
+      { label: "New Garrison 2", x: 54.9684, y: 72.6770 },
+      { label: "New Garrison 3", x: 26.3866, y: 77.6348 }
+    ]
+  },
+  MOR: {
+    axis: [
+      { label: "New Garrison", x: 28.2763, y: 26.2510 },
+      { label: "New Garrison 2", x: 26.3828, y: 53.6870 },
+      { label: "New Garrison 3", x: 23.4527, y: 77.5821 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 78.7639, y: 22.1362 },
+      { label: "New Garrison 2", x: 78.1513, y: 52.4613 },
+      { label: "New Garrison 3", x: 77.2142, y: 72.4553 }
+    ]
+  },
+  SMO: {
+    allies: [
+      { label: "New Garrison", x: 22.8081, y: 27.8282 },
+      { label: "New Garrison 2", x: 25.4047, y: 48.0705 },
+      { label: "New Garrison 3", x: 24.1763, y: 69.1399 }
+    ],
+    axis: [
+      { label: "New Garrison", x: 75.3313, y: 27.3640 },
+      { label: "New Garrison 2", x: 73.3592, y: 49.5776 },
+      { label: "New Garrison 3", x: 74.4260, y: 70.3789 }
+    ]
+  },
+  TOB: {
+    allies: [
+      { label: "New Garrison", x: 25.6834, y: 34.1966 },
+      { label: "New Garrison 2", x: 23.6744, y: 49.2122 },
+      { label: "New Garrison 3", x: 24.8945, y: 67.3214 }
+    ],
+    axis: [
+      { label: "New Garrison", x: 77.2658, y: 29.6758 },
+      { label: "New Garrison 2", x: 74.9141, y: 45.9365 },
+      { label: "New Garrison 3", x: 77.2530, y: 72.4699 }
+    ]
+  },
+  CAR: {
+    axis: [
+      { label: "New Garrison", x: 32.0775, y: 34.6327 },
+      { label: "New Garrison 2", x: 36.4559, y: 51.5468 },
+      { label: "New Garrison 3", x: 29.1161, y: 65.3169 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 68.5946, y: 32.6029 },
+      { label: "New Garrison 2", x: 70.5005, y: 49.4304 },
+      { label: "New Garrison 3", x: 63.5202, y: 75.8426 }
+    ]
+  },
+  DRI: {
+    axis: [
+      { label: "New Garrison", x: 28.8254, y: 68.9080 },
+      { label: "New Garrison 2", x: 51.9583, y: 70.4492 },
+      { label: "New Garrison 3", x: 72.2985, y: 67.6618 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 30.3190, y: 33.3876 },
+      { label: "New Garrison 2", x: 52.7736, y: 29.8291 },
+      { label: "New Garrison 3", x: 68.3767, y: 29.6294 }
+    ]
+  },
+  ELA: {
+    axis: [
+      { label: "New Garrison", x: 73.6436, y: 32.6860 },
+      { label: "New Garrison 2", x: 76.4492, y: 45.3327 },
+      { label: "New Garrison 3", x: 70.5872, y: 68.9386 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 30.0403, y: 33.1940 },
+      { label: "New Garrison 2", x: 29.1255, y: 47.4299 },
+      { label: "New Garrison 3", x: 29.5245, y: 68.9015 }
+    ]
+  },
+  FOY: {
+    allies: [
+      { label: "New Garrison", x: 31.0238, y: 25.8663 },
+      { label: "New Garrison 2", x: 43.1917, y: 33.6310 },
+      { label: "New Garrison 3", x: 73.7406, y: 31.2951 }
+    ],
+    axis: [
+      { label: "New Garrison", x: 31.1937, y: 62.4359 },
+      { label: "New Garrison 2", x: 55.2840, y: 66.2495 },
+      { label: "New Garrison 3", x: 72.3515, y: 63.5722 }
+    ]
+  },
+  H4: {
+    axis: [
+      { label: "New Garrison", x: 29.3660, y: 26.2411 },
+      { label: "New Garrison 2", x: 32.4670, y: 55.2356 },
+      { label: "New Garrison 3", x: 29.4358, y: 64.7351 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 63.7967, y: 31.6612 },
+      { label: "New Garrison 2", x: 63.9266, y: 48.7657 },
+      { label: "New Garrison 3", x: 67.6321, y: 72.4510 }
+    ]
+  },
+  HUR: {
+    axis: [
+      { label: "New Garrison", x: 29.3849, y: 26.2402 },
+      { label: "New Garrison 2", x: 32.4577, y: 55.2593 },
+      { label: "New Garrison 3", x: 29.4254, y: 64.4697 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 60.7959, y: 37.8016 },
+      { label: "New Garrison 2", x: 66.7795, y: 54.9569 },
+      { label: "New Garrison 3", x: 64.9551, y: 77.2430 }
+    ]
+  },
+  KHA: {
+    axis: [
+      { label: "New Garrison", x: 34.9850, y: 20.4737 },
+      { label: "New Garrison 2", x: 56.5151, y: 20.0707 },
+      { label: "New Garrison 3", x: 76.9114, y: 23.2100 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 28.6739, y: 78.9722 },
+      { label: "New Garrison 2", x: 53.8057, y: 79.0704 },
+      { label: "New Garrison 3", x: 69.1915, y: 78.1189 }
+    ]
+  },
+  KUR: {
+    axis: [
+      { label: "New Garrison", x: 33.6533, y: 24.4179 },
+      { label: "New Garrison 2", x: 52.3938, y: 21.7314 },
+      { label: "New Garrison 3", x: 74.7527, y: 20.6189 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 36.6365, y: 74.7925 },
+      { label: "New Garrison 2", x: 50.0941, y: 74.4242 },
+      { label: "New Garrison 3", x: 66.3864, y: 75.8449 }
+    ]
+  },
+  OMA: {
+    allies: [
+      { label: "New Garrison", x: 21.0942, y: 34.3431 },
+      { label: "New Garrison 2", x: 20.7194, y: 48.9125 },
+      { label: "New Garrison 3", x: 21.0616, y: 66.7241 }
+    ],
+    axis: [
+      { label: "New Garrison", x: 78.0468, y: 26.6036 },
+      { label: "New Garrison 2", x: 77.4488, y: 45.8406 },
+      { label: "New Garrison 3", x: 71.5673, y: 67.8883 }
+    ]
+  },
+  PHL: {
+    axis: [
+      { label: "New Garrison", x: 29.4218, y: 31.7287 },
+      { label: "New Garrison 2", x: 48.1351, y: 34.8851 },
+      { label: "New Garrison 3", x: 68.5690, y: 33.4797 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 33.6231, y: 62.8173 },
+      { label: "New Garrison 2", x: 48.9657, y: 64.2756 },
+      { label: "New Garrison 3", x: 77.5020, y: 61.5952 }
+    ]
+  },
+  REM: {
+    allies: [
+      { label: "New Garrison", x: 28.2594, y: 28.5719 },
+      { label: "New Garrison 2", x: 52.6297, y: 26.0786 },
+      { label: "New Garrison 3", x: 68.2245, y: 29.0742 }
+    ],
+    axis: [
+      { label: "New Garrison", x: 33.2534, y: 69.5042 },
+      { label: "New Garrison 2", x: 50.9749, y: 71.5767 },
+      { label: "New Garrison 3", x: 69.2615, y: 68.4195 }
+    ]
+  },
+  SMM: {
+    axis: [
+      { label: "New Garrison", x: 31.3531, y: 32.9404 },
+      { label: "New Garrison 2", x: 51.3946, y: 32.3620 },
+      { label: "New Garrison 3", x: 64.4658, y: 30.6766 }
+    ],
+    allies: [
+      { label: "New Garrison", x: 30.4593, y: 66.4874 },
+      { label: "New Garrison 2", x: 51.1316, y: 70.2952 },
+      { label: "New Garrison 3", x: 71.7253, y: 63.9113 }
+    ]
+  },
+  STA: {
+    allies: [
+      { label: "New Garrison", x: 27.4142, y: 24.5372 },
+      { label: "New Garrison 2", x: 23.8895, y: 55.2424 },
+      { label: "New Garrison 3", x: 24.7630, y: 76.2281 }
+    ],
+    axis: [
+      { label: "New Garrison", x: 78.6803, y: 29.2218 },
+      { label: "New Garrison 2", x: 77.4140, y: 50.1327 },
+      { label: "New Garrison 3", x: 78.7988, y: 67.8971 }
+    ]
+  },
+  SME: {
+    allies: [
+      { label: "New Garrison", x: 32.2965, y: 28.0727 },
+      { label: "New Garrison 2", x: 36.0324, y: 40.7232 },
+      { label: "New Garrison 3", x: 33.9574, y: 69.5006 }
+    ],
+    axis: [
+      { label: "New Garrison", x: 69.7825, y: 35.2163 },
+      { label: "New Garrison 2", x: 68.4197, y: 52.5084 },
+      { label: "New Garrison 3", x: 71.8347, y: 71.3896 }
+    ]
+  },
+  UTA: {
+    allies: [
+      { label: "New Garrison", x: 28.1592, y: 25.1906 },
+      { label: "New Garrison 2", x: 26.8216, y: 50.0068 },
+      { label: "New Garrison 3", x: 23.7690, y: 75.6686 }
+    ],
+    axis: [
+      { label: "New Garrison", x: 76.8213, y: 27.7427 },
+      { label: "New Garrison 2", x: 78.2830, y: 50.2344 },
+      { label: "New Garrison 3", x: 71.2563, y: 69.7611 }
+    ]
+  }
+};
+
+const FACTION_FLAG_PATHS = {
+  us: "images/flags/us.png",
+  gb: "images/flags/gb.png",
+  ger: "images/flags/ger.png",
+  soviet: "images/flags/rus.png"
+};
+
+const factionFlags = {
+  CAR: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  DRI: { allies: FACTION_FLAG_PATHS.gb, axis: FACTION_FLAG_PATHS.ger },
+  EBR: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  ELA: { allies: FACTION_FLAG_PATHS.gb, axis: FACTION_FLAG_PATHS.ger },
+  FOY: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  H4:  { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  HUR: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  KHA: { allies: FACTION_FLAG_PATHS.soviet, axis: FACTION_FLAG_PATHS.ger },
+  KUR: { allies: FACTION_FLAG_PATHS.soviet, axis: FACTION_FLAG_PATHS.ger },
+  MOR: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  OMA: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  PHL: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  REM: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  SMM: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  SME: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
+  SMO: { allies: FACTION_FLAG_PATHS.soviet, axis: FACTION_FLAG_PATHS.ger },
+  STA: { allies: FACTION_FLAG_PATHS.soviet, axis: FACTION_FLAG_PATHS.ger },
+  TOB: { allies: FACTION_FLAG_PATHS.gb, axis: FACTION_FLAG_PATHS.ger },
+  UTA: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger }
+};
+
+function getFactionFlag(mapKey, faction) {
+  return factionFlags[mapKey]?.[faction] ?? null;
+}
+
+// --- FACTION STATE ---
+let currentFaction = "all";
+
+// --- DOM ELEMENTS ---
+const mapSelect = document.getElementById("mapSelect");
+const mapImage = document.getElementById("mapImage");
+const mapSourceWebp = document.getElementById("mapSourceWebp");
+const mapStage = document.getElementById("mapStage");
+const markersContainer = document.getElementById("markers");
+const mapLoader = document.getElementById("mapLoader");
+const gridOverlay = document.getElementById("gridOverlay");
+const btnAxis = document.getElementById("btnAxis");
+const btnAllies = document.getElementById("btnAllies");
+const btnAllFactions = document.getElementById("btnAllFactions");
+const sidebarToggle = document.getElementById("sidebarToggle");
+const sidebarClose = document.getElementById("sidebarClose");
+const sidebar = document.getElementById("utilitySidebar");
+const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+const spaCalculatorBtn = document.getElementById("spaCalculatorBtn");
+
+// --- NAVIGATION STATE ---
+let visibleMarkersList = []; // Stores objects { x, y, label, element }
+let currentMarkerIndex = -1;
+
+const scaleWrapper = document.getElementById("scaleWrapper");
+const scaleTextMid = document.getElementById("scaleTextMid");
+const scaleTextEnd = document.getElementById("scaleTextEnd");
+const zoomLevelIndicator = document.getElementById("zoomLevelIndicator");
+
+// --- SCALE LOGIC CONFIGURATION ---
+const MAP_REAL_WIDTH_METERS = 2000;
+const ALLOWED_SCALES = [500, 250, 200, 100, 50, 25, 20, 10];
+
+const LAST_MAP_STORAGE_KEY = "hll-last-map";
+const mapOrder = Object.entries(maps).sort((a, b) => a[1].name.localeCompare(b[1].name));
+const storedMapKey = localStorage.getItem(LAST_MAP_STORAGE_KEY);
+let currentMapKey = storedMapKey && maps[storedMapKey] ? storedMapKey : mapOrder[0][0];
+
+function populateSelect() {
+  mapOrder.forEach(([key, { name }]) => {
+    const option = document.createElement("option");
+    option.value = key;
+    option.textContent = name;
+    mapSelect.appendChild(option);
+  });
+}
+
+function updateFactionButtons() {
+  if (!btnAxis || !btnAllies || !btnAllFactions) return;
+  [btnAxis, btnAllies, btnAllFactions].forEach(btn => btn.classList.remove("active"));
+
+  switch (currentFaction) {
+    case "axis":
+      btnAxis.classList.add("active");
+      break;
+    case "allies":
+      btnAllies.classList.add("active");
+      break;
+    default:
+      btnAllFactions.classList.add("active");
+  }
+}
+
+if (btnAxis && btnAllies && btnAllFactions) {
+  btnAxis.addEventListener("click", () => {
+    if (currentFaction === "axis") return;
+    currentFaction = "axis";
+    updateFactionButtons();
+    renderMap(mapSelect.value);
+  });
+
+  btnAllies.addEventListener("click", () => {
+    if (currentFaction === "allies") return;
+    currentFaction = "allies";
+    updateFactionButtons();
+    renderMap(mapSelect.value);
+  });
+
+  btnAllFactions.addEventListener("click", () => {
+    if (currentFaction === "all") return;
+    currentFaction = "all";
+    updateFactionButtons();
+    renderMap(mapSelect.value);
+  });
+}
+updateFactionButtons();
+
+// Get reference to the loader
+function renderMap(mapKey) {
+  currentMapKey = mapKey;
+  const map = maps[mapKey];
+  if (!map) return;
+
+  if (mapSelect && mapSelect.value !== mapKey) {
+    mapSelect.value = mapKey;
+  }
+  localStorage.setItem(LAST_MAP_STORAGE_KEY, mapKey);
+
+  // 1. SHOW LOADING SCREEN
+  if (mapLoader) mapLoader.classList.add("visible");
+
+  // 2. Clear previous markers & Reset State
+  markersContainer.innerHTML = "";
+  markersContainer.classList.remove("has-selection");
+  visibleMarkersList = [];
+  currentMarkerIndex = -1;
+
+  // 3. DEFINE LOAD HANDLERS (The Fix)
+  
+  // A. Success Handler
+  const onMapLoaded = () => {
+    if (mapLoader) mapLoader.classList.remove("visible");
+    updateCache();
+    initMapLogic();
+  };
+
+  // B. Error Handler (Prevents getting stuck)
+  const onMapError = () => {
+    console.warn("Map image failed to load or is missing.");
+    if (mapLoader) mapLoader.classList.remove("visible");
+  };
+
+  // Reset previous handlers to avoid stacking
+  mapImage.onload = null;
+  mapImage.onerror = null;
+
+  // Assign handlers
+  mapImage.onload = onMapLoaded;
+  mapImage.onerror = onMapError;
+
+  // C. Safety Timeout: Force hide loader after 3 seconds if nothing happens
+  const hideTimeout = setTimeout(() => {
+    if (mapLoader && mapLoader.classList.contains("visible")) {
+        mapLoader.classList.remove("visible");
+    }
+  }, 3000);
+
+  // 4. SET IMAGE SOURCES
+  // Priority settings
+  mapImage.loading = "eager";
+  mapImage.decoding = "sync"; 
+  mapImage.fetchPriority = "high";
+
+  // Actually set the source
+  if (map.webp) mapSourceWebp.srcset = map.webp;
+  mapImage.src = map.webp;
+  mapImage.alt = map.name;
+
+  // 6. Prepare Points Data
+  const mapData = garrisonsData[mapKey];
+  let points = [];
+  
+  if (mapData) {
+    const axisPoints = (mapData.axis || []).map((p, i) => ({
+      ...p,
+      label: `Axis Default ${i + 1}`,
+      faction: "axis"
+    }));
+    const alliesPoints = (mapData.allies || []).map((p, i) => ({
+      ...p,
+      label: `Allies Default ${i + 1}`,
+      faction: "allies"
+    }));
+
+    if (currentFaction === "all") {
+      points = [...axisPoints, ...alliesPoints];
+    } else {
+      points = currentFaction === "axis" ? axisPoints : alliesPoints;
+    }
+  }
+
+  // 7. Render Markers (screen-space layer; positions set in renderTransform)
+  points.forEach((point, index) => {
+    const marker = document.createElement("div");
+    marker.className = "marker";
+
+    // Icon
+    const icon = document.createElement("img");
+    icon.src = "images/ui/icn_garrison_shadow.webp";
+    icon.alt = point.label;
+    marker.appendChild(icon);
+
+    // Label with Buttons
+    const labelDiv = document.createElement("div");
+    labelDiv.className = "marker-label";
+
+    const prevBtn = document.createElement("button");
+    prevBtn.className = "nav-arrow prev";
+    prevBtn.innerHTML = "&#10094;";
+    prevBtn.title = "Previous";
+    prevBtn.onclick = (e) => {
+        e.stopPropagation();
+        const prevIndex = index === 0 ? points.length - 1 : index - 1;
+        // PASS FALSE for instant snap and maintain current zoom
+        selectGarrisonByIndex(prevIndex, false, true);
+    };
+
+    const textSpan = document.createElement("span");
+    textSpan.className = "label-text";
+
+    const flagSrc = getFactionFlag(mapKey, point.faction);
+    if (flagSrc) {
+      const flagImg = document.createElement("img");
+      flagImg.src = flagSrc;
+      flagImg.alt = `${point.faction === "allies" ? "Allies" : "Axis"} flag`;
+      flagImg.className = "label-flag";
+      textSpan.appendChild(flagImg);
+    }
+
+    const labelCopy = document.createElement("span");
+    labelCopy.className = "label-copy";
+    labelCopy.textContent = point.label;
+    textSpan.appendChild(labelCopy);
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "nav-arrow next";
+    nextBtn.innerHTML = "&#10095;";
+    nextBtn.title = "Next";
+    nextBtn.onclick = (e) => {
+        e.stopPropagation();
+        const nextIndex = index === points.length - 1 ? 0 : index + 1;
+        // PASS FALSE for instant snap and maintain current zoom
+        selectGarrisonByIndex(nextIndex, false, true);
+    };
+
+    labelDiv.appendChild(prevBtn);
+    labelDiv.appendChild(textSpan);
+    labelDiv.appendChild(nextBtn);
+    marker.appendChild(labelDiv);
+
+    // Track click timing for double-click detection
+    let clickCount = 0;
+    let clickTimer = null;
+    
+    marker.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      clickCount++;
+
+      // --- INSTANT SELECTION FIX ---
+      // We apply the visual state IMMEDIATELY. No waiting for the timer.
+      // This fixes the latency.
+      currentMarkerIndex = index;
+      markersContainer.classList.add("has-selection"); // Fixes the "Not Selected" bug
+      visibleMarkersList.forEach(item => item.element.classList.remove("active"));
+      marker.classList.add("active");
+
+      if (clickCount === 1) {
+        // Start a timer purely to reset the counter for double-click detection
+        clickTimer = setTimeout(() => {
+          clickCount = 0;
+        }, 300);
+      } else if (clickCount === 2) {
+        // Double Click Detected
+        clearTimeout(clickTimer);
+        clickCount = 0;
+        
+        // Trigger the Zoom/Pan logic
+        // We pass 'false' for maintainZoom to force the zoom level change
+        selectGarrisonByIndex(index, true, false);
+      }
+    });
+
+    markersContainer.appendChild(marker);
+
+    visibleMarkersList.push({
+      xPct: point.x,
+      yPct: point.y,
+      element: marker
+    });
+  });
+
+  // Ensure first paint reflects positions
+  requestRender();
+}
+
+function buildGridOverlay() {
+  if (!gridOverlay) return;
+  gridOverlay.innerHTML = "";
+
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("class", "grid-svg");
+  svg.setAttribute("viewBox", "0 0 100 100");
+  svg.setAttribute("preserveAspectRatio", "none");
+
+  const createLine = (x1, y1, x2, y2, isSubgrid) => {
+    const line = document.createElementNS(ns, "line");
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", x2);
+    line.setAttribute("y2", y2);
+    line.setAttribute("class", isSubgrid ? "subgrid-line" : "grid-line");
+    return line;
+  };
+
+  for (let i = 1; i < 10; i++) {
+    svg.appendChild(createLine(i * 10, 0, i * 10, 100, false));
+    svg.appendChild(createLine(0, i * 10, 100, i * 10, false));
+  }
+
+  for (let i = 1; i < 30; i++) {
+    if (i % 3 === 0) continue;
+    const pos = i * (10 / 3);
+    svg.appendChild(createLine(pos, 0, pos, 100, true));
+    svg.appendChild(createLine(0, pos, 100, pos, true));
+  }
+
+  const labelContainer = document.createElement("div");
+  labelContainer.className = "grid-labels";
+  const letters = "ABCDEFGHIJ".split("");
+
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const cell = document.createElement("div");
+      cell.className = "grid-label-cell";
+      
+      let labelText = "";
+      if (row === 0 && col === 0) labelText = "A1";
+      else if (row === 0) labelText = letters[col];
+      else if (col === 0) labelText = (row + 1).toString();
+
+      if (labelText) {
+        const span = document.createElement("span");
+        span.className = "grid-label-text";
+        span.textContent = labelText;
+        cell.appendChild(span);
+      }
+
+      labelContainer.appendChild(cell);
+    }
+  }
+
+  gridOverlay.appendChild(svg);
+  gridOverlay.appendChild(labelContainer);
+}
+
+// Theme toggle
+const themeToggle = document.getElementById("themeToggle");
+const root = document.documentElement;
+const storedTheme = localStorage.getItem("hll-theme");
+
+function applyTheme(theme) {
+  if (theme === "light") {
+    root.setAttribute("data-theme", "light");
+    themeToggle.textContent = "Switch to Dark mode";
+  } else {
+    root.removeAttribute("data-theme");
+    themeToggle.textContent = "Switch to Light mode";
+  }
+  localStorage.setItem("hll-theme", theme);
+}
+
+const preferred = storedTheme || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+applyTheme(preferred);
+
+themeToggle.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+  applyTheme(next);
+});
+
+// --- SIDEBAR LOGIC ---
+const SIDEBAR_OPEN_CLASS = "sidebar-open";
+const SPA_CALCULATOR_URL = "https://l1tku.github.io/hll-spa-calculator/index.html";
+
+function openSidebar() {
+  document.body.classList.add(SIDEBAR_OPEN_CLASS);
+  sidebar?.setAttribute("aria-hidden", "false");
+  sidebarToggle?.setAttribute("aria-expanded", "true");
+  sidebarBackdrop?.removeAttribute("hidden");
+}
+
+function closeSidebar() {
+  document.body.classList.remove(SIDEBAR_OPEN_CLASS);
+  sidebar?.setAttribute("aria-hidden", "true");
+  sidebarToggle?.setAttribute("aria-expanded", "false");
+  sidebarBackdrop?.setAttribute("hidden", "");
+}
+
+sidebarToggle?.addEventListener("click", () => {
+  const isOpen = document.body.classList.contains(SIDEBAR_OPEN_CLASS);
+  if (isOpen) {
+    closeSidebar();
+  } else {
+    openSidebar();
+  }
+});
+
+sidebarClose?.addEventListener("click", closeSidebar);
+sidebarBackdrop?.addEventListener("click", closeSidebar);
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && document.body.classList.contains(SIDEBAR_OPEN_CLASS)) {
+    closeSidebar();
+  }
+});
+
+spaCalculatorBtn?.addEventListener("click", () => {
+  window.open(SPA_CALCULATOR_URL, "_blank", "noopener");
+});
+
+// --- ZOOM & PAN & SCALE LOGIC (OPTIMIZED) ---
+
+// 1. State Variables
+let currentZoomLevel = 1; 
+const MIN_LEVEL = 1;
+const MAX_LEVEL = 10;
+let baseZoom = 1.0; 
+
+// Pan Variables
+let panX = 0;
+let panY = 0;
+let isDragging = false;
+let suppressNextMapClick = false;
+let startMouseX = 0;
+let startMouseY = 0;
+let lastPanX = 0;
+let lastPanY = 0;
+
+// --- IMPROVED DRAG LOGIC ---
+// New variable to track if we actually moved
+let hasMoved = false;
+const DRAG_THRESHOLD = 5; // Pixels to move before counting as a drag
+
+// Rendering State
+let isRenderPending = false;
+let zoomTransitionTimeout = null;
+let mapClickListenerAttached = false;
+
+// --- CALIBRATION SETTINGS ---
+const ANCHOR_OFFSET_X = 0;
+const ANCHOR_OFFSET_Y = -6;
+
+// 2. Caching Dimensions (Prevents Layout Thrashing)
+// We store these so we don't query the DOM during a drag event
+const cache = {
+  containerW: 0,
+  containerH: 0,
+  mapW: 0,
+  mapH: 0,
+  rectLeft: 0,
+  rectTop: 0
+};
+
+// Update cache on resize, map load, or init
+function updateCache() {
+  const containerRect = mapStage.parentElement.getBoundingClientRect();
+  cache.containerW = containerRect.width;
+  cache.containerH = containerRect.height;
+  cache.rectLeft = containerRect.left;
+  cache.rectTop = containerRect.top;
+
+  // We need the unscaled dimensions of the image
+  cache.mapW = mapImage.offsetWidth;
+  cache.mapH = mapImage.offsetHeight;
+}
+
+function getEffectiveZoom() {
+  return baseZoom * currentZoomLevel;
+}
+
+// 3. The Math (Calculates limits based on Cache, not DOM)
+function clampPosition() {
+  const effectiveZoom = getEffectiveZoom();
+  const currentMapW = cache.mapW * effectiveZoom;
+  const currentMapH = cache.mapH * effectiveZoom;
+
+  const diffW = cache.containerW - currentMapW;
+  const diffH = cache.containerH - currentMapH;
+
+  // If map is smaller than container, center it. 
+  // If larger, clamp edges.
+  if (diffW >= 0) panX = diffW / 2;
+  else panX = Math.min(0, Math.max(panX, diffW));
+
+  if (diffH >= 0) panY = diffH / 2;
+  else panY = Math.min(0, Math.max(panY, diffH));
+}
+
+// 4. The Renderer (Uses requestAnimationFrame)
+function requestRender() {
+  if (!isRenderPending) {
+    isRenderPending = true;
+    requestAnimationFrame(renderTransform);
+  }
+}
+
+function renderTransform() {
+  const effectiveZoom = getEffectiveZoom();
+  
+  // 1. Update Map Stage
+  mapStage.style.setProperty("--zoom", effectiveZoom);
+  mapStage.style.setProperty("--pan-x", `${panX.toFixed(2)}px`);
+  mapStage.style.setProperty("--pan-y", `${panY.toFixed(2)}px`);
+  
+  // 2. PERFORMANCE FIX: 
+  // Only recalculate text scale if we are NOT actively scrolling.
+  // This prevents the 3s lag spike.
+  if (!document.body.classList.contains("is-interacting")) {
+      const inverse = (1 / effectiveZoom).toFixed(4);
+      mapStage.style.setProperty("--inverse-zoom", inverse);
+  }
+
+  // 3. Update Markers (Standard logic)
+  if (visibleMarkersList.length > 0 && cache.mapW > 0) {
+    for (let i = 0; i < visibleMarkersList.length; i++) {
+      const m = visibleMarkersList[i];
+      const mapPxX = (m.xPct / 100) * cache.mapW;
+      const mapPxY = (m.yPct / 100) * cache.mapH;
+      const screenX = (mapPxX * effectiveZoom) + panX;
+      const screenY = (mapPxY * effectiveZoom) + panY;
+      
+      m.element.style.transform = `
+        translate3d(${screenX}px, ${screenY}px, 0) 
+        translate(-50%, -50%) 
+        translate(${ANCHOR_OFFSET_X}px, ${ANCHOR_OFFSET_Y}px)
+      `;
+    }
+  }
+
+  updateRealScale(effectiveZoom);
+  isRenderPending = false;
+}
+
+function updateRealScale(effectiveZoom) {
+  // Use cached map width
+  const currentMapWidthPx = cache.mapW * effectiveZoom;
+  if (currentMapWidthPx <= 0) return;
+
+  const metersPerPixel = MAP_REAL_WIDTH_METERS / currentMapWidthPx;
+  const maxAllowedWidthPx = 250; // Max width of scale bar in UI
+  
+  const maxCapacity = metersPerPixel * maxAllowedWidthPx;
+  
+  // Find the largest scale value that fits
+  let selectedScale = ALLOWED_SCALES.find(scale => scale <= maxCapacity);
+  if (selectedScale === undefined) selectedScale = ALLOWED_SCALES[ALLOWED_SCALES.length - 1];
+
+  const drawnWidth = selectedScale / metersPerPixel;
+  
+  // Direct DOM updates (low cost compared to layout reflows)
+  scaleWrapper.style.width = `${drawnWidth}px`;
+  scaleTextEnd.textContent = `${selectedScale}m`;
+  scaleTextMid.textContent = `${selectedScale / 2}m`;
+}
+
+// 5. Input Handlers
+
+// ZOOM
+function triggerZoomTransition() {
+  if (!mapStage) return;
+  mapStage.classList.add("zoom-transition");
+  if (zoomTransitionTimeout) clearTimeout(zoomTransitionTimeout);
+  zoomTransitionTimeout = setTimeout(() => {
+    mapStage.classList.remove("zoom-transition");
+    zoomTransitionTimeout = null;
+  }, 260);
+}
+
+function setZoomLevel(newLevel, mouseX = null, mouseY = null, options = {}) {
+  const prevZoom = getEffectiveZoom();
+  currentZoomLevel = Math.min(MAX_LEVEL, Math.max(MIN_LEVEL, newLevel));
+  const newZoom = getEffectiveZoom();
+
+  // Sub-grid Logic
+  if (currentZoomLevel >= 4) gridOverlay.classList.add('detailed-grid');
+  else gridOverlay.classList.remove('detailed-grid');
+
+  if (zoomLevelIndicator) zoomLevelIndicator.textContent = `${currentZoomLevel}x`;
+
+  // Zoom towards mouse pointer
+  const focusWorldPoint = options.focusWorldPoint;
+
+  if (focusWorldPoint) {
+    if (!cache.containerW || !cache.containerH) updateCache();
+    const targetScreenX = focusWorldPoint.targetScreenX ?? (cache.containerW / 2);
+    const targetScreenY = focusWorldPoint.targetScreenY ?? (cache.containerH / 2);
+    panX = targetScreenX - (focusWorldPoint.worldX * newZoom);
+    panY = targetScreenY - (focusWorldPoint.worldY * newZoom);
+  } else if (mouseX !== null && mouseY !== null) {
+    // Convert screen coordinates to "Map Space" coordinates
+    const worldX = (mouseX - panX) / prevZoom;
+    const worldY = (mouseY - panY) / prevZoom;
+
+    // Calculate new Pan to keep that point stationary
+    panX = mouseX - (worldX * newZoom);
+    panY = mouseY - (worldY * newZoom);
+  }
+
+  clampPosition();
+  requestRender();
+}
+
+function focusOnMapPoint(xPercent, yPercent, targetLevel = 6, animate = true) {
+  if (!cache.mapW || !cache.mapH) updateCache();
+  if (!cache.mapW || !cache.mapH) return;
+
+  const worldX = (xPercent / 100) * cache.mapW;
+  const worldY = (yPercent / 100) * cache.mapH;
+
+  // Only play the sliding animation if 'animate' is true
+  if (animate) {
+    triggerZoomTransition();
+  } else {
+    // If not animating, ensure we remove the class instantly to prevent lag
+    if (mapStage) mapStage.classList.remove("zoom-transition");
+  }
+
+  setZoomLevel(targetLevel, null, null, { 
+    focusWorldPoint: { 
+      worldX, 
+      worldY, 
+      targetScreenX: cache.containerW / 2, 
+      targetScreenY: cache.containerH / 2 
+    } 
+  });
+}
+
+// WHEEL LISTENER
+let interactionTimeout = null;
+
+mapStage.parentElement.addEventListener("wheel", (e) => {
+  e.preventDefault();
+
+  // 1. PERFORMANCE: Cut the CSS transition so the zoom is instant
+  if (mapStage.classList.contains("zoom-transition")) {
+    mapStage.classList.remove("zoom-transition");
+  }
+
+  // 2. PERFORMANCE: Add class to trigger the CSS fixes above
+  document.body.classList.add("is-interacting");
+  
+  // Clear timeout to keep the class active while you are scrolling
+  if (interactionTimeout) clearTimeout(interactionTimeout);
+  
+  // Set a short timer (100ms) to remove the class when you STOP scrolling
+  interactionTimeout = setTimeout(() => {
+    document.body.classList.remove("is-interacting");
+    requestRender(); // Final crisp render
+  }, 100);
+
+  // 3. LOGIC: Strict 1x steps (1x, 2x, 3x...)
+  // deltaY > 0 means scrolling DOWN (Zoom OUT)
+  // deltaY < 0 means scrolling UP (Zoom IN)
+  const direction = e.deltaY > 0 ? -1 : 1;
+  const newZoom = currentZoomLevel + direction;
+
+  // 4. Calculate mouse position for the zoom anchor
+  // Use the cached rect variables we created earlier
+  const mouseX = e.clientX - cache.rectLeft;
+  const mouseY = e.clientY - cache.rectTop;
+  
+  // 5. Apply the zoom
+  setZoomLevel(newZoom, mouseX, mouseY);
+
+}, { passive: false });
+
+// DRAG START
+mapStage.addEventListener("mousedown", (e) => {
+  if (e.button !== 0) return; // Only left click
+  e.preventDefault();
+  
+  // We are "ready" to drag, but haven't started yet
+  isDragging = false; 
+  hasMoved = false;
+  
+  startMouseX = e.clientX;
+  startMouseY = e.clientY;
+  
+  lastPanX = panX;
+  lastPanY = panY;
+  
+  mapStage.parentElement.classList.add("dragging");
+});
+
+// DRAG MOVE
+window.addEventListener("mousemove", (e) => {
+  // We only care if the mouse is down (but we use the class or a flag to know that)
+  if (!mapStage.parentElement.classList.contains("dragging")) return;
+  e.preventDefault();
+  
+  const deltaX = e.clientX - startMouseX;
+  const deltaY = e.clientY - startMouseY;
+
+  // CHECK: Have we moved enough to call this a "drag"?
+  if (!hasMoved) {
+    if (Math.abs(deltaX) > DRAG_THRESHOLD || Math.abs(deltaY) > DRAG_THRESHOLD) {
+      hasMoved = true;
+      isDragging = true; // NOW we are officially dragging
+    } else {
+      return; // Ignore tiny movements (jitter)
+    }
+  }
+  
+  // Apply the movement
+  panX = lastPanX + deltaX;
+  panY = lastPanY + deltaY;
+  
+  clampPosition();
+  requestRender();
+});
+
+// DRAG END
+window.addEventListener("mouseup", (e) => {
+  // Only clean up if we were in the "dragging" state (mouse was down)
+  if (mapStage.parentElement.classList.contains("dragging")) {
+    
+    mapStage.parentElement.classList.remove("dragging");
+
+    // CRITICAL FIX: Only suppress the click if we actually dragged (moved)
+    if (hasMoved) {
+      suppressNextMapClick = true;
+      // Reset the flag after a tiny delay to ensure the click event sees it
+      setTimeout(() => { suppressNextMapClick = false; }, 50);
+    } else {
+      // If we didn't move, it was a click!
+      suppressNextMapClick = false;
+    }
+    
+    isDragging = false;
+    hasMoved = false;
+  }
+});
+
+// RESIZE OBSERVER (Better than window.resize)
+const resizeObserver = new ResizeObserver(() => {
+  updateCache();
+  clampPosition();
+  requestRender();
+});
+resizeObserver.observe(mapStage.parentElement);
+
+
+// 6. Initialization
+function initMapLogic() {
+  if (mapImage.complete && mapImage.naturalWidth > 0) {
+    updateCache();
+    // Center map initially
+    setZoomLevel(1); 
+    // Manual center if desired:
+    const effectiveZoom = getEffectiveZoom();
+    panX = (cache.containerW - (cache.mapW * effectiveZoom)) / 2;
+    panY = (cache.containerH - (cache.mapH * effectiveZoom)) / 2;
+    
+    clampPosition();
+    requestRender();
+  } else {
+    mapImage.onload = () => {
+      updateCache();
+      initMapLogic();
+    };
+  }
+}
+
+// Hook into existing selection logic
+mapSelect.addEventListener("change", (e) => {
+  renderMap(e.target.value);
+  // Give the browser a moment to paint the new image frame before calculating dims
+  requestAnimationFrame(() => {
+     updateCache();
+     initMapLogic();
+  });
+});
+
+// --- EXECUTE ---
+populateSelect();
+if (mapSelect) {
+  mapSelect.value = currentMapKey;
+}
+buildGridOverlay();
+// Initial Load
+renderMap(currentMapKey);
+// Wait for image to load before initializing logic
+mapImage.addEventListener('load', () => {
+    updateCache();
+    initMapLogic();
+}, { once: true });
+
+// Enable simple map click handler (used only to clear selections)
+if (mapStage) {
+  mapStage.addEventListener('click', handleMapClick, true);
+}
+
+/**
+ * Selects a garrison, highlights it, and zooms in.
+ * @param {number} index - Index in the visibleMarkersList array
+ * @param {boolean} shouldAnimate - Whether to smooth zoom (click) or snap (arrows)
+ * @param {boolean} maintainZoom - Whether to maintain current zoom level
+ */
+function selectGarrisonByIndex(index, shouldAnimate = true, maintainZoom = false) {
+  if (visibleMarkersList.length === 0) return;
+
+  // Bounds check
+  if (index < 0 || index >= visibleMarkersList.length) return;
+
+  // 1. Update State
+  currentMarkerIndex = index;
+  markersContainer.classList.add("has-selection");
+  const target = visibleMarkersList[index];
+
+  // 2. Update Visuals
+  visibleMarkersList.forEach(item => item.element.classList.remove("active"));
+  target.element.classList.add("active");
+
+  // 3. Zoom Logic
+  let zoomLevel;
+  if (maintainZoom) {
+    zoomLevel = currentZoomLevel; // Maintain current zoom
+  } else {
+    zoomLevel = Math.max(currentZoomLevel, 6); // At least 6x for selection
+  }
+  
+  // Pass the 'shouldAnimate' flag to the focus function
+  focusOnMapPoint(target.xPct, target.yPct, zoomLevel, shouldAnimate);
+}
+
+/**
+ * Clears any active garrison selection.
+ */
+function clearGarrisonSelection() {
+  currentMarkerIndex = -1;
+  markersContainer.classList.remove("has-selection");
+  visibleMarkersList.forEach(item => item.element.classList.remove("active"));
+}
+
+/**
+ * Handles Arrow Key Navigation
+ */
+document.addEventListener("keydown", (e) => {
+  // Only navigate if we have markers
+  if (e.key === "Escape") {
+    clearGarrisonSelection();
+    return;
+  }
+  if (visibleMarkersList.length === 0) return;
+
+  if (e.key === "ArrowRight") {
+    // Go forward, wrap to start
+    let nextIndex = currentMarkerIndex + 1;
+    if (nextIndex >= visibleMarkersList.length) nextIndex = 0;
+    selectGarrisonByIndex(nextIndex, false); // Snap
+  } 
+  else if (e.key === "ArrowLeft") {
+    // Go backward, wrap to end
+    let prevIndex = currentMarkerIndex - 1;
+    if (prevIndex < 0) prevIndex = visibleMarkersList.length - 1;
+    selectGarrisonByIndex(prevIndex, false); // Snap
+  }
+});
+
+
+// Simple map click handler just to clear selections
+function handleMapClick(e) {
+  if (suppressNextMapClick || isDragging) return;
+  if (e.target.closest && e.target.closest('.marker')) return;
+  clearGarrisonSelection();
+}
+
+// remove legacy optional coordinate capture hook
+
