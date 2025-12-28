@@ -1,4 +1,4 @@
-# HLL Default Garrisons
+# HLL Default Garrisons Interactive Map
 
 A lightweight intel tool for **Hell Let Loose** offensive matches. It ships with an interactive default-garrison map that highlights the defender placements across every offensive map so squad leads can plan their opening moves without guesswork.
 
