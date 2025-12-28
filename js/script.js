@@ -652,7 +652,7 @@ themeToggle.addEventListener("click", () => {
 
 // --- SIDEBAR LOGIC ---
 const SIDEBAR_OPEN_CLASS = "sidebar-open";
-const SPA_CALCULATOR_URL = "https://l1tku.github.io/hll-spa-calculator/index.html";
+const SPA_CALCULATOR_URL = "HLL Spa Calculator V5/index.html";
 
 function openSidebar() {
   document.body.classList.add(SIDEBAR_OPEN_CLASS);
