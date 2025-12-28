@@ -1203,6 +1203,28 @@ mapImage.addEventListener('load', () => {
     initMapLogic();
 }, { once: true });
 
+// Prevent context menu and save image on map
+document.addEventListener('contextmenu', (e) => {
+  if (e.target.closest('.map-image, .map-stage, .map-wrap')) {
+    e.preventDefault();
+    return false;
+  }
+});
+
+// Prevent long-press save image on mobile
+document.addEventListener('touchstart', (e) => {
+  if (e.target.closest('.map-image')) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener('selectstart', (e) => {
+  if (e.target.closest('.map-image, .map-stage, .map-wrap')) {
+    e.preventDefault();
+    return false;
+  }
+});
+
 // Enable simple map click handler (used only to clear selections)
 if (mapStage) {
   mapStage.addEventListener('click', handleMapClick, true);
