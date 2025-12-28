@@ -2,12 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>HLL Offensive – Default Garrisons</title>
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <button
+    id="sidebarToggle"
+    class="sidebar-toggle"
+    type="button"
+    aria-controls="utilitySidebar"
+    aria-expanded="false"
+  >
+    <span class="sr-only">Open Intel Tools</span>
+    <span class="hamburger" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+
   <div class="shell">
     <header>
       <div class="header-copy">
@@ -53,25 +68,13 @@
           </button>
         </div>
       </div>
-      <button
-        id="sidebarToggle"
-        class="sidebar-toggle"
-        type="button"
-        aria-controls="utilitySidebar"
-        aria-expanded="false"
-      >
-        <span class="sr-only">Open Intel Tools</span>
-        <span class="hamburger" aria-hidden="true">
-          <span></span>
-          <span></span>
-          <span></span>
-        </span>
-      </button>
     </aside>
 
     <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
 
-    <div class="panel controls">
+    <div class="panel controls" id="controlsPanel">
+      <button id="controlsToggle" class="controls-toggle" type="button" aria-label="Toggle Controls"></button>
+      
       <label for="mapSelect">Map</label>
       <select id="mapSelect"></select>
       
@@ -97,9 +100,9 @@
             id="mapImage"
             class="map-image"
             alt="TacMap"
-            loading="lazy"
+            loading="eager"
             decoding="async"
-            fetchpriority="low"
+            fetchpriority="high"
           >
         </picture>
         <div id="gridOverlay" class="grid-overlay"></div>
@@ -125,7 +128,7 @@
     </div>
 
     <div class="site-version">
-      <p>HLL Default Garrisons Map · v1.0 · 2025</p>
+      <p>HLL Default Garrisons Map · v1.0.1 · 2025</p>
     </div>
 
   </div>

@@ -430,7 +430,7 @@ function renderMap(mapKey) {
   // 4. SET IMAGE SOURCES
   // Priority settings
   mapImage.loading = "eager";
-  mapImage.decoding = "sync"; 
+  mapImage.decoding = "async"; 
   mapImage.fetchPriority = "high";
 
   // Actually set the source
@@ -466,6 +466,13 @@ function renderMap(mapKey) {
     const marker = document.createElement("div");
     marker.className = "marker";
 
+    // --- ADD THIS BLOCK ---
+    // Fix for Mobile: Stop touch events from bubbling to the map
+    // This ensures tapping buttons doesn't accidentally trigger a map drag
+    marker.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
+    marker.addEventListener("touchmove", (e) => e.stopPropagation(), { passive: false });
+    // ----------------------
+
     // Icon
     const icon = document.createElement("img");
     icon.src = "images/ui/icn_garrison_shadow.webp";
@@ -476,16 +483,32 @@ function renderMap(mapKey) {
     const labelDiv = document.createElement("div");
     labelDiv.className = "marker-label";
 
+    // --- UPDATED BUTTON LOGIC ---
+    // Helper to handle both Click and Touch instantly
+    const bindQuickAction = (btn, action) => {
+      // Handle Mouse
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        action();
+      };
+      // Handle Touch (Instant, ignores micro-drags)
+      btn.addEventListener("touchend", (e) => {
+        e.preventDefault(); // Stop ghost clicks
+        e.stopPropagation();
+        action();
+      }, { passive: false });
+    };
+
     const prevBtn = document.createElement("button");
     prevBtn.className = "nav-arrow prev";
     prevBtn.innerHTML = "&#10094;";
     prevBtn.title = "Previous";
-    prevBtn.onclick = (e) => {
-        e.stopPropagation();
-        const prevIndex = index === 0 ? points.length - 1 : index - 1;
-        // PASS FALSE for instant snap and maintain current zoom
-        selectGarrisonByIndex(prevIndex, false, true);
-    };
+    
+    // Apply the fix
+    bindQuickAction(prevBtn, () => {
+       const prevIndex = index === 0 ? points.length - 1 : index - 1;
+       selectGarrisonByIndex(prevIndex, false, true);
+    });
 
     const textSpan = document.createElement("span");
     textSpan.className = "label-text";
@@ -508,19 +531,54 @@ function renderMap(mapKey) {
     nextBtn.className = "nav-arrow next";
     nextBtn.innerHTML = "&#10095;";
     nextBtn.title = "Next";
-    nextBtn.onclick = (e) => {
-        e.stopPropagation();
-        const nextIndex = index === points.length - 1 ? 0 : index + 1;
-        // PASS FALSE for instant snap and maintain current zoom
-        selectGarrisonByIndex(nextIndex, false, true);
-    };
+
+    // Apply the fix
+    bindQuickAction(nextBtn, () => {
+       const nextIndex = index === points.length - 1 ? 0 : index + 1;
+       selectGarrisonByIndex(nextIndex, false, true);
+    });
+    // ----------------------------
 
     labelDiv.appendChild(prevBtn);
     labelDiv.appendChild(textSpan);
     labelDiv.appendChild(nextBtn);
     marker.appendChild(labelDiv);
 
-    // Track click timing for double-click detection
+    // 1. TOUCH HANDLING (Mobile Double-Tap Fix)
+    // We track the time between taps manually for instant response
+    let lastTap = 0;
+    
+    // Stop drag events from reaching the map (Keep map stable)
+    marker.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
+    marker.addEventListener("touchmove", (e) => e.stopPropagation(), { passive: false });
+
+    // Handle Tap & Double Tap
+    marker.addEventListener("touchend", (e) => {
+      // Prevent the browser from firing a "ghost" mouse click after this touch
+      e.preventDefault(); 
+      e.stopPropagation();
+
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+
+      // 1. Immediate Visual Selection (Single Tap behavior)
+      currentMarkerIndex = index;
+      markersContainer.classList.add("has-selection");
+      visibleMarkersList.forEach(item => item.element.classList.remove("active"));
+      marker.classList.add("active");
+
+      // 2. Check for Double Tap (within 300ms)
+      if (tapLength < 300 && tapLength > 0) {
+        // Double Tap Action: Zoom In
+        selectGarrisonByIndex(index, true, false);
+        lastTap = 0; // Reset
+      } else {
+        // Record time for next tap
+        lastTap = currentTime;
+      }
+    });
+
+    // 2. MOUSE HANDLING (Desktop Double-Click)
     let clickCount = 0;
     let clickTimer = null;
     
@@ -528,26 +586,20 @@ function renderMap(mapKey) {
       evt.stopPropagation();
       clickCount++;
 
-      // --- INSTANT SELECTION FIX ---
-      // We apply the visual state IMMEDIATELY. No waiting for the timer.
-      // This fixes the latency.
+      // Visual Selection
       currentMarkerIndex = index;
-      markersContainer.classList.add("has-selection"); // Fixes the "Not Selected" bug
+      markersContainer.classList.add("has-selection");
       visibleMarkersList.forEach(item => item.element.classList.remove("active"));
       marker.classList.add("active");
 
       if (clickCount === 1) {
-        // Start a timer purely to reset the counter for double-click detection
         clickTimer = setTimeout(() => {
           clickCount = 0;
         }, 300);
       } else if (clickCount === 2) {
-        // Double Click Detected
         clearTimeout(clickTimer);
         clickCount = 0;
-        
-        // Trigger the Zoom/Pan logic
-        // We pass 'false' for maintainZoom to force the zoom level change
+        // Double Click Action: Zoom In
         selectGarrisonByIndex(index, true, false);
       }
     });
@@ -848,36 +900,43 @@ function triggerZoomTransition() {
   }, 260);
 }
 
+// Helper: Performance Mode
+function startInteraction() {
+  document.body.classList.add("is-interacting");
+}
+function stopInteraction() {
+  document.body.classList.remove("is-interacting");
+  requestRender();
+}
+
+// UPDATE setZoomLevel to handle Floats
 function setZoomLevel(newLevel, mouseX = null, mouseY = null, options = {}) {
   const prevZoom = getEffectiveZoom();
-  currentZoomLevel = Math.min(MAX_LEVEL, Math.max(MIN_LEVEL, newLevel));
+  // Allow decimals! Don't round.
+  currentZoomLevel = Math.max(MIN_LEVEL, Math.min(MAX_LEVEL, newLevel));
   const newZoom = getEffectiveZoom();
 
-  // Sub-grid Logic
+  // Logic for Grid Detail
   if (currentZoomLevel >= 4) gridOverlay.classList.add('detailed-grid');
   else gridOverlay.classList.remove('detailed-grid');
 
-  if (zoomLevelIndicator) zoomLevelIndicator.textContent = `${currentZoomLevel}x`;
+  if (zoomLevelIndicator) zoomLevelIndicator.textContent = `${currentZoomLevel.toFixed(1)}x`;
 
-  // Zoom towards mouse pointer
+  // Standard Zoom Math (unchanged)
   const focusWorldPoint = options.focusWorldPoint;
-
   if (focusWorldPoint) {
-    if (!cache.containerW || !cache.containerH) updateCache();
-    const targetScreenX = focusWorldPoint.targetScreenX ?? (cache.containerW / 2);
-    const targetScreenY = focusWorldPoint.targetScreenY ?? (cache.containerH / 2);
-    panX = targetScreenX - (focusWorldPoint.worldX * newZoom);
-    panY = targetScreenY - (focusWorldPoint.worldY * newZoom);
-  } else if (mouseX !== null && mouseY !== null) {
-    // Convert screen coordinates to "Map Space" coordinates
-    const worldX = (mouseX - panX) / prevZoom;
-    const worldY = (mouseY - panY) / prevZoom;
-
-    // Calculate new Pan to keep that point stationary
-    panX = mouseX - (worldX * newZoom);
-    panY = mouseY - (worldY * newZoom);
+       if (!cache.containerW) updateCache();
+       const tX = focusWorldPoint.targetScreenX ?? (cache.containerW / 2);
+       const tY = focusWorldPoint.targetScreenY ?? (cache.containerH / 2);
+       panX = tX - (focusWorldPoint.worldX * newZoom);
+       panY = tY - (focusWorldPoint.worldY * newZoom);
+  } else if (mouseX !== null) {
+       const worldX = (mouseX - panX) / prevZoom;
+       const worldY = (mouseY - panY) / prevZoom;
+       panX = mouseX - (worldX * newZoom);
+       panY = mouseY - (worldY * newZoom);
   }
-
+  
   clampPosition();
   requestRender();
 }
@@ -907,111 +966,188 @@ function focusOnMapPoint(xPercent, yPercent, targetLevel = 6, animate = true) {
   });
 }
 
-// WHEEL LISTENER
-let interactionTimeout = null;
+// --- DESKTOP MOUSE INTERACTION (Simple & Reliable) ---
+const mapContainer = mapStage.parentElement;
 
-mapStage.parentElement.addEventListener("wheel", (e) => {
+mapContainer.addEventListener("mousedown", (e) => {
+  if (e.button !== 0) return; // Only Left Click
   e.preventDefault();
-
-  // 1. PERFORMANCE: Cut the CSS transition so the zoom is instant
-  if (mapStage.classList.contains("zoom-transition")) {
-    mapStage.classList.remove("zoom-transition");
-  }
-
-  // 2. PERFORMANCE: Add class to trigger the CSS fixes above
-  document.body.classList.add("is-interacting");
-  
-  // Clear timeout to keep the class active while you are scrolling
-  if (interactionTimeout) clearTimeout(interactionTimeout);
-  
-  // Set a short timer (100ms) to remove the class when you STOP scrolling
-  interactionTimeout = setTimeout(() => {
-    document.body.classList.remove("is-interacting");
-    requestRender(); // Final crisp render
-  }, 100);
-
-  // 3. LOGIC: Strict 1x steps (1x, 2x, 3x...)
-  // deltaY > 0 means scrolling DOWN (Zoom OUT)
-  // deltaY < 0 means scrolling UP (Zoom IN)
-  const direction = e.deltaY > 0 ? -1 : 1;
-  const newZoom = currentZoomLevel + direction;
-
-  // 4. Calculate mouse position for the zoom anchor
-  // Use the cached rect variables we created earlier
-  const mouseX = e.clientX - cache.rectLeft;
-  const mouseY = e.clientY - cache.rectTop;
-  
-  // 5. Apply the zoom
-  setZoomLevel(newZoom, mouseX, mouseY);
-
-}, { passive: false });
-
-// DRAG START
-mapStage.addEventListener("mousedown", (e) => {
-  if (e.button !== 0) return; // Only left click
-  e.preventDefault();
-  
-  // We are "ready" to drag, but haven't started yet
-  isDragging = false; 
+  isDragging = false;
   hasMoved = false;
-  
   startMouseX = e.clientX;
   startMouseY = e.clientY;
-  
   lastPanX = panX;
   lastPanY = panY;
-  
-  mapStage.parentElement.classList.add("dragging");
+  mapContainer.classList.add("dragging");
 });
 
-// DRAG MOVE
 window.addEventListener("mousemove", (e) => {
-  // We only care if the mouse is down (but we use the class or a flag to know that)
-  if (!mapStage.parentElement.classList.contains("dragging")) return;
+  if (!mapContainer.classList.contains("dragging")) return;
   e.preventDefault();
-  
+
   const deltaX = e.clientX - startMouseX;
   const deltaY = e.clientY - startMouseY;
 
-  // CHECK: Have we moved enough to call this a "drag"?
-  if (!hasMoved) {
-    if (Math.abs(deltaX) > DRAG_THRESHOLD || Math.abs(deltaY) > DRAG_THRESHOLD) {
-      hasMoved = true;
-      isDragging = true; // NOW we are officially dragging
-    } else {
-      return; // Ignore tiny movements (jitter)
-    }
+  if (!hasMoved && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+    hasMoved = true;
+    isDragging = true;
+    // Optimization: Hide grid lines while dragging
+    startInteraction();
   }
-  
-  // Apply the movement
-  panX = lastPanX + deltaX;
-  panY = lastPanY + deltaY;
-  
-  clampPosition();
-  requestRender();
+
+  if (isDragging) {
+    panX = lastPanX + deltaX;
+    panY = lastPanY + deltaY;
+    clampPosition();
+    requestRender();
+  }
 });
 
-// DRAG END
-window.addEventListener("mouseup", (e) => {
-  // Only clean up if we were in the "dragging" state (mouse was down)
-  if (mapStage.parentElement.classList.contains("dragging")) {
+window.addEventListener("mouseup", () => {
+  if (mapContainer.classList.contains("dragging")) {
+    mapContainer.classList.remove("dragging");
     
-    mapStage.parentElement.classList.remove("dragging");
+    // Stop the "Interaction Mode" (Show grid lines again)
+    stopInteraction();
 
-    // CRITICAL FIX: Only suppress the click if we actually dragged (moved)
     if (hasMoved) {
       suppressNextMapClick = true;
-      // Reset the flag after a tiny delay to ensure the click event sees it
       setTimeout(() => { suppressNextMapClick = false; }, 50);
-    } else {
-      // If we didn't move, it was a click!
-      suppressNextMapClick = false;
     }
-    
     isDragging = false;
     hasMoved = false;
   }
 });
+
+// --- MOBILE TOUCH INTERACTION (Pan & Pinch-to-Zoom) ---
+let initialPinchDistance = null;
+let lastZoomCenter = null;
+
+mapContainer.addEventListener("touchstart", (e) => {
+  // 1 Finger: Pan Start
+  if (e.touches.length === 1) {
+      isDragging = false;
+      hasMoved = false;
+      startMouseX = e.touches[0].clientX;
+      startMouseY = e.touches[0].clientY;
+      lastPanX = panX;
+      lastPanY = panY;
+      initialPinchDistance = null;
+  } 
+  // 2 Fingers: Pinch Start
+  else if (e.touches.length === 2) {
+      initialPinchDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+      );
+      // Calculate center for zoom anchor
+      lastZoomCenter = {
+          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+      };
+  }
+}, { passive: false });
+
+mapContainer.addEventListener("touchmove", (e) => {
+  // PREVENT BROWSER SCROLLING (Crucial)
+  e.preventDefault(); 
+
+  // CASE 1: Pan (1 Finger)
+  if (e.touches.length === 1) {
+      const deltaX = e.touches[0].clientX - startMouseX;
+      const deltaY = e.touches[0].clientY - startMouseY;
+
+      if (!hasMoved && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+          hasMoved = true;
+          isDragging = true;
+          startInteraction();
+      }
+
+      if (isDragging) {
+          panX = lastPanX + deltaX;
+          panY = lastPanY + deltaY;
+          
+          // Debounce the heavy render
+          requestAnimationFrame(() => {
+              clampPosition();
+              renderTransform();
+          });
+      }
+  }
+  // CASE 2: Pinch Zoom (2 Fingers)
+  else if (e.touches.length === 2 && initialPinchDistance !== null) {
+      const currentDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+      );
+
+      if (initialPinchDistance > 0) {
+          const diff = currentDistance - initialPinchDistance;
+          
+          // Sensitivity (Lower = slower zoom)
+          const zoomSpeed = 0.02; 
+          
+          if (Math.abs(diff) > 2) {
+              // Determine Zoom Direction
+              const newZoom = currentZoomLevel + (diff * zoomSpeed);
+              
+              // Hide grid lines
+              startInteraction();
+              
+              // Get map container offset for accurate centering
+              const rect = mapContainer.getBoundingClientRect();
+              const zoomX = lastZoomCenter.x - rect.left;
+              const zoomY = lastZoomCenter.y - rect.top;
+
+              setZoomLevel(newZoom, zoomX, zoomY);
+              
+              // Reset distance so zoom is incremental (smooth)
+              initialPinchDistance = currentDistance;
+          }
+      }
+  }
+}, { passive: false });
+
+mapContainer.addEventListener("touchend", (e) => {
+  // Reset Everything on Lift
+  if (e.touches.length === 0) {
+      stopInteraction();
+      
+      if (hasMoved) {
+          suppressNextMapClick = true;
+          setTimeout(() => { suppressNextMapClick = false; }, 50);
+      }
+      isDragging = false;
+      hasMoved = false;
+  }
+  
+  // If we went from 2 fingers to 1, reset the pan start position
+  // so the map doesn't "jump" to the old single-finger position
+  if (e.touches.length === 1) {
+      startMouseX = e.touches[0].clientX;
+      startMouseY = e.touches[0].clientY;
+      lastPanX = panX;
+      lastPanY = panY;
+  }
+});
+
+// Desktop Wheel Zoom
+mapContainer.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  mapStage.classList.remove("zoom-transition");
+  startInteraction();
+  
+  const direction = e.deltaY > 0 ? -1 : 1;
+  const newZoom = currentZoomLevel + (direction * 0.5); 
+  
+  const mouseX = e.clientX - cache.rectLeft;
+  const mouseY = e.clientY - cache.rectTop;
+  
+  setZoomLevel(newZoom, mouseX, mouseY);
+  
+  // Auto-stop interaction after scroll stops
+  setTimeout(stopInteraction, 150);
+}, { passive: false });
 
 // RESIZE OBSERVER (Better than window.resize)
 const resizeObserver = new ResizeObserver(() => {
@@ -1145,6 +1281,19 @@ function handleMapClick(e) {
   if (suppressNextMapClick || isDragging) return;
   if (e.target.closest && e.target.closest('.marker')) return;
   clearGarrisonSelection();
+}
+
+// --- MOBILE CONTROLS TOGGLE ---
+const controlsToggle = document.getElementById("controlsToggle");
+const controlsPanel = document.getElementById("controlsPanel"); // Ensure ID is added to HTML div
+
+if (controlsToggle && controlsPanel) {
+  controlsToggle.addEventListener("click", (e) => {
+    // Prevent click from bubbling to map
+    e.stopPropagation();
+    // Toggle the class that slides the panel down/up
+    controlsPanel.classList.toggle("minimized");
+  });
 }
 
 // remove legacy optional coordinate capture hook

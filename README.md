@@ -9,6 +9,8 @@ A lightweight intel tool for **Hell Let Loose** offensive matches. It ships with
 - Quick faction filter (All, Axis, Allies) to declutter the view.
 - Utility sidebar that links to related HLL tools (SPA calculator, Artillery Map Calculator).
 - Dark/light theme toggle for clarity in different lighting conditions.
+- **Mobile Support**: Touch-optimized interface with native tap interactions.
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices.
 
 ## Development Notes
 

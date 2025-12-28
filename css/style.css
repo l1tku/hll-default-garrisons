@@ -95,48 +95,60 @@ header {
   flex: 1 1 auto;
 }
 
+/* Sidebar Toggle (Unified for desktop/mobile) */
 .sidebar-toggle {
+  /* Positioning: Always fixed to the screen */
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 2000 !important; /* High but below sidebar */
+  
+  /* Size & Shape */
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  
+  /* Visuals */
   background: var(--panel);
   border: 1px solid var(--panel-border);
-  border-left: none;
-  border-radius: 0 16px 16px 0;
-  width: var(--sidebar-tab);
-  height: var(--sidebar-tab);
-  display: inline-flex;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  
+  /* Flex layout for hamburger icon */
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
-  transition: border-color 0.15s ease, transform 0.15s ease;
-  align-self: flex-start;
-  margin-top: 0px;
-  margin-left: -1px;
-  z-index: 910;
+  transition: all 0.2s ease;
 }
 
 .sidebar-toggle:hover {
   border-color: var(--accent);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
 }
 
-.sidebar-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+.sidebar-toggle:active {
+  transform: translateY(0);
 }
 
 .hamburger {
   display: inline-flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: center;
 }
 
 .hamburger span {
   display: block;
-  width: 18px;
+  width: 20px;
   height: 2px;
-  background: white;
-  border-radius: 999px;
+  background: currentColor;
+  border-radius: 2px;
+  margin: 2px 0;
 }
 
 @media (max-width: 700px) {
@@ -153,33 +165,43 @@ header {
   }
 }
 
+/* FIXED SIDEBAR - Removes ghost borders */
 .sidebar {
   position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: calc(var(--sidebar-panel-width, min(360px, 85vw)) + var(--sidebar-tab));
-  transform: translateX(calc(-1 * var(--sidebar-panel-width, min(360px, 85vw))));
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-panel-width);
+  transform: translateX(-100%);
   transition: transform 0.3s ease;
-  z-index: 900;
+  z-index: 2100 !important;
   display: flex;
-  align-items: flex-start;
-  gap: 0;
-  padding: 16px 0 24px;
-  backdrop-filter: blur(16px);
+  flex-direction: column;
+  /* CRITICAL: Transparent container */
+  padding: 0;
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  pointer-events: none;
 }
 
-.sidebar-open #utilitySidebar {
+.sidebar-open .sidebar {
   transform: translateX(0);
+  pointer-events: auto;
 }
 
 .sidebar-panel {
-  width: var(--sidebar-panel-width, min(360px, 85vw));
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   gap: 24px;
   padding: 24px;
+  /* Visuals moved here */
+  background: var(--panel);
+  border-right: 1px solid var(--panel-border);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+  overflow-y: auto;
+  pointer-events: auto;
 }
 
 .sidebar-head {
@@ -300,27 +322,32 @@ header {
   color: rgba(43, 36, 22, 0.65);
 }
 
-.sidebar-backdrop {
+.sidebar-backdrop,
+#sidebarBackdrop {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(3px);
   z-index: 800;
   transition: opacity 0.3s ease;
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .sidebar-open #sidebarBackdrop {
-  display: block;
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
 }
 
-.sidebar-backdrop[hidden] {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.sidebar-open .sidebar-backdrop {
-  opacity: 1;
-  pointer-events: auto;
+#sidebarBackdrop[hidden] {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 .title {
@@ -351,6 +378,9 @@ header {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 120;
+  touch-action: pan-y;
 }
 
 .faction-group {
@@ -400,6 +430,8 @@ select {
   background: var(--control-bg);
   color: var(--text);
   min-width: 200px;
+  font-size: 16px;
+  height: 44px;
 }
 
 select option {
@@ -449,14 +481,17 @@ select option {
   
   border-radius: var(--radius);
   user-select: none;
+  -webkit-user-select: none;
   border: 1px solid var(--panel-border);
   background: transparent;
   backdrop-filter: none !important;
   box-shadow: none !important;
+  touch-action: none;
 }
 
 .map-stage {
   cursor: crosshair;
+  touch-action: none;
 }
 
 .map-wrap.dragging .map-stage {
@@ -687,6 +722,142 @@ select option {
   transform: translate(-50%, -8%) scale(1.2);
 }
 
+/* --- MOBILE LAYOUT SUPPORT --- */
+@media (max-width: 768px) {
+  body {
+    padding: 0;
+    height: 100dvh; /* Use dynamic viewport height */
+    overflow: hidden;
+  }
+
+  /* 1. Full Screen Map */
+  .shell {
+    width: 100%;
+    height: 100%;
+    gap: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .map-wrap {
+    position: relative;
+    top: auto; left: auto;
+    width: 100%; 
+    height: 100%;
+    flex: 1 1 auto;
+    border: none;
+    border-radius: 0;
+    z-index: 1;
+    /* CRITICAL: Stop browser handling gestures */
+    touch-action: none; 
+  }
+
+  .map-image {
+    max-height: none;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  /* 2. Header placed above map */
+  header {
+    position: fixed;
+    top: 20px;
+    left: 80px; /* leave space for button */
+    right: 10px;
+    z-index: 20;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    background: transparent;
+  }
+
+  .header-copy {
+    background: rgba(15, 17, 22, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--control-border);
+    pointer-events: auto;
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    text-align: center;
+  }
+  .subtitle { display: none; } /* Save space */
+  .title {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* 3. Bottom Controls Tray */
+  .panel.controls {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    flex-direction: column;
+    padding: 16px;
+    z-index: 100;
+    background: rgba(15, 17, 22, 0.95);
+    border: 1px solid var(--accent);
+    border-bottom: none;
+    gap: 12px;
+    touch-action: pan-y; /* Allow scrolling inside panel */
+  }
+
+  /* Adjust inputs for touch */
+  select {
+    width: 100%;
+    height: 44px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+  
+  .faction-group {
+    width: 100%;
+    display: flex;
+  }
+  .faction-group .toggle { flex: 1; }
+  
+  /* Hide Legend to save space */
+  .legend { display: none; }
+
+  /* 5. Markers: Fix Touch Target & Alignment */
+  .marker {
+    width: 44px; /* Big touch target */
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .marker img {
+    /* Restore visual size */
+    width: 32px !important; 
+    height: 32px !important;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Ensure ring matches icon size, not touch target size */
+  .marker::before {
+    width: 32px !important;
+    height: 32px !important;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Fix flag alignment in labels */
+  .label-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
 /* Container for the label and buttons */
 .marker-label {
   position: absolute;
@@ -747,25 +918,31 @@ select option {
   flex-grow: 1;
   user-select: none;
   white-space: nowrap;
+  
+  /* --- FLEXBOX ALIGNMENT --- */
   display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  justify-content: center;
+  flex-direction: row; /* Force left-to-right layout */
+  align-items: center; /* Vertically center items */
+  justify-content: center; /* Center the group in the label box */
+  gap: 8px; /* Space between flag and text */
 }
 
+/* Ensure the flag behaves as a flex item, not absolute */
 .label-flag {
-  height: 18px;
+  height: 16px;
   width: auto;
-  max-width: 26px;
   object-fit: contain;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 0;
-  box-shadow: 0 0 6px rgba(0,0,0,0.5);
+  margin: 0; 
+  display: block; /* Important: remove inline-block quirks */
+  position: static; /* Important: prevent it from floating away */
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  flex-shrink: 0; /* Don't let the flag squash */
 }
 
 .label-copy {
   display: inline-block;
+  line-height: 1; /* Prevent vertical misalignment */
 }
 
 /* The Arrow Buttons */
@@ -1082,4 +1259,315 @@ select option {
 /* When you stop zooming, fade everything back in nicely */
 .grid-overlay, .marker, .map-wrap {
   transition: opacity 0.15s, box-shadow 0.15s, filter 0.15s;
+}
+
+/* --- MOBILE LAYOUT OVERRIDES --- */
+@media (max-width: 768px) {
+  body {
+    padding: 0;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* 1. Full Screen Map */
+  .shell {
+    width: 100%;
+    height: 100%;
+    gap: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .map-wrap {
+    position: relative;
+    width: 100%; 
+    height: 100%;
+    flex: 1 1 auto;
+    border: none;
+    border-radius: 0;
+    z-index: 1;
+    touch-action: none; 
+    margin: 0; 
+  }
+
+  .map-image {
+    max-height: none;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  /* 2. Header: Positioned Top-Left (Next to Button) */
+  header {
+    position: fixed;
+    top: 10px;      /* Align vertically with button */
+    left: 70px;     /* Push right to clear the button (50px button + 20px gap) */
+    right: 10px;    /* Stop before right edge */
+    z-index: 20;
+    padding: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: flex-start; /* Align text block to the left */
+    background: transparent;
+    align-items: flex-start; /* Align top */
+  }
+
+  .header-copy {
+    background: rgba(15, 17, 22, 0.90);
+    backdrop-filter: blur(8px);
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--control-border);
+    pointer-events: auto;
+    text-align: left;
+    width: auto;
+    /* Limit width to ensure wrapping happens before screen edge */
+    max-width: 100%; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  .title { 
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    text-shadow: 0 1px 2px black;
+    line-height: 1.3;
+    margin: 0;
+    
+    /* Allow Text Wrapping */
+    white-space: normal; 
+    overflow: visible;
+    text-overflow: clip;
+    word-wrap: break-word;
+  }
+  
+  .subtitle { display: none; } 
+
+  /* 3. Sidebar Button (Fixed Top Left) */
+  .sidebar-toggle {
+    top: 10px; 
+    left: 10px;
+    width: 50px; 
+    height: 50px;
+    background: rgba(15, 17, 22, 0.90) !important;
+    border: 1px solid var(--control-border) !important;
+    border-radius: 12px;
+    z-index: 2000 !important; /* Ensure high z-index, but lower than sidebar */
+  }
+
+  /* 4. Controls Panel (Bottom) */
+  .panel.controls {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    flex-direction: column;
+    padding: 16px;
+    z-index: 100;
+    background: rgba(15, 17, 22, 0.95);
+    border-top: 1px solid var(--accent);
+    gap: 12px;
+    max-height: 60vh;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .panel.controls > label:first-child { display: none; }
+  
+  .panel.controls > select:first-of-type {
+    width: 100%;
+    margin-bottom: 8px;
+    font-size: 16px;
+    height: 44px;
+  }
+
+  .faction-group {
+    width: 100%;
+    display: flex;
+  }
+  .faction-group .toggle { flex: 1; min-width: auto; }
+
+  .panel.controls > .toggle:last-child {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  /* 5. Version Tag: Centered bottom (Lifted slightly up) */
+  .site-version {
+    position: absolute;
+    /* Increased from 12px to 35px to lift it up */
+    bottom: calc(35px + env(safe-area-inset-bottom, 0px)); 
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    top: auto;
+    
+    margin: 0;
+    padding: 0;
+    
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: "SpecialElite", monospace;
+    font-size: 11px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    z-index: 10;
+    width: max-content;
+  }
+  
+  /* Zoom/Scale Overlay: Stacked above Version Tag */
+  .zoom-overlay {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    
+    /* Increased from 32px to 60px to keep spacing relative to version tag */
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px)); 
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    text-align: center;
+    
+    background: transparent;
+    pointer-events: none;
+    z-index: 10;
+    width: auto;
+  }
+
+  /* Hide Legend */
+  .legend { display: none; }
+
+  /* 5. Markers: Fix Touch Target & Alignment */
+  .marker {
+    width: 44px; /* Big touch target */
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* CRITICAL FIX: Added ">" to only target the garrison icon, not the flag */
+  .marker > img {
+    width: 32px !important; 
+    height: 32px !important;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Ensure ring matches icon size */
+  .marker::before {
+    width: 75% !important; 
+    height: 75% !important;
+  }
+  
+  /* Ensure Label Layout is correct */
+  .label-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  /* Ensure flag is static (not absolute) so it sits next to text */
+  .label-flag {
+    position: static !important;
+    transform: none !important;
+    margin: 0 !important;
+  }
+
+  /* Sidebar Fix */
+  .sidebar { backdrop-filter: none !important; }
+}
+
+/* --- MOBILE PANEL TOGGLE (DROPBAR) --- */
+@media (max-width: 768px) {
+  /* 1. The Toggle Handle button */
+  .controls-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    position: absolute;
+    top: -28px; /* Height of the handle, sitting on top */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    width: 60px;
+    height: 28px;
+    
+    background: rgba(15, 17, 22, 0.95); /* Match your dark panel bg */
+    border: 1px solid var(--accent);
+    border-bottom: none; /* Connect visually to the panel */
+    border-radius: 8px 8px 0 0;
+    
+    cursor: pointer;
+    z-index: 110;
+    padding: 0;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.25);
+  }
+
+  /* 2. The Chevron Icon (CSS arrow) */
+  .controls-toggle::after {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
+    transform: rotate(45deg) translate(-2px, -2px); /* Points Down initially */
+    transition: transform 0.3s ease;
+  }
+
+  /* 3. Enable Smooth Animation on the Panel */
+  .panel.controls {
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: translateY(0); /* Default state: Visible */
+  }
+
+  /* 4. Minimized State (Hidden) */
+  .panel.controls.minimized {
+    /* Moves the panel 100% down. The handle remains visible because of top: -28px */
+    transform: translateY(100%); 
+  }
+
+  /* 5. Flip the arrow when minimized */
+  .panel.controls.minimized .controls-toggle::after {
+    transform: rotate(-135deg) translate(-2px, -2px); /* Points Up */
+  }
+}
+
+/* Hide toggle on desktop */
+@media (min-width: 769px) {
+  .controls-toggle {
+    display: none;
+  }
+}
+
+/* PERFORMANCE BOOSTERS */
+.map-stage {
+  /* Tells browser this element is independent. Huge boost for moving elements. */
+  contain: layout paint style; 
+  will-change: transform;
+}
+
+.marker {
+  /* Markers don't affect the layout of the map image */
+  contain: layout style;
+}
+
+.grid-overlay {
+  /* The grid is complex, isolate it */
+  contain: strict;
+}
+
+/* Removes the grey tap highlight on mobile */
+.marker, 
+.nav-arrow, 
+.controls-toggle, 
+button, 
+select {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
