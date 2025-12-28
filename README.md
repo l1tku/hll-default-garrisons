@@ -5,10 +5,6 @@ A lightweight intel tool for **Hell Let Loose** offensive matches. It highlights
 ## Features
 
 - Interactive map viewer with zoom + scale readouts.
-- Preloaded default garrison markers for every offensive layout.
-- Quick faction filter (All, Axis, Allies) to declutter the view.
-- Utility sidebar that links to related HLL tools (SPA calculator, artillery planner).
-- Dark/light theme toggle for clarity in different lighting conditions.
 
 ## Development Notes
 
