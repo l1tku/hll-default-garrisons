@@ -1764,3 +1764,187 @@ select {
   color: #4a3b22;                             /* Deep brown */
   font-weight: 500;
 }
+
+/* --- LIGHT MODE SELECTED GARRISON LABEL FIX --- */
+
+/* 1. Change the Label Background to Light Beige */
+:root[data-theme="light"] .marker-label {
+  background: rgba(248, 241, 223, 0.95) !important; /* Light Panel Background */
+  border: 1px solid rgba(139, 111, 63, 0.5) !important; /* Dark Brown Border */
+  box-shadow: 0 6px 16px rgba(58, 43, 24, 0.25) !important; /* Soft Brown Shadow */
+}
+
+/* 2. Change the Text Color to Dark Brown */
+/* We use !important to override the "Force White Text" rule defined earlier */
+:root[data-theme="light"] .marker-label .label-text,
+:root[data-theme="light"] .marker-label .label-copy {
+  color: #2b2416 !important; 
+  text-shadow: none !important;
+}
+
+/* 3. Adjust the Arrows for the Light Background */
+:root[data-theme="light"] .nav-arrow {
+  color: #7a5c2b !important; /* Use the dark accent color */
+}
+
+/* Arrow Hover State */
+:root[data-theme="light"] .nav-arrow:hover {
+  color: #2b2416 !important; /* Almost black on hover */
+  text-shadow: none !important;
+  transform: scale(1.2);
+}
+
+/* --- LIGHT MODE ACTIVE MARKER RING (PULSE) FIX --- */
+
+/* 1. Set the Ring to match the 'All' Button Brown Color */
+:root[data-theme="light"] .marker.active::before {
+  border-color: var(--accent) !important;       /* The Brown Color (#7a5c2b) */
+  background-color: rgba(122, 92, 43, 0.15);    /* Subtle brown fill */
+  
+  /* Soft brown glow to make it stand out on the map */
+  box-shadow: 0 0 12px rgba(122, 92, 43, 0.5);  
+  
+  opacity: 1;
+}
+
+/* 2. Update the Icon Glow to match the Brown theme */
+:root[data-theme="light"] .marker.active > img {
+  /* Brown shadow behind the white icon for consistency */
+  filter: drop-shadow(0 0 8px rgba(122, 92, 43, 0.8)); 
+}
+
+/* --- LIGHT MODE FLAG FIX --- */
+
+/* Remove the dark shadow box around the flag so it looks clean */
+:root[data-theme="light"] .label-flag {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* --- SCALE INDICATOR PIXEL-PERFECT FIX --- */
+
+/* 1. Base Tick Style */
+.scale-tick {
+  position: absolute;
+  
+  /* HEIGHT ADJUSTMENT: Increased from 8px to 12px */
+  height: 12px; 
+  
+  /* Positioning: -6px bottom means it hangs 6px below the bar 
+     and extends 6px up into the bar (since bar is 8px tall). */
+  bottom: -6px;
+  
+  width: 2px;
+  background: #fff;
+  z-index: 2;
+  
+  /* Clean up styling */
+  text-shadow: none !important;
+  box-shadow: none !important;
+  transform: translateZ(0); /* Hardware accel for smooth scaling */
+}
+
+/* 2. Start Tick: Align to outer left edge */
+.t-start {
+  /* Pull left by 1px to align the 2px tick over the 1px border */
+  left: -1px !important;
+}
+
+/* 3. Middle Tick: Center alignment */
+.t-mid {
+  left: 50%;
+  transform: none !important; 
+  /* Center the 2px width perfectly on the 50% line */
+  margin-left: -1px; 
+}
+
+/* 4. End Tick: Align to outer right edge */
+.t-end {
+  /* Pull right by 1px to align perfectly with the border */
+  right: -1px !important;
+  left: auto !important;
+}
+
+/* --- LIGHT MODE SCALE BAR: STRICT BLACK & WHITE --- */
+
+/* 1. The Bar Container: Use Gradient for distinct Black/White halves */
+:root[data-theme="light"] .scale-bar-graphic {
+  /* Left Half = Black (#000), Right Half = White (#fff) */
+  background: linear-gradient(to right, #000000 50%, #ffffff 50%) !important;
+  
+  /* Solid Black Border */
+  border: 1px solid #000000 !important;
+  
+  /* Remove shadow for a crisp, flat look */
+  box-shadow: none !important;
+}
+
+/* 2. Hide the old overlay element (::after) since we use gradient now */
+:root[data-theme="light"] .scale-bar-graphic::after {
+  display: none !important;
+}
+
+/* 3. The Ticks: Solid Black */
+:root[data-theme="light"] .scale-tick {
+  background: #000000 !important;
+  width: 2px !important;
+  z-index: 5;
+  box-shadow: none !important;
+}
+
+/* 4. The Text Labels: Solid Black with Strong White Outline */
+:root[data-theme="light"] .scale-lbl,
+:root[data-theme="light"] .zoom-lbl {
+  color: #000000 !important;
+  /* Strong white outline to ensure legibility against map lines */
+  text-shadow: 
+    1px 1px 0 #fff, -1px -1px 0 #fff, 
+    1px -1px 0 #fff, -1px 1px 0 #fff !important;
+  font-weight: 900 !important;
+}
+
+/* --- FORCE MAP OVERLAYS TO DARK STYLE (EVEN IN LIGHT MODE) --- */
+
+/* 1. Reset Version Text to White/Grey */
+:root[data-theme="light"] .site-version {
+  color: rgba(255, 255, 255, 0.50) !important;
+  text-shadow: 0 1px 2px #000 !important;
+  font-weight: normal !important;
+}
+
+/* 2. Reset Zoom Level Text to White with Black Outline */
+:root[data-theme="light"] .zoom-lbl {
+  color: #fff !important;
+  text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000 !important;
+}
+
+/* 3. Reset Scale Labels to White with Shadow */
+:root[data-theme="light"] .scale-lbl {
+  color: #fff !important;
+  text-shadow: 0 0 3px #000, 0 0 3px #000 !important;
+}
+
+/* 4. Reset Scale Bar Graphic (Dark bar with White Fill) */
+:root[data-theme="light"] .scale-bar-graphic {
+  background: rgba(0, 0, 0, 0.6) !important;       /* Dark background */
+  border: 1px solid rgba(255,255,255,0.3) !important; /* White border */
+  box-shadow: none !important;
+}
+
+/* 5. Restore the "Half-Filled" White Bar */
+:root[data-theme="light"] .scale-bar-graphic::after {
+  display: block !important;
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%; width: 50%;
+  background: rgba(255, 255, 255, 0.8) !important; /* White fill */
+  opacity: 1 !important;
+}
+
+/* 6. Reset Ticks to White */
+:root[data-theme="light"] .scale-tick {
+  background: #fff !important;
+  box-shadow: none !important;
+  text-shadow: 0 1px 2px black !important;
+}
