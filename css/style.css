@@ -1265,15 +1265,15 @@ select option {
   backdrop-filter: none !important;
 }
 
-/* 4. SIMPLIFY MARKERS */
-/* Hide the pulsing rings and shadows while zooming */
-.is-interacting .marker::before,
-.is-interacting .marker::after {
+/* 4. SIMPLIFY MARKERS (UPDATED) */
+/* We ONLY hide the pulsing animation ring (::before) to save performance. */
+/* We KEEP the shadows (::after and img filters) so the icon stays visible against the map. */
+.is-interacting .marker::before {
   display: none !important;
 }
-.is-interacting .marker img {
-  filter: none !important; /* Removes the drop-shadow on the icon */
-}
+
+/* Previously, we hid ::after and removed img filters here. 
+   By removing those lines, the shadows will now persist while dragging. */
 
 /* 5. SMOOTH RETURN */
 /* When you stop zooming, fade everything back in nicely */
