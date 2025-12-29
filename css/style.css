@@ -1725,3 +1725,42 @@ select {
     border-color: #7a5c2b !important; /* Dark Arrow */
   }
 }
+
+/* --- LIGHT MODE SIDEBAR & BUTTON FIXES --- */
+
+/* 1. Fix the 'Open SPA Calculator' Button */
+/* We flip the colors: Dark Brown Background, Light Cream Text */
+:root[data-theme="light"] .cta {
+  background-color: var(--accent) !important; /* Dark Brown */
+  color: #f1e7d5 !important;                  /* Light Cream Text */
+  box-shadow: 0 6px 12px rgba(91, 74, 45, 0.25);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Hover State for the button */
+:root[data-theme="light"] .cta:hover {
+  background-color: #5b4a2d !important;       /* Even darker brown on hover */
+  color: #ffffff !important;                  /* Pure white text */
+  box-shadow: 0 8px 16px rgba(91, 74, 45, 0.35);
+  transform: translateY(-2px);
+}
+
+/* 2. Improve the Card Background Contrast */
+/* Make the background slightly more solid so text is sharper */
+:root[data-theme="light"] .sidebar-tool {
+  background: rgba(248, 241, 223, 0.85);      /* More opaque beige */
+  border: 1px solid rgba(139, 111, 63, 0.3);  /* Define the border clearly */
+}
+
+/* 3. Sharpen the Text Headers inside the tool */
+:root[data-theme="light"] .sidebar-tool h3 {
+  color: #2b2416;                             /* Almost black/brown */
+  text-shadow: none;
+  font-weight: 900;
+}
+
+/* 4. Sharpen the Body Text inside the tool */
+:root[data-theme="light"] .tool-copy {
+  color: #4a3b22;                             /* Deep brown */
+  font-weight: 500;
+}
