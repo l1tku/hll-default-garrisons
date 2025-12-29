@@ -1948,3 +1948,11 @@ select {
   box-shadow: none !important;
   text-shadow: 0 1px 2px black !important;
 }
+
+/* --- MOBILE GRID THICKNESS FIX --- */
+@media (max-width: 768px) {
+  .grid-line {
+    /* Reduced from 1.5px to 0.75px for a cleaner look on small screens */
+    stroke-width: 0.75px; 
+  }
+}
