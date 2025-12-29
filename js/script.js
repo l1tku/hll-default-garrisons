@@ -375,252 +375,215 @@ if (btnAxis && btnAllies && btnAllFactions) {
     renderMap(mapSelect.value);
   });
 }
+
 updateFactionButtons();
 
 // Get reference to the loader
 function renderMap(mapKey) {
-  currentMapKey = mapKey;
-  const map = maps[mapKey];
-  if (!map) return;
+currentMapKey = mapKey;
+const map = maps[mapKey];
+if (!map) return;
 
-  if (mapSelect && mapSelect.value !== mapKey) {
-    mapSelect.value = mapKey;
-  }
-  localStorage.setItem(LAST_MAP_STORAGE_KEY, mapKey);
+if (mapSelect && mapSelect.value !== mapKey) {
+mapSelect.value = mapKey;
+}
+localStorage.setItem(LAST_MAP_STORAGE_KEY, mapKey);
 
-  // 1. SHOW LOADING SCREEN
-  if (mapLoader) mapLoader.classList.add("visible");
+// 1. SHOW LOADING SCREEN
+if (mapLoader) mapLoader.classList.add("visible");
 
-  // 2. Clear previous markers & Reset State
-  markersContainer.innerHTML = "";
-  markersContainer.classList.remove("has-selection");
-  visibleMarkersList = [];
-  currentMarkerIndex = -1;
+// 2. Clear previous markers & Reset State
+markersContainer.innerHTML = "";
+markersContainer.classList.remove("has-selection");
+visibleMarkersList = [];
+currentMarkerIndex = -1;
 
-  // 3. DEFINE LOAD HANDLERS (The Fix)
-  
-  // A. Success Handler
-  const onMapLoaded = () => {
-    if (mapLoader) mapLoader.classList.remove("visible");
-    updateCache();
-    initMapLogic();
-  };
+// 3. DEFINE LOAD HANDLERS
+const onMapLoaded = () => {
+if (mapLoader) mapLoader.classList.remove("visible");
+updateCache();
+initMapLogic();
+};
 
-  // B. Error Handler (Prevents getting stuck)
-  const onMapError = () => {
-    console.warn("Map image failed to load or is missing.");
-    if (mapLoader) mapLoader.classList.remove("visible");
-  };
+const onMapError = () => {
+console.warn("Map image failed to load or is missing.");
+if (mapLoader) mapLoader.classList.remove("visible");
+};
 
-  // Reset previous handlers to avoid stacking
-  mapImage.onload = null;
-  mapImage.onerror = null;
+mapImage.onload = null;
+mapImage.onerror = null;
+mapImage.onload = onMapLoaded;
+mapImage.onerror = onMapError;
 
-  // Assign handlers
-  mapImage.onload = onMapLoaded;
-  mapImage.onerror = onMapError;
+// Safety Timeout
+setTimeout(() => {
+if (mapLoader && mapLoader.classList.contains("visible")) {
+mapLoader.classList.remove("visible");
+}
+}, 3000);
 
-  // C. Safety Timeout: Force hide loader after 3 seconds if nothing happens
-  const hideTimeout = setTimeout(() => {
-    if (mapLoader && mapLoader.classList.contains("visible")) {
-        mapLoader.classList.remove("visible");
-    }
-  }, 3000);
-
-  // 4. SET IMAGE SOURCES
-  // Priority settings
+// 4. SET IMAGE SOURCES
   mapImage.loading = "eager";
-  mapImage.decoding = "async"; 
+  mapImage.decoding = "auto"; 
   mapImage.fetchPriority = "high";
 
-  // Actually set the source
-  if (map.webp) mapSourceWebp.srcset = map.webp;
-  mapImage.src = map.webp;
-  mapImage.alt = map.name;
+if (map.webp) mapSourceWebp.srcset = map.webp;
+mapImage.src = map.webp;
+mapImage.alt = map.name;
 
-  // 6. Prepare Points Data
-  const mapData = garrisonsData[mapKey];
-  let points = [];
+// 6. Prepare Points Data
+const mapData = garrisonsData[mapKey];
+let points = [];
   
-  if (mapData) {
-    const axisPoints = (mapData.axis || []).map((p, i) => ({
-      ...p,
-      label: `Axis Default ${i + 1}`,
-      faction: "axis"
-    }));
-    const alliesPoints = (mapData.allies || []).map((p, i) => ({
-      ...p,
-      label: `Allies Default ${i + 1}`,
-      faction: "allies"
-    }));
+if (mapData) {
+const axisPoints = (mapData.axis || []).map((p, i) => ({ ...p, label: `Axis Default ${i + 1}`, faction: "axis" }));
+const alliesPoints = (mapData.allies || []).map((p, i) => ({ ...p, label: `Allies Default ${i + 1}`, faction: "allies" }));
 
-    if (currentFaction === "all") {
-      points = [...axisPoints, ...alliesPoints];
-    } else {
-      points = currentFaction === "axis" ? axisPoints : alliesPoints;
-    }
-  }
+if (currentFaction === "all") points = [...axisPoints, ...alliesPoints];
+else points = currentFaction === "axis" ? axisPoints : alliesPoints;
+}
 
-  // 7. Render Markers (screen-space layer; positions set in renderTransform)
-  points.forEach((point, index) => {
-    const marker = document.createElement("div");
-    marker.className = "marker";
+// 7. Render Markers
+points.forEach((point, index) => {
+const marker = document.createElement("div");
+marker.className = "marker";
 
-    // --- ADD THIS BLOCK ---
-    // Fix for Mobile: Stop touch events from bubbling to the map
-    // This ensures tapping buttons doesn't accidentally trigger a map drag
-    marker.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
-    marker.addEventListener("touchmove", (e) => e.stopPropagation(), { passive: false });
-    // ----------------------
+// --- BUTTON HELPER: Makes buttons snap instantly on mobile ---
+const bindQuickAction = (btn, action) => {
+// Touch: Fire on lift, prevent ghost clicks, stop bubbling
+btn.addEventListener("touchend", (e) => {
+e.preventDefault(); 
+e.stopPropagation();
+action();
+}, { passive: false });
+        
+// Mouse: Standard click
+btn.onclick = (e) => {
+e.stopPropagation();
+action();
+};
+        
+// Stop touchstart from dragging the map when hitting buttons
+btn.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
+};
 
-    // Icon
-    const icon = document.createElement("img");
-    icon.src = "images/ui/icn_garrison_shadow.webp";
-    icon.alt = point.label;
-    marker.appendChild(icon);
+// Icon
+const icon = document.createElement("img");
+icon.src = "images/ui/icn_garrison_shadow.webp";
+icon.alt = point.label;
+marker.appendChild(icon);
 
-    // Label with Buttons
-    const labelDiv = document.createElement("div");
-    labelDiv.className = "marker-label";
+// Label with Buttons
+const labelDiv = document.createElement("div");
+labelDiv.className = "marker-label";
 
-    // --- UPDATED BUTTON LOGIC ---
-    // Helper to handle both Click and Touch instantly
-    const bindQuickAction = (btn, action) => {
-      // Handle Mouse
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        action();
-      };
-      // Handle Touch (Instant, ignores micro-drags)
-      btn.addEventListener("touchend", (e) => {
-        e.preventDefault(); // Stop ghost clicks
-        e.stopPropagation();
-        action();
-      }, { passive: false });
-    };
+// PREV BUTTON
+const prevBtn = document.createElement("button");
+prevBtn.className = "nav-arrow prev";
+prevBtn.innerHTML = "&#10094;";
+bindQuickAction(prevBtn, () => {
+const prevIndex = index === 0 ? points.length - 1 : index - 1;
+selectGarrisonByIndex(prevIndex, false, true);
+});
 
-    const prevBtn = document.createElement("button");
-    prevBtn.className = "nav-arrow prev";
-    prevBtn.innerHTML = "&#10094;";
-    prevBtn.title = "Previous";
+const textSpan = document.createElement("span");
+textSpan.className = "label-text";
+
+const flagSrc = getFactionFlag(mapKey, point.faction);
+if (flagSrc) {
+const flagImg = document.createElement("img");
+flagImg.src = flagSrc;
+flagImg.className = "label-flag";
+textSpan.appendChild(flagImg);
+}
+
+const labelCopy = document.createElement("span");
+labelCopy.className = "label-copy";
+labelCopy.textContent = point.label;
+textSpan.appendChild(labelCopy);
+
+// NEXT BUTTON
+const nextBtn = document.createElement("button");
+nextBtn.className = "nav-arrow next";
+nextBtn.innerHTML = "&#10095;";
+bindQuickAction(nextBtn, () => {
+const nextIndex = index === points.length - 1 ? 0 : index + 1;
+selectGarrisonByIndex(nextIndex, false, true);
+});
+
+labelDiv.appendChild(prevBtn);
+labelDiv.appendChild(textSpan);
+labelDiv.appendChild(nextBtn);
+marker.appendChild(labelDiv);
+
+// --- MARKER INTERACTION (Tap & Double Tap) ---
     
-    // Apply the fix
-    bindQuickAction(prevBtn, () => {
-       const prevIndex = index === 0 ? points.length - 1 : index - 1;
-       selectGarrisonByIndex(prevIndex, false, true);
-    });
+// Stop map drag when touching marker
+marker.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
+marker.addEventListener("touchmove", (e) => e.stopPropagation(), { passive: false });
 
-    const textSpan = document.createElement("span");
-    textSpan.className = "label-text";
+// Mobile: Handle Tap & Double Tap Manually
+let lastTapTime = 0;
+marker.addEventListener("touchend", (e) => {
+e.preventDefault(); // Stop ghost mouse clicks
+e.stopPropagation();
 
-    const flagSrc = getFactionFlag(mapKey, point.faction);
-    if (flagSrc) {
-      const flagImg = document.createElement("img");
-      flagImg.src = flagSrc;
-      flagImg.alt = `${point.faction === "allies" ? "Allies" : "Axis"} flag`;
-      flagImg.className = "label-flag";
-      textSpan.appendChild(flagImg);
-    }
+const currentTime = new Date().getTime();
+const tapLength = currentTime - lastTapTime;
 
-    const labelCopy = document.createElement("span");
-    labelCopy.className = "label-copy";
-    labelCopy.textContent = point.label;
-    textSpan.appendChild(labelCopy);
+// Always select on tap
+activateMarkerVisuals(index, marker);
 
-    const nextBtn = document.createElement("button");
-    nextBtn.className = "nav-arrow next";
-    nextBtn.innerHTML = "&#10095;";
-    nextBtn.title = "Next";
+// Detect Double Tap (Speed < 300ms)
+if (tapLength < 300 && tapLength > 0) {
+selectGarrisonByIndex(index, true, false); // Zoom in
+lastTapTime = 0;
+} else {
+lastTapTime = currentTime;
+}
+});
 
-    // Apply the fix
-    bindQuickAction(nextBtn, () => {
-       const nextIndex = index === points.length - 1 ? 0 : index + 1;
-       selectGarrisonByIndex(nextIndex, false, true);
-    });
-    // ----------------------------
+// Desktop: Click & Double Click
+let clickCount = 0;
+let clickTimer = null;
+marker.addEventListener("click", (evt) => {
+evt.stopPropagation();
+clickCount++;
+      
+activateMarkerVisuals(index, marker);
 
-    labelDiv.appendChild(prevBtn);
-    labelDiv.appendChild(textSpan);
-    labelDiv.appendChild(nextBtn);
-    marker.appendChild(labelDiv);
+if (clickCount === 1) {
+clickTimer = setTimeout(() => { clickCount = 0; }, 300);
+} else if (clickCount === 2) {
+clearTimeout(clickTimer);
+clickCount = 0;
+selectGarrisonByIndex(index, true, false); // Zoom in
+}
+});
 
-    // 1. TOUCH HANDLING (Mobile Double-Tap Fix)
-    // We track the time between taps manually for instant response
-    let lastTap = 0;
-    
-    // Stop drag events from reaching the map (Keep map stable)
-    marker.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
-    marker.addEventListener("touchmove", (e) => e.stopPropagation(), { passive: false });
+markersContainer.appendChild(marker);
 
-    // Handle Tap & Double Tap
-    marker.addEventListener("touchend", (e) => {
-      // Prevent the browser from firing a "ghost" mouse click after this touch
-      e.preventDefault(); 
-      e.stopPropagation();
+visibleMarkersList.push({
+xPct: point.x,
+yPct: point.y,
+element: marker
+});
+});
 
-      const currentTime = new Date().getTime();
-      const tapLength = currentTime - lastTap;
+requestRender();
+}
 
-      // 1. Immediate Visual Selection (Single Tap behavior)
-      currentMarkerIndex = index;
-      markersContainer.classList.add("has-selection");
-      visibleMarkersList.forEach(item => item.element.classList.remove("active"));
-      marker.classList.add("active");
-
-      // 2. Check for Double Tap (within 300ms)
-      if (tapLength < 300 && tapLength > 0) {
-        // Double Tap Action: Zoom In
-        selectGarrisonByIndex(index, true, false);
-        lastTap = 0; // Reset
-      } else {
-        // Record time for next tap
-        lastTap = currentTime;
-      }
-    });
-
-    // 2. MOUSE HANDLING (Desktop Double-Click)
-    let clickCount = 0;
-    let clickTimer = null;
-    
-    marker.addEventListener("click", (evt) => {
-      evt.stopPropagation();
-      clickCount++;
-
-      // Visual Selection
-      currentMarkerIndex = index;
-      markersContainer.classList.add("has-selection");
-      visibleMarkersList.forEach(item => item.element.classList.remove("active"));
-      marker.classList.add("active");
-
-      if (clickCount === 1) {
-        clickTimer = setTimeout(() => {
-          clickCount = 0;
-        }, 300);
-      } else if (clickCount === 2) {
-        clearTimeout(clickTimer);
-        clickCount = 0;
-        // Double Click Action: Zoom In
-        selectGarrisonByIndex(index, true, false);
-      }
-    });
-
-    markersContainer.appendChild(marker);
-
-    visibleMarkersList.push({
-      xPct: point.x,
-      yPct: point.y,
-      element: marker
-    });
-  });
-
-  // Ensure first paint reflects positions
-  requestRender();
+// Helper to update visuals without Logic (used in taps)
+function activateMarkerVisuals(index, markerElement) {
+currentMarkerIndex = index;
+markersContainer.classList.add("has-selection");
+visibleMarkersList.forEach(item => item.element.classList.remove("active"));
+markerElement.classList.add("active");
 }
 
 function buildGridOverlay() {
   if (!gridOverlay) return;
   gridOverlay.innerHTML = "";
-
   const ns = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(ns, "svg");
   svg.setAttribute("class", "grid-svg");
@@ -1108,8 +1071,41 @@ mapContainer.addEventListener("touchmove", (e) => {
   }
 }, { passive: false });
 
+// --- REPLACE THE "touchend" LISTENER WITH THIS ---
+
+let lastMapTap = 0; // Track double-taps on the background
+
 mapContainer.addEventListener("touchend", (e) => {
-  // Reset Everything on Lift
+  // 1. Handle Double Tap on Background (Zoom In)
+  // Only trigger if we are lifting the last finger (touches === 0)
+  // AND we haven't been dragging/panning (!hasMoved)
+  // AND we weren't pinching (!initialPinchDistance)
+  if (e.touches.length === 0 && !hasMoved && initialPinchDistance === null) {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastMapTap;
+
+      if (tapLength < 300 && tapLength > 0) {
+          // Double Tap Detected!
+          e.preventDefault(); // Stop browser zoom
+
+          // Calculate where the user tapped relative to the map container
+          const rect = mapContainer.getBoundingClientRect();
+          const touch = e.changedTouches[0];
+          const tapX = touch.clientX - rect.left;
+          const tapY = touch.clientY - rect.top;
+
+          // Zoom logic: Zoom in 2.5x, up to the Max Level
+          const targetZoom = Math.min(MAX_LEVEL, currentZoomLevel * 2.5);
+          
+          setZoomLevel(targetZoom, tapX, tapY);
+          
+          lastMapTap = 0; // Reset
+      } else {
+          lastMapTap = currentTime; // Record single tap time
+      }
+  }
+
+  // 2. Reset Interaction State (Existing Logic)
   if (e.touches.length === 0) {
       stopInteraction();
       
@@ -1119,10 +1115,12 @@ mapContainer.addEventListener("touchend", (e) => {
       }
       isDragging = false;
       hasMoved = false;
+      // Reset pinch distance so next touch starts fresh
+      // (We reset it here to ensure the check above works correctly)
+      initialPinchDistance = null; 
   }
   
-  // If we went from 2 fingers to 1, reset the pan start position
-  // so the map doesn't "jump" to the old single-finger position
+  // Reset pan start if dropping from 2 fingers to 1
   if (e.touches.length === 1) {
       startMouseX = e.touches[0].clientX;
       startMouseY = e.touches[0].clientY;
@@ -1211,12 +1209,12 @@ document.addEventListener('contextmenu', (e) => {
   }
 });
 
-// Prevent long-press save image on mobile
-document.addEventListener('touchstart', (e) => {
-  if (e.target.closest('.map-image')) {
+// Prevent long-press save image on mobile (more targeted listener)
+if (mapImage) {
+  mapImage.addEventListener('touchstart', (e) => {
     e.preventDefault();
-  }
-}, { passive: false });
+  }, { passive: false });
+}
 
 document.addEventListener('selectstart', (e) => {
   if (e.target.closest('.map-image, .map-stage, .map-wrap')) {
@@ -1230,17 +1228,17 @@ if (mapStage) {
   mapStage.addEventListener('click', handleMapClick, true);
 }
 
+// --- REPLACE YOUR selectGarrisonByIndex FUNCTION WITH THIS ---
 /**
  * Selects a garrison, highlights it, and zooms in.
- * @param {number} index - Index in the visibleMarkersList array
- * @param {boolean} shouldAnimate - Whether to smooth zoom (click) or snap (arrows)
- * @param {boolean} maintainZoom - Whether to maintain current zoom level
  */
 function selectGarrisonByIndex(index, shouldAnimate = true, maintainZoom = false) {
   if (visibleMarkersList.length === 0) return;
-
-  // Bounds check
   if (index < 0 || index >= visibleMarkersList.length) return;
+
+  // CRITICAL FIX: Recalculate screen size before moving. 
+  // This prevents the map from "stopping" if the mobile address bar changed height.
+  updateCache(); 
 
   // 1. Update State
   currentMarkerIndex = index;
@@ -1254,12 +1252,11 @@ function selectGarrisonByIndex(index, shouldAnimate = true, maintainZoom = false
   // 3. Zoom Logic
   let zoomLevel;
   if (maintainZoom) {
-    zoomLevel = currentZoomLevel; // Maintain current zoom
+    zoomLevel = currentZoomLevel; 
   } else {
-    zoomLevel = Math.max(currentZoomLevel, 6); // At least 6x for selection
+    zoomLevel = Math.max(currentZoomLevel, 6); 
   }
   
-  // Pass the 'shouldAnimate' flag to the focus function
   focusOnMapPoint(target.xPct, target.yPct, zoomLevel, shouldAnimate);
 }
 
