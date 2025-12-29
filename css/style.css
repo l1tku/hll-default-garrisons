@@ -1823,38 +1823,44 @@ select {
 
 /* --- SCALE INDICATOR PIXEL-PERFECT FIX --- */
 
-/* 1. Base Tick Style: Remove shadows that cause blur */
+/* 1. Base Tick Style */
 .scale-tick {
   position: absolute;
+  
+  /* HEIGHT ADJUSTMENT: Increased from 8px to 12px */
+  height: 12px; 
+  
+  /* Positioning: -6px bottom means it hangs 6px below the bar 
+     and extends 6px up into the bar (since bar is 8px tall). */
   bottom: -6px;
+  
   width: 2px;
-  height: 8px;
   background: #fff;
   z-index: 2;
   
-  /* Remove any text-shadows or box-shadows inherited from other styles */
+  /* Clean up styling */
   text-shadow: none !important;
   box-shadow: none !important;
-  
-  /* Force hardware alignment */
-  transform: translateZ(0);
+  transform: translateZ(0); /* Hardware accel for smooth scaling */
 }
 
-/* 2. Start Tick: Pull left by 1px to overlap the border perfectly */
+/* 2. Start Tick: Align to outer left edge */
 .t-start {
+  /* Pull left by 1px to align the 2px tick over the 1px border */
   left: -1px !important;
 }
 
-/* 3. Middle Tick: Use Margin instead of Transform for crisp lines */
-/* Since width is 2px, margin-left: -1px perfectly centers it without sub-pixel blur */
+/* 3. Middle Tick: Center alignment */
 .t-mid {
   left: 50%;
   transform: none !important; 
+  /* Center the 2px width perfectly on the 50% line */
   margin-left: -1px; 
 }
 
-/* 4. End Tick: Align strictly to the right and pull by 1px to overlap border */
+/* 4. End Tick: Align to outer right edge */
 .t-end {
+  /* Pull right by 1px to align perfectly with the border */
   right: -1px !important;
   left: auto !important;
 }
