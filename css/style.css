@@ -866,39 +866,44 @@ select option {
   position: absolute;
   bottom: 100%;
   left: 50%;
-  transform: translateX(-50%) translateY(0);
+  /* Ensure transform is clean to prevent blurry text */
+  transform: translate(-50%, 0); 
   margin-bottom: 14px;
   
   /* Visual styling */
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.85); /* Slightly darker for better contrast in light mode */
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
-  padding: 4px 6px;
+  padding: 6px 10px; /* A bit more padding for touch targets */
   
   /* Layout */
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  min-width: 120px; /* Ensures buttons don't jump around */
+  min-width: 140px; /* Slightly wider to prevent text wrapping */
   
   /* Hidden by default */
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
   transition: opacity 0.2s, transform 0.2s;
-  z-index: 100;
+  
+  /* Z-INDEX FIX: Ensure it sits on top of everything */
+  z-index: 9999 !important; 
+  
+  /* Shadow to separate it from the map */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
-/* 1. ACTIVE STATE (High Priority) */
-/* Always show the label when active */
+/* ACTIVE STATE - Lift it up slightly */
 .marker.active .marker-label {
   opacity: 1;
   pointer-events: auto;
   visibility: visible;
   border-color: var(--accent);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  transform: translateX(-50%) translateY(-5px);
+  /* The active lift calculation */
+  transform: translate(-50%, -8px); 
 }
 
 /* 2. HOVER STATE (Conditional) */
@@ -956,12 +961,24 @@ select option {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  padding: 0 4px;
-  height: 24px;
+  
+  /* --- NEW HITBOX LOGIC --- */
+  /* This creates a 44x44px invisible touch area around the small arrow */
+  min-width: 44px; 
+  min-height: 44px;
+  margin: -10px; /* Pull it back so it doesn't mess up layout */
+  padding: 10px; /* Internal spacing */
+  /* ------------------------ */
+
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.1s, color 0.1s;
+  
+  /* Prevent browser zoom on double-tap of the button */
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .nav-arrow:hover {
@@ -1394,11 +1411,13 @@ select option {
     margin-top: 4px;
   }
 
-  /* 5. Version Tag: Lifted higher to clear the dropbar handle */
+  /* 5. Version Tag: FIXED to screen so address bars don't cover it */
   .site-version {
-    position: absolute;
-    /* Increased from 60px to 90px */
-    bottom: calc(90px + env(safe-area-inset-bottom, 0px)); 
+    position: fixed; /* Changed from absolute to fixed */
+    
+    /* 90px from bottom ensures it clears the yellow toggle button */
+    bottom: calc(90px + env(safe-area-inset-bottom, 10px)); 
+    
     left: 50%;
     transform: translateX(-50%);
     right: auto;
@@ -1417,15 +1436,16 @@ select option {
     width: max-content;
   }
   
-  /* Zoom/Scale Overlay: Stacked above Version Tag */
+  /* Zoom/Scale Overlay: FIXED to screen above Version Tag */
   .zoom-overlay {
-    position: absolute;
+    position: fixed; /* Changed from absolute to fixed */
+    
     left: 50%;
     transform: translateX(-50%);
     right: auto;
     
-    /* Increased from 85px to 115px to maintain gap above version text */
-    bottom: calc(115px + env(safe-area-inset-bottom, 0px)); 
+    /* 115px from bottom ensures it sits above the version text */
+    bottom: calc(115px + env(safe-area-inset-bottom, 10px)); 
     
     display: flex;
     flex-direction: column;
@@ -1590,4 +1610,118 @@ select {
 
 .map-stage {
   pointer-events: auto;
+}
+
+/* FORCE WHITE TEXT IN LABELS (Even in Light Mode) */
+.marker-label,
+.marker-label .label-text,
+.marker-label .label-copy {
+  color: #ffffff !important; 
+  text-shadow: none !important;
+}
+
+/* Ensure arrows are visible on the dark label background */
+.nav-arrow {
+  color: var(--accent) !important;
+}
+.nav-arrow:hover {
+  color: #ffffff !important;
+}
+
+/* --- MOBILE LIGHT MODE FIXES --- */
+
+/* 1. Make Version Text Dark Grey */
+:root[data-theme="light"] .site-version {
+  color: #5b4a2d !important;      /* Dark brown/grey */
+  text-shadow: none !important;    /* Remove the black shadow */
+  font-weight: bold;
+}
+
+/* 2. Make Zoom Level Text Dark */
+:root[data-theme="light"] .zoom-lbl {
+  color: #2b2416 !important;       /* Almost black */
+  text-shadow: 0 0 4px #ffffff !important; /* White halo to separate from map lines */
+}
+
+/* 3. Make Scale Bar Text Dark */
+:root[data-theme="light"] .scale-lbl {
+  color: #2b2416 !important;
+  text-shadow: 0 0 4px #ffffff !important;
+}
+
+/* 4. Fix Scale Bar Colors (Ticks & Lines) */
+:root[data-theme="light"] .scale-tick {
+  background: #2b2416 !important;  /* Dark ticks */
+}
+
+:root[data-theme="light"] .scale-bar-graphic {
+  border-color: #5b4a2d !important; /* Dark border */
+  background: rgba(255, 255, 255, 0.5) !important; /* Semi-transparent white bar */
+}
+
+/* 5. Fix the Dropbar Handle (Yellow Button) */
+:root[data-theme="light"] .controls-toggle {
+  background: #f1e7d5 !important;   /* Match Light Mode panel background */
+  border-color: #7a5c2b !important; /* Dark border */
+}
+
+:root[data-theme="light"] .controls-toggle::after {
+  border-color: #7a5c2b !important; /* Dark arrow icon */
+}
+
+/* --- MOBILE HEADER & MENU BUTTON LIGHT MODE FIXES --- */
+@media (max-width: 768px) {
+  
+  /* 1. Fix the Header Text Box background and border */
+  :root[data-theme="light"] .header-copy {
+    background: rgba(248, 241, 223, 0.90) !important; /* Light Panel Color */
+    border-color: rgba(139, 111, 63, 0.4) !important;  /* Light Border Color */
+    box-shadow: 0 4px 12px rgba(58, 43, 24, 0.15) !important; /* Soft brown shadow */
+  }
+
+  /* 2. Fix the Title Text (Color and remove black shadow) */
+  :root[data-theme="light"] .header-copy .title {
+    color: #7a5c2b !important; /* Dark Accent Color */
+    text-shadow: none !important; /* Remove the black text shadow */
+  }
+
+  /* 3. Fix the Menu Button (Sidebar Toggle) */
+  :root[data-theme="light"] .sidebar-toggle {
+    background: rgba(248, 241, 223, 0.90) !important; /* Light Panel Color */
+    border-color: rgba(139, 111, 63, 0.4) !important;
+    color: #2b2416 !important; /* Dark Hamburger Icon Color */
+  }
+  
+  /* Optional: Add hover effect for the menu button in light mode */
+  :root[data-theme="light"] .sidebar-toggle:hover {
+     border-color: #7a5c2b !important;
+  }
+}
+
+/* --- MOBILE CONTROLS LIGHT MODE FIX --- */
+@media (max-width: 768px) {
+  
+  /* 1. Fix the Bottom Control Panel Background */
+  :root[data-theme="light"] .panel.controls {
+    background: rgba(248, 241, 223, 0.95) !important; /* Light Beige Theme Color */
+    border-color: rgba(139, 111, 63, 0.4) !important;  /* Light Border Color */
+  }
+
+  /* 2. Fix the Toggle Handle (The small tab on top of the panel) */
+  :root[data-theme="light"] .controls-toggle {
+    background: rgba(248, 241, 223, 0.95) !important; /* Match Panel */
+    border-color: rgba(139, 111, 63, 0.4) !important;
+  }
+  
+  /* 3. Fix the Dropdown (Map Selection) to be Solid White */
+  :root[data-theme="light"] select {
+    background-color: #ffffff !important;  /* Solid White Background */
+    color: #2b2416 !important;             /* Dark Text */
+    border: 1px solid rgba(139, 111, 63, 0.4) !important;
+  }
+  
+  /* Optional: Ensure the dropdown arrow is visible */
+  :root[data-theme="light"] .controls-toggle::after {
+    border-color: #7a5c2b !important; /* Dark Arrow */
+  }
 }
