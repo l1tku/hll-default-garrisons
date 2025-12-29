@@ -1956,3 +1956,25 @@ select {
     stroke-width: 0.75px; 
   }
 }
+
+/* --- LIGHT MODE ACTIVE TOOL HIGHLIGHT FIX --- */
+
+:root[data-theme="light"] .sidebar-tool.is-active {
+  /* 1. Stronger Border */
+  border-color: #7a5c2b !important; 
+  
+  /* 2. Visible Background Tint (Warm Brown) */
+  /* Replaces the invisible yellow with a 15% opacity brown that sits well on beige */
+  background: rgba(122, 92, 43, 0.15) !important;
+  
+  /* 3. Soft Shadow/Glow */
+  /* Adds depth to make it lift off the panel */
+  box-shadow: 0 8px 24px rgba(122, 92, 43, 0.15) !important;
+}
+
+/* Optional: Make the "You're here" disabled button legible in light mode */
+:root[data-theme="light"] .cta:disabled {
+  background: rgba(122, 92, 43, 0.08) !important; /* Faint brown fill */
+  color: #7a5c2b !important; /* Dark text */
+  border: 1px solid rgba(122, 92, 43, 0.2) !important; /* Subtle border */
+}
