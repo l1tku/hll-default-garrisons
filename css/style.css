@@ -700,8 +700,8 @@ select option {
   /* Added var(--y-offset) */
   transform: translate(-50%, calc(-50% + var(--y-offset)));
   border-radius: 50%;
-  border: 2px solid rgba(255, 215, 0, 0.6);
-  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid rgba(255, 215, 0, 0.8);
+  background: rgba(255, 215, 0, 0.2);
   pointer-events: none;
   z-index: 0;
 }
@@ -1173,8 +1173,8 @@ select option {
 /* --- RADIUS LEGEND --- */
 .radius-legend {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 85px;
+  right: 10px;
   z-index: 30;
   background: rgba(15, 17, 22, 0.65);
   backdrop-filter: blur(6px);
@@ -1212,8 +1212,8 @@ select option {
 }
 
 .ring-50m {
-  border: 2px solid rgba(255, 215, 0, 0.6);
-  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid rgba(255, 215, 0, 0.8);
+  background: rgba(255, 215, 0, 0.2);
 }
 
 /* --- LIGHT MODE SUPPORT --- */
@@ -1223,7 +1223,7 @@ select option {
 }
 
 :root[data-theme="light"] .legend-row {
-  color: #2b2416;
+  color: #ffffff;
   text-shadow: none;
 }
 
@@ -1258,7 +1258,7 @@ select option {
   /* box-shadow: none; */ 
   
   /* Optional: Add a subtle glow to the ring when selected to indicate selection */
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
 }
 
 /* 2. Highlight the icon */
