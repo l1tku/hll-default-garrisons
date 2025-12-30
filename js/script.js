@@ -470,7 +470,7 @@ btn.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false 
 
 // Icon
 const icon = document.createElement("img");
-icon.src = "images/ui/icn_garrison_shadow.webp";
+icon.src = "images/ui/icn_garrison_shadow_green.png";
 icon.alt = point.label;
 marker.appendChild(icon);
 

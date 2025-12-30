@@ -548,6 +548,21 @@ select option {
   transform: translateZ(0);
 }
 
+.legend-icon-image {
+  width: 16px;
+  height: 16px;
+  display: block;
+  object-fit: contain;
+}
+
+.legend-example-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  display: block;
+  object-fit: contain;
+}
+
 .grid-svg {
   width: 100%;
   height: 100%;
@@ -700,8 +715,8 @@ select option {
   /* Added var(--y-offset) */
   transform: translate(-50%, calc(-50% + var(--y-offset)));
   border-radius: 50%;
-  border: 2px solid rgba(255, 215, 0, 0.8);
-  background: rgba(255, 215, 0, 0.2);
+  border: 2px solid rgba(255, 220, 0, 0.9);
+  background: rgba(255, 200, 0, 0.3);
   pointer-events: none;
   z-index: 0;
 }
@@ -716,8 +731,8 @@ select option {
   /* Added var(--y-offset) */
   transform: translate(-50%, calc(-50% + var(--y-offset)));
   border-radius: 50%;
-  border: 2px solid rgba(255, 60, 60, 0.8);
-  background: rgba(255, 60, 60, 0.15);
+  border: 2px solid rgba(255, 0, 0, 0.9);
+  background: rgba(255, 80, 80, 0.5);
   pointer-events: none;
   z-index: 1;
 }
@@ -1207,13 +1222,13 @@ select option {
 }
 
 .ring-15m {
-  border: 2px solid rgba(255, 60, 60, 0.8);
-  background: rgba(255, 60, 60, 0.3);
+  border: 2px solid rgba(255, 0, 0, 0.9);
+  background: rgba(255, 80, 80, 0.5);
 }
 
 .ring-50m {
-  border: 2px solid rgba(255, 215, 0, 0.8);
-  background: rgba(255, 215, 0, 0.2);
+  border: 2px solid rgba(255, 220, 0, 0.9);
+  background: rgba(255, 200, 0, 0.3);
 }
 
 /* --- LIGHT MODE SUPPORT --- */
