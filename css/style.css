@@ -87,7 +87,7 @@ header {
   gap: 12px;
   flex-wrap: wrap;
   position: relative;
-  padding-left: 0;
+  padding-left: 70px; /* Clear space for sidebar toggle button (50px + 20px gap) */
   min-height: 42px;
 }
 
@@ -631,23 +631,12 @@ select option {
   display: block;
   transform-origin: center center;
   will-change: transform;
+  
+  /* --- NEW: CONTROL THE OFFSET HERE --- */
+  /* Positive moves circles DOWN, Negative moves UP */
+  --y-offset: 7px; 
 }
 
-/* 1. THE PULSE ANIMATION KEYFRAMES */
-@keyframes enemy-pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(0.55);
-    opacity: 0.95;
-  }
-  65% {
-    transform: translate(-50%, -50%) scale(2.6);
-    opacity: 0.4;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(3.2);
-    opacity: 0;
-  }
-}
 
 /* 2. THE PULSING RING */
 .marker::before {
@@ -657,14 +646,14 @@ select option {
   left: 50%;
   width: 60%;
   height: 60%;
-  transform: translate(-50%, -50%) scale(0.55);
+  /* Added var(--y-offset) */
+  transform: translate(-50%, calc(-50% + var(--y-offset))) scale(0.55);
   transform-origin: center center;
   box-sizing: border-box;
   border-radius: 50%;
   background-color: rgba(255, 70, 70, 0.32);
   border: 2px solid rgba(255, 90, 90, 0.75);
   box-shadow: 0 0 18px rgba(255, 70, 70, 0.45);
-  animation: enemy-pulse 2s ease-out infinite;
   pointer-events: none;
   z-index: 1;
 }
@@ -692,35 +681,66 @@ select option {
 }
 
 .markers-layer:not(.has-selection) .marker:hover::before {
-  animation: none;
-  transform: translate(-50%, -50%) scale(1.2);
+  /* Added var(--y-offset) inside the translate, keep scale(1.2) */
+  transform: translate(-50%, calc(-50% + var(--y-offset))) scale(1.2);
   opacity: 1;
   background-color: rgba(255, 50, 50, 0.2);
   box-shadow: 0 0 10px rgba(255, 50, 50, 0.8);
   border: 1px solid rgba(255, 50, 50, 0.6);
 }
 
-/* --- NEW HTML LABEL STYLES --- */
-
-/* Soft base shadow */
+/* 5. STATIC DANGER RADIUS CIRCLE (50m) */
 .marker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--danger-radius, 60px);
+  height: var(--danger-radius, 60px);
+  /* Added var(--y-offset) */
+  transform: translate(-50%, calc(-50% + var(--y-offset)));
+  border-radius: 50%;
+  border: 2px solid rgba(255, 215, 0, 0.6);
+  background: rgba(255, 215, 0, 0.1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 5b. INNER DANGER RADIUS CIRCLE (15m) */
+.marker .inner-radius {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--inner-radius, 20px);
+  height: var(--inner-radius, 20px);
+  /* Added var(--y-offset) */
+  transform: translate(-50%, calc(-50% + var(--y-offset)));
+  border-radius: 50%;
+  border: 2px solid rgba(255, 60, 60, 0.8);
+  background: rgba(255, 60, 60, 0.15);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 6. SOFT BASE SHADOW */
+.marker::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 54px;
-  height: 18px;
-  transform: translate(-50%, -8%) scale(1);
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%) scale(1);
   background: radial-gradient(circle, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.25) 45%, transparent 75%);
   filter: blur(3px);
   opacity: 0.95;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.marker:hover::after,
-.marker.active::after {
+.marker:hover::before,
+.marker.active::before {
   opacity: 0.75;
   transform: translate(-50%, -8%) scale(1.2);
 }
@@ -834,6 +854,11 @@ select option {
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    /* NEW: Override the vertical offset for Mobile only */
+    /* Desktop was 8px. Mobile needs less because the container is smaller. */
+    /* Try values between -4px and -8px until perfect */
+    --y-offset: -200px !important; 
   }
   
   .marker img {
@@ -849,6 +874,22 @@ select option {
   .marker::before {
     width: 32px !important;
     height: 32px !important;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Ensure danger radius circle scales properly on mobile */
+  .marker::after {
+    width: var(--danger-radius, 60px) !important;
+    height: var(--danger-radius, 60px) !important;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Ensure inner radius circle scales properly on mobile */
+  .marker .inner-radius {
+    width: var(--inner-radius, 20px) !important;
+    height: var(--inner-radius, 20px) !important;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
   }
@@ -1129,18 +1170,95 @@ select option {
   .marker { width: 36px; height: 36px; }
 }
 
+/* --- RADIUS LEGEND --- */
+.radius-legend {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 30;
+  background: rgba(15, 17, 22, 0.65);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 13px;
+  font-family: "RobotoBlack", sans-serif;
+  font-weight: 700;
+  text-shadow: 0 1px 2px #000;
+}
+
+.legend-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: block;
+  box-sizing: border-box;
+}
+
+.ring-15m {
+  border: 2px solid rgba(255, 60, 60, 0.8);
+  background: rgba(255, 60, 60, 0.3);
+}
+
+.ring-50m {
+  border: 2px solid rgba(255, 215, 0, 0.6);
+  background: rgba(255, 215, 0, 0.1);
+}
+
+/* --- LIGHT MODE SUPPORT --- */
+:root[data-theme="light"] .radius-legend {
+  background: rgba(248, 241, 223, 0.9);
+  border-color: rgba(139, 111, 63, 0.4);
+}
+
+:root[data-theme="light"] .legend-row {
+  color: #2b2416;
+  text-shadow: none;
+}
+
+/* --- MOBILE ADJUSTMENT --- */
+@media (max-width: 768px) {
+  .radius-legend {
+    top: auto; 
+    bottom: 30px; /* Position above the bottom panel */
+    right: 10px;
+    padding: 8px 10px;
+    gap: 6px;
+  }
+  
+  .legend-row {
+    font-size: 11px;
+  }
+}
+
 /* --- ACTIVE MARKER STATE --- */
 
-/* 1. Fix the Shadow (::after) to stay BEHIND the icon */
+/* 1. Fix the 50m Radius (::after) to remain VISIBLE */
 .marker.active::after {
-  opacity: 0.8;     /* Slightly darker shadow when active */
-  z-index: 0;       /* IMPORTANT: Keep this at 0 so it stays behind the image */
-  transform: translate(-50%, -8%) scale(1.3); /* Grow the shadow slightly */
+  opacity: 1;       /* Keep full visibility */
+  z-index: 0;       /* Keep behind the icon */
   
-  /* Remove border/box-shadow from the shadow element, 
-     as it creates a weird box around the oval gradient */
-  border: none;     
-  box-shadow: none; 
+  /* CRITICAL: Keep it centered and at 100% scale (50m accuracy) */
+  /* Added var(--y-offset) */
+  transform: translate(-50%, calc(-50% + var(--y-offset))); 
+
+  /* CRITICAL: Do NOT remove the border. This keeps the yellow ring visible. */
+  /* border: none; */     
+  /* box-shadow: none; */ 
+  
+  /* Optional: Add a subtle glow to the ring when selected to indicate selection */
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
 }
 
 /* 2. Highlight the icon */
@@ -1155,8 +1273,8 @@ select option {
   border-color: var(--accent);
   background-color: rgba(255, 204, 60, 0.3);
   opacity: 1;
-  animation: none;
-  transform: translate(-50%, -50%) scale(1.3);
+  /* Added var(--y-offset) inside the translate, keep scale(1.3) */
+  transform: translate(-50%, calc(-50% + var(--y-offset))) scale(1.3);
   z-index: 1; /* Ring sits between shadow and image */
 }
 
@@ -1384,11 +1502,19 @@ select option {
     flex-direction: column;
     padding: 16px;
     z-index: 100;
-    background: rgba(15, 17, 22, 0.95);
-    border-top: 1px solid var(--accent);
+    
+    /* UPDATED: Matches the arrow transparency */
+    background: rgba(15, 17, 22, 0.65) !important;
+    backdrop-filter: blur(10px);
+    
+    border: 1px solid var(--accent);
+    border-bottom: none;
     gap: 12px;
     max-height: 60vh;
     padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    
+    /* OPTIONAL: Remove the heavy shadow so it looks lighter */
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
   }
 
   .panel.controls > label:first-child { display: none; }
@@ -1469,6 +1595,11 @@ select option {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    /* STEP 1: Set this to 0px first. */
+    /* Positive numbers (e.g. 4px) move the icon DOWN. */
+    /* Negative numbers (e.g. -4px) move the icon UP. */
+    --y-offset: 7px !important; 
   }
   
   /* CRITICAL FIX: Added ">" to only target the garrison icon, not the flag */
@@ -1477,13 +1608,17 @@ select option {
     height: 32px !important;
     position: absolute;
     top: 50%; left: 50%;
+    /* ICON STAYS CENTERED - NO OFFSET */
     transform: translate(-50%, -50%);
   }
 
-  /* Ensure ring matches icon size */
+  /* Ensure ring matches icon size and offset */
   .marker::before {
     width: 75% !important; 
     height: 75% !important;
+    top: 50%; left: 50%;
+    /* CHANGED: Replaced -50% with calculation */
+    transform: translate(-50%, calc(-50% + var(--y-offset)));
   }
   
   /* Ensure Label Layout is correct */
@@ -1501,8 +1636,23 @@ select option {
     margin: 0 !important;
   }
 
+  /* You must also fix the active/radius circles if they are defined in mobile */
+  .marker::after {
+    transform: translate(-50%, calc(-50% + var(--y-offset)));
+  }
+  
+  .marker .inner-radius {
+     transform: translate(-50%, calc(-50% + var(--y-offset)));
+  }
+
   /* Sidebar Fix */
   .sidebar { backdrop-filter: none !important; }
+
+  /* Move only the zoom level indicator */
+  #zoomLevelIndicator {
+    position: relative;
+    transform: translate(110px, 30px);
+  }
 }
 
 /* --- MOBILE PANEL TOGGLE (DROPBAR) --- */
@@ -1521,7 +1671,8 @@ select option {
     width: 60px;
     height: 28px;
     
-    background: rgba(15, 17, 22, 0.95); /* Match your dark panel bg */
+    background: rgba(15, 17, 22, 0.65);
+    backdrop-filter: blur(10px);
     border: 1px solid var(--accent);
     border-bottom: none; /* Connect visually to the panel */
     border-radius: 8px 8px 0 0;
@@ -1673,8 +1824,18 @@ select {
 @media (max-width: 768px) {
   
   /* 1. Fix the Header Text Box background and border */
+  .header-copy {
+    background: rgba(15, 17, 22, 0.65) !important;
+    backdrop-filter: blur(8px);
+  }
+  
+  .sidebar-toggle {
+    background: rgba(15, 17, 22, 0.65) !important;
+    backdrop-filter: blur(8px);
+  }
+
   :root[data-theme="light"] .header-copy {
-    background: rgba(248, 241, 223, 0.90) !important; /* Light Panel Color */
+    background: rgba(248, 241, 223, 0.70) !important; /* Light Panel Color */
     border-color: rgba(139, 111, 63, 0.4) !important;  /* Light Border Color */
     box-shadow: 0 4px 12px rgba(58, 43, 24, 0.15) !important; /* Soft brown shadow */
   }
@@ -1978,3 +2139,67 @@ select {
   color: #7a5c2b !important; /* Dark text */
   border: 1px solid rgba(122, 92, 43, 0.2) !important; /* Subtle border */
 }
+
+/* =========================================
+   FINAL VISUAL FIXES
+   ========================================= */
+
+/* --- 1. WARNING LEGEND (Top Right) --- */
+/* Transparent background, NO BLUR */
+.radius-legend {
+  background: rgba(15, 17, 22, 0.65) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* --- 2. MOBILE HEADER & MENU BUTTON (Top Left) --- */
+@media (max-width: 768px) {
+  /* Main Header Text - Transparent, NO BLUR */
+  .header-copy {
+    background: rgba(15, 17, 22, 0.65) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Restore shadow for readability */
+  }
+
+  /* Hamburger Menu Button - Transparent, NO BLUR */
+  .sidebar-toggle {
+    background: rgba(15, 17, 22, 0.65) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* --- 3. BOTTOM MAP SELECTION MENU --- */
+@media (max-width: 768px) {
+  
+  /* The Big Menu Panel - SOLID BLACK + NO BLUR */
+  .panel.controls {
+    background: #0f1116 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+  }
+
+  /* The Arrow Tab on Top - SOLID BLACK + NO BLUR */
+  .controls-toggle {
+    /* Use the dark theme hex code directly */
+    background: #0f1116 !important; 
+    
+    /* Remove blur so it looks sharp */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    
+    /* Border matching the accent color */
+    border: 1px solid var(--accent) !important;
+    /* Hide the bottom border to blend with the panel */
+    border-bottom: 1px solid #0f1116 !important; 
+  }
+  
+  /* FLIPPED ARROW (When menu is open/minimized) */
+  /* This ensures the arrow itself stays visible on the black background */
+  .controls-toggle::after {
+    border-color: var(--accent) !important;
+  }
+}
+

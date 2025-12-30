@@ -315,6 +315,7 @@ let visibleMarkersList = []; // Stores objects { x, y, label, element }
 let currentMarkerIndex = -1;
 
 const scaleWrapper = document.getElementById("scaleWrapper");
+const scaleText10m = document.getElementById("scaleText10m");
 const scaleTextMid = document.getElementById("scaleTextMid");
 const scaleTextEnd = document.getElementById("scaleTextEnd");
 const zoomLevelIndicator = document.getElementById("zoomLevelIndicator");
@@ -472,6 +473,11 @@ const icon = document.createElement("img");
 icon.src = "images/ui/icn_garrison_shadow.webp";
 icon.alt = point.label;
 marker.appendChild(icon);
+
+// Inner 15m radius circle
+const innerRadius = document.createElement("div");
+innerRadius.className = "inner-radius";
+marker.appendChild(innerRadius);
 
 // Label with Buttons
 const labelDiv = document.createElement("div");
@@ -710,7 +716,7 @@ spaCalculatorBtn?.addEventListener("click", () => {
 // 1. State Variables
 let currentZoomLevel = 1; 
 const MIN_LEVEL = 1;
-const MAX_LEVEL = 10;
+let maxLevel = 10; // Changed from const MAX_LEVEL to let variable
 let baseZoom = 1.0; 
 
 // Pan Variables
@@ -759,6 +765,18 @@ function updateCache() {
   // We need the unscaled dimensions of the image
   cache.mapW = mapImage.offsetWidth;
   cache.mapH = mapImage.offsetHeight;
+
+  // --- DYNAMIC MAX ZOOM CALCULATION ---
+  // A standard desktop view is roughly 1200px wide.
+  // If the current screen is 400px (mobile), we need 3x more zoom 
+  // to reach the same level of detail as desktop.
+  const referenceWidth = 1200; 
+  if (cache.containerW > 0) {
+    const ratio = referenceWidth / cache.containerW;
+    // Base max is 10. On mobile, this might become 10 * 3 = 30.
+    // We cap it at 50x to prevent getting lost in pixels.
+    maxLevel = Math.max(10, Math.min(50, 10 * ratio));
+  }
 }
 
 function getEffectiveZoom() {
@@ -799,7 +817,30 @@ function renderTransform() {
   mapStage.style.setProperty("--pan-x", `${panX.toFixed(2)}px`);
   mapStage.style.setProperty("--pan-y", `${panY.toFixed(2)}px`);
   
-  // 2. PERFORMANCE FIX: 
+  // 2. Calculate & Apply 50m Danger Radius
+  // Logic: The map represents MAP_REAL_WIDTH_METERS (2000m).
+  // The danger circle represents a 50m radius, which is a 50m diameter.
+  // So the diameter in pixels = (Current Map Width in Pixels) * (50 / 2000).
+  if (cache.mapW > 0) {
+    // 50m is the diameter of the 50m radius circle
+    const diameterInMeters = 50; 
+    // Calculate the ratio of the circle size to the full map size
+    const sizeRatio = diameterInMeters / MAP_REAL_WIDTH_METERS; // 50 / 2000 = 0.025
+    
+    // Calculate exact pixel size at current zoom
+    const dangerRadiusPx = (cache.mapW * effectiveZoom) * sizeRatio;
+    
+    markersContainer.style.setProperty('--danger-radius', `${dangerRadiusPx.toFixed(1)}px`);
+    
+    // Calculate 15m inner radius (15m diameter)
+    const innerDiameterInMeters = 15;
+    const innerSizeRatio = innerDiameterInMeters / MAP_REAL_WIDTH_METERS; // 15 / 2000 = 0.0075
+    const innerRadiusPx = (cache.mapW * effectiveZoom) * innerSizeRatio;
+    
+    markersContainer.style.setProperty('--inner-radius', `${innerRadiusPx.toFixed(1)}px`);
+  }
+  
+  // 3. PERFORMANCE FIX: 
   // Only recalculate text scale if we are NOT actively scrolling.
   // This prevents the 3s lag spike.
   if (!document.body.classList.contains("is-interacting")) {
@@ -807,7 +848,7 @@ function renderTransform() {
       mapStage.style.setProperty("--inverse-zoom", inverse);
   }
 
-  // 3. Update Markers (Standard logic)
+  // 4. Update Markers (Standard logic)
   if (visibleMarkersList.length > 0 && cache.mapW > 0) {
     for (let i = 0; i < visibleMarkersList.length; i++) {
       const m = visibleMarkersList[i];
@@ -834,7 +875,10 @@ function updateRealScale(effectiveZoom) {
   if (currentMapWidthPx <= 0) return;
 
   const metersPerPixel = MAP_REAL_WIDTH_METERS / currentMapWidthPx;
-  const maxAllowedWidthPx = 250; // Max width of scale bar in UI
+  
+  // Mobile-specific: Reduce max scale width on smaller screens
+  const isMobile = window.innerWidth <= 768;
+  const maxAllowedWidthPx = isMobile ? 150 : 250; // Smaller on mobile
   
   const maxCapacity = metersPerPixel * maxAllowedWidthPx;
   
@@ -848,6 +892,30 @@ function updateRealScale(effectiveZoom) {
   scaleWrapper.style.width = `${drawnWidth}px`;
   scaleTextEnd.textContent = `${selectedScale}m`;
   scaleTextMid.textContent = `${selectedScale / 2}m`;
+  
+  // Update 10m text and position - calculate proportional position
+  const tenMeterPosition = 10 / metersPerPixel; // 10m in pixels
+  const tenMeterPercentage = (10 / selectedScale) * 100; // 10m as percentage of total scale
+  
+  // Only show 10m indicator when zoom level is exactly 10x and not on mobile
+  if (scaleText10m && effectiveZoom === 10 && !isMobile) {
+    scaleText10m.textContent = '10m';
+    scaleText10m.style.display = 'block';
+    scaleText10m.style.left = '20%'; // 10m is 20% of 50m scale
+    
+    // Also update the tick position
+    const tick10m = document.querySelector('.t-10m');
+    if (tick10m) {
+      tick10m.style.display = 'block';
+      tick10m.style.left = '20%';
+    }
+  } else if (scaleText10m) {
+    scaleText10m.style.display = 'none';
+    const tick10m = document.querySelector('.t-10m');
+    if (tick10m) {
+      tick10m.style.display = 'none';
+    }
+  }
 }
 
 // 5. Input Handlers
@@ -875,8 +943,10 @@ function stopInteraction() {
 // UPDATE setZoomLevel to handle Floats
 function setZoomLevel(newLevel, mouseX = null, mouseY = null, options = {}) {
   const prevZoom = getEffectiveZoom();
-  // Allow decimals! Don't round.
-  currentZoomLevel = Math.max(MIN_LEVEL, Math.min(MAX_LEVEL, newLevel));
+  
+  // UPDATED: Use 'maxLevel' variable instead of 'MAX_LEVEL' constant
+  currentZoomLevel = Math.max(MIN_LEVEL, Math.min(maxLevel, newLevel));
+  
   const newZoom = getEffectiveZoom();
 
   // Logic for Grid Detail
@@ -885,7 +955,6 @@ function setZoomLevel(newLevel, mouseX = null, mouseY = null, options = {}) {
 
   if (zoomLevelIndicator) zoomLevelIndicator.textContent = `${currentZoomLevel.toFixed(1)}x`;
 
-  // Standard Zoom Math (unchanged)
   const focusWorldPoint = options.focusWorldPoint;
   if (focusWorldPoint) {
        if (!cache.containerW) updateCache();
@@ -1095,7 +1164,8 @@ mapContainer.addEventListener("touchend", (e) => {
           const tapY = touch.clientY - rect.top;
 
           // Zoom logic: Zoom in 2.5x, up to the Max Level
-          const targetZoom = Math.min(MAX_LEVEL, currentZoomLevel * 2.5);
+          // UPDATED: Use maxLevel variable
+          const targetZoom = Math.min(maxLevel, currentZoomLevel * 2.5);
           
           setZoomLevel(targetZoom, tapX, tapY);
           
@@ -1217,7 +1287,7 @@ if (mapImage) {
 }
 
 document.addEventListener('selectstart', (e) => {
-  if (e.target.closest('.map-image, .map-stage, .map-wrap')) {
+  if (e.target && typeof e.target.closest === 'function' && e.target.closest('.map-image, .map-stage, .map-wrap')) {
     e.preventDefault();
     return false;
   }

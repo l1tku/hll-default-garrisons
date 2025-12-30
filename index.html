@@ -116,16 +116,29 @@
 
       <div id="markers" class="markers-layer"></div>
 
+      <div class="radius-legend">
+        <div class="legend-row">
+          <span class="legend-icon ring-15m"></span>
+          <span>15m (Locked)</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-icon ring-50m"></span>
+          <span>50m (Warning)</span>
+        </div>
+      </div>
+
       <div class="zoom-overlay">
         <div id="zoomLevelIndicator" class="zoom-lbl">1x</div>
         <div id="scaleWrapper" class="scale-wrapper">
           <div class="scale-bar-graphic">
             <div class="scale-tick t-start"></div>
+            <div class="scale-tick t-10m"></div>
             <div class="scale-tick t-mid"></div>
             <div class="scale-tick t-end"></div>
           </div>
           <div class="scale-labels">
             <span class="scale-lbl l-start">0</span>
+            <span id="scaleText10m" class="scale-lbl l-10m">10m</span>
             <span id="scaleTextMid" class="scale-lbl l-mid">125m</span>
             <span id="scaleTextEnd" class="scale-lbl l-end">250m</span>
           </div>
@@ -134,7 +147,7 @@
     </div>
 
     <div class="site-version">
-      <p>HLL Default Garrisons Map · v1.0.1 · 2025</p>
+      <p>HLL Default Garrisons Map · v1.0.2 · 2025</p>
     </div>
 
   </div>
