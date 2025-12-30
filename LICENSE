@@ -27,7 +27,6 @@ SCOPE OF LICENSE (ASSET EXCLUSION)
 The MIT License above applies to the source code (HTML, CSS, and JavaScript) 
 contained within this repository.
 
-The game assets, including but not limited to map images, icons, and faction flags 
-located in the "images/" directory, are the intellectual property of their 
+The game assets, including but not limited to map images and icons located in the "images/" directory, are the intellectual property of their 
 respective owners. They are excluded from this license and are present in 
 this repository for educational and informational purposes.
