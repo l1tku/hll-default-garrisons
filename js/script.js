@@ -449,24 +449,28 @@ points.forEach((point, index) => {
 const marker = document.createElement("div");
 marker.className = "marker";
 
-// --- BUTTON HELPER: Optimized for rapid clicking ---
+// --- BUTTON HELPER: Robust Mobile & Desktop Support ---
 const bindQuickAction = (btn, action) => {
-    // Prevent map drag
-    btn.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
-    btn.addEventListener("mousedown", (e) => e.stopPropagation());
-
-    // Handle click action
-    const handleClick = (e) => {
-        e.preventDefault();
+    // 1. MOBILE: Handle Touch
+    // Use 'touchend' for instant response.
+    // e.preventDefault() stops the browser from generating a 'click' event later, preventing double-firing.
+    btn.addEventListener("touchend", (e) => {
+        if (e.cancelable) e.preventDefault(); 
         e.stopPropagation();
-        // Force browser to repaint before next logic to prevent UI lockup
         requestAnimationFrame(() => action());
-    };
+    }, { passive: false });
 
-    btn.addEventListener("click", handleClick);
-    // We remove touchend here because modern browsers handle click 
-    // well enough on buttons, and having both can cause double-fires 
-    // or race conditions during rapid tapping.
+    // 2. DESKTOP: Handle Click
+    // Standard click for mouse users.
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        requestAnimationFrame(() => action());
+    });
+
+    // 3. UTILITY: Prevent Map Drag
+    // Stop the touch/click from bubbling up to the map container
+    btn.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: true });
+    btn.addEventListener("mousedown", (e) => e.stopPropagation());
 };
 
 // Icon
