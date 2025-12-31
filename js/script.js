@@ -1403,45 +1403,55 @@ if (controlsToggle && controlsPanel) {
 
 // remove legacy optional coordinate capture hook
 
-// --- RADIUS TOGGLE LOGIC (Mobile Optimized) ---
+// --- RADIUS TOGGLE LOGIC (Mobile Optimized + Persistent) ---
 const radiusToggleBtn = document.getElementById("radiusToggleBtn");
 const miniSwitch = radiusToggleBtn ? radiusToggleBtn.querySelector(".mini-switch") : null;
+const RADIUS_STORAGE_KEY = "hll-radius-enabled"; // Key for localStorage
 
-if (radiusToggleBtn && markersContainer) {
+if (radiusToggleBtn && markersContainer && miniSwitch) {
 
-  // Logic to actually switch the state
-  const toggleRadiusAction = () => {
-    // 1. Toggle the visual switch
-    if (miniSwitch) {
-      miniSwitch.classList.toggle("is-active");
-    }
-
-    // 2. Toggle the class that hides the CSS rings
-    const isNowActive = miniSwitch.classList.contains("is-active");
-    
-    if (isNowActive) {
+  // 1. Define the Action
+  const setRadiusState = (isActive) => {
+    if (isActive) {
+      miniSwitch.classList.add("is-active");
       markersContainer.classList.remove("rings-hidden");
     } else {
+      miniSwitch.classList.remove("is-active");
       markersContainer.classList.add("rings-hidden");
     }
+    // Save to browser storage
+    localStorage.setItem(RADIUS_STORAGE_KEY, isActive);
   };
 
-  // 1. Touch: Handle tap instantly (prevents ghost clicks)
+  // 2. Initialize State on Page Load
+  // Check storage. If null (first visit), default to "true" (Active)
+  const storedState = localStorage.getItem(RADIUS_STORAGE_KEY);
+  const initialState = storedState === null ? true : (storedState === "true");
+  setRadiusState(initialState);
+
+  // 3. Handle User Interaction
+  const handleToggle = () => {
+    // Check current visual state and flip it
+    const isCurrentlyActive = miniSwitch.classList.contains("is-active");
+    setRadiusState(!isCurrentlyActive);
+  };
+
+  // Touch: Handle tap instantly
   radiusToggleBtn.addEventListener("touchend", (e) => {
     e.preventDefault(); 
-    e.stopPropagation(); // Stop map from reacting
-    toggleRadiusAction();
+    e.stopPropagation(); 
+    handleToggle();
   }, { passive: false });
 
-  // 2. Stop map drag from starting when touching this button
+  // Stop map drag
   radiusToggleBtn.addEventListener("touchstart", (e) => {
     e.stopPropagation();
   }, { passive: false });
 
-  // 3. Desktop: Standard Click
+  // Desktop Click
   radiusToggleBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    toggleRadiusAction();
+    handleToggle();
   });
 }
 
