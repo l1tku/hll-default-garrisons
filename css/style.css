@@ -528,7 +528,7 @@ select option {
   transform-origin: 0 0;
   /* Use translate3d to force hardware acceleration */
   transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(var(--zoom));
-  will-change: transform;
+  /* will-change: transform; */
   backface-visibility: hidden;
   -webkit-font-smoothing: subpixel-antialiased;
 }
@@ -546,8 +546,7 @@ select option {
   height: 100%;
   pointer-events: none;
   z-index: 2;
-  will-change: transform;
-  transform: translateZ(0);
+  /* transform: translateZ(0); */
 }
 
 .legend-icon-image {
@@ -560,7 +559,7 @@ select option {
 .legend-example-icon {
   width: 20px;
   height: 20px;
-  margin-left: 6px;
+  margin-left: -5px; /* Reduced from 6px to move closer to text */
   display: block;
   object-fit: contain;
 }
@@ -570,8 +569,7 @@ select option {
   height: 100%;
   display: block;
   overflow: visible;
-  transition: opacity 0.15s;
-  will-change: opacity;
+  /* transition: opacity 0.15s; */
 }
 
 .grid-line {
@@ -647,10 +645,7 @@ select option {
   pointer-events: auto;
   display: block;
   transform-origin: center center;
-  will-change: transform;
-  
-  /* --- NEW: CONTROL THE OFFSET HERE --- */
-  /* Positive moves circles DOWN, Negative moves UP */
+  /* transform-origin: center center; */
   --y-offset: 7px; 
 }
 
@@ -1269,6 +1264,12 @@ select option {
   font-family: "RobotoBlack", sans-serif;
   font-weight: 700;
   text-shadow: 0 1px 2px #000;
+  margin-bottom: 10px; /* Add vertical spacing between rows */
+}
+
+.legend-row:first-child {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Separator line */
 }
 
 .legend-icon {
@@ -1623,7 +1624,7 @@ select option {
     position: fixed; /* Changed from absolute to fixed */
     
     /* 90px from bottom ensures it clears the yellow toggle button */
-    bottom: calc(90px + env(safe-area-inset-bottom, 10px)); 
+    bottom: calc(30px + env(safe-area-inset-bottom, 10px)); /* Increased from 90px to 105px (15px more) */ 
     
     left: 50%;
     transform: translateX(-50%);
@@ -1634,7 +1635,7 @@ select option {
     padding: 0;
     
     background: transparent;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.8) !important;
     font-family: "SpecialElite", monospace;
     font-size: 10px;
     text-shadow: 0 1px 2px #000;
@@ -2152,7 +2153,7 @@ select {
 
 /* 1. Reset Version Text to White/Grey */
 :root[data-theme="light"] .site-version {
-  color: rgba(255, 255, 255, 0.50) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
   text-shadow: 0 1px 2px #000 !important;
   font-weight: normal !important;
 }
