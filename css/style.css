@@ -1286,7 +1286,7 @@ select option {
 
 .ring-50m {
   border: 2px dashed rgba(64, 64, 64, 0.8);
-  background: rgba(255, 200, 0, 0.3);
+  background: rgba(255, 200, 0, 0.5); /* Increased opacity from 0.3 to 0.5 */
 }
 
 /* --- LIGHT MODE SUPPORT --- */
@@ -2286,4 +2286,64 @@ select {
     border-color: var(--accent) !important;
   }
 }
+
+/* =========================================================
+   FORCE RADIUS LEGEND TO STAY DARK (EVEN IN LIGHT MODE)
+   ========================================================= */
+
+/* 1. Force the Box Background to Dark & Remove Blur Change */
+:root[data-theme="light"] .radius-legend {
+  /* CHANGED: Reverted from 0.90 back to 0.65 to match Dark Mode exactly */
+  background: rgba(15, 17, 22, 0.65) !important; 
+  
+  border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+  
+  /* CRITICAL FIX: Remove the blur completely to kill the "crystal" effect */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  
+  /* CHANGED: Removed the shadow completely */
+  box-shadow: none !important;
+}
+
+/* 2. Force the "RADIUS TOGGLE" Title to Yellow */
+:root[data-theme="light"] .legend-title {
+  color: #ffcc66 !important; 
+}
+
+/* 3. Force the "15m/50m" Text to White with Shadow */
+:root[data-theme="light"] .legend-row {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px #000 !important;
+}
+
+/* 4. Force the divider line to white-ish */
+:root[data-theme="light"] .legend-head {
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 5. Force the Toggle Switch Button colors (The Track) */
+:root[data-theme="light"] .mini-switch {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 6. Force the Active State (The Track when ON) */
+:root[data-theme="light"] .mini-switch.is-active {
+  background: rgba(122, 92, 43, 0.3) !important;
+  border-color: #ffcc66 !important; /* Yellow Accent */
+}
+
+/* 7. Force the Toggle Dot (The Circle inside) */
+:root[data-theme="light"] .mini-switch::after {
+  background: #aab3c2 !important; /* Muted Grey (OFF state) */
+}
+
+:root[data-theme="light"] .mini-switch.is-active::after {
+  background: #ffcc66 !important; /* Yellow Dot (ON state) */
+}
+
+/* =========================================================
+   END OF RADIUS LEGEND DARK MODE OVERRIDES
+   ========================================================= */
 
