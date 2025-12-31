@@ -1387,3 +1387,45 @@ if (controlsToggle && controlsPanel) {
 
 // remove legacy optional coordinate capture hook
 
+// --- RADIUS TOGGLE LOGIC (Mobile Optimized) ---
+const radiusToggleBtn = document.getElementById("radiusToggleBtn");
+const miniSwitch = radiusToggleBtn ? radiusToggleBtn.querySelector(".mini-switch") : null;
+
+if (radiusToggleBtn && markersContainer) {
+
+  // Logic to actually switch the state
+  const toggleRadiusAction = () => {
+    // 1. Toggle the visual switch
+    if (miniSwitch) {
+      miniSwitch.classList.toggle("is-active");
+    }
+
+    // 2. Toggle the class that hides the CSS rings
+    const isNowActive = miniSwitch.classList.contains("is-active");
+    
+    if (isNowActive) {
+      markersContainer.classList.remove("rings-hidden");
+    } else {
+      markersContainer.classList.add("rings-hidden");
+    }
+  };
+
+  // 1. Touch: Handle tap instantly (prevents ghost clicks)
+  radiusToggleBtn.addEventListener("touchend", (e) => {
+    e.preventDefault(); 
+    e.stopPropagation(); // Stop map from reacting
+    toggleRadiusAction();
+  }, { passive: false });
+
+  // 2. Stop map drag from starting when touching this button
+  radiusToggleBtn.addEventListener("touchstart", (e) => {
+    e.stopPropagation();
+  }, { passive: false });
+
+  // 3. Desktop: Standard Click
+  radiusToggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleRadiusAction();
+  });
+}
+
