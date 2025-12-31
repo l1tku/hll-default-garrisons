@@ -449,23 +449,24 @@ points.forEach((point, index) => {
 const marker = document.createElement("div");
 marker.className = "marker";
 
-// --- BUTTON HELPER: Makes buttons snap instantly on mobile ---
+// --- BUTTON HELPER: Optimized for rapid clicking ---
 const bindQuickAction = (btn, action) => {
-// Touch: Fire on lift, prevent ghost clicks, stop bubbling
-btn.addEventListener("touchend", (e) => {
-e.preventDefault(); 
-e.stopPropagation();
-action();
-}, { passive: false });
-        
-// Mouse: Standard click
-btn.onclick = (e) => {
-e.stopPropagation();
-action();
-};
-        
-// Stop touchstart from dragging the map when hitting buttons
-btn.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
+    // Prevent map drag
+    btn.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
+    btn.addEventListener("mousedown", (e) => e.stopPropagation());
+
+    // Handle click action
+    const handleClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Force browser to repaint before next logic to prevent UI lockup
+        requestAnimationFrame(() => action());
+    };
+
+    btn.addEventListener("click", handleClick);
+    // We remove touchend here because modern browsers handle click 
+    // well enough on buttons, and having both can cause double-fires 
+    // or race conditions during rapid tapping.
 };
 
 // Icon
@@ -522,52 +523,46 @@ labelDiv.appendChild(textSpan);
 labelDiv.appendChild(nextBtn);
 marker.appendChild(labelDiv);
 
-// --- MARKER INTERACTION (Tap & Double Tap) ---
+// --- MARKER INTERACTION (Stutter-Free) ---
     
-// Stop map drag when touching marker
-marker.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: false });
-marker.addEventListener("touchmove", (e) => e.stopPropagation(), { passive: false });
+    // 1. Mobile: Handle Tap & Double Tap
+    // We keep the math here because 'dblclick' doesn't always fire reliably on touch devices
+    let lastTapTime = 0;
+    
+    marker.addEventListener("touchend", (e) => {
+      e.preventDefault(); // Stop ghost mouse clicks
+      e.stopPropagation();
 
-// Mobile: Handle Tap & Double Tap Manually
-let lastTapTime = 0;
-marker.addEventListener("touchend", (e) => {
-e.preventDefault(); // Stop ghost mouse clicks
-e.stopPropagation();
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTapTime;
 
-const currentTime = new Date().getTime();
-const tapLength = currentTime - lastTapTime;
+      // Always select immediately on tap (Instant visual feedback)
+      activateMarkerVisuals(index, marker);
 
-// Always select on tap
-activateMarkerVisuals(index, marker);
+      // Detect Double Tap (Speed < 300ms)
+      if (tapLength < 300 && tapLength > 0) {
+        selectGarrisonByIndex(index, true, false); // Zoom in
+        lastTapTime = 0;
+      } else {
+        lastTapTime = currentTime;
+      }
+    });
 
-// Detect Double Tap (Speed < 300ms)
-if (tapLength < 300 && tapLength > 0) {
-selectGarrisonByIndex(index, true, false); // Zoom in
-lastTapTime = 0;
-} else {
-lastTapTime = currentTime;
-}
-});
+    // 2. Desktop: Instant Selection & Native Double Click
+    // Single Click: Selects Instantly (No delay)
+    marker.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      activateMarkerVisuals(index, marker);
+    });
 
-// Desktop: Click & Double Click
-let clickCount = 0;
-let clickTimer = null;
-marker.addEventListener("click", (evt) => {
-evt.stopPropagation();
-clickCount++;
-      
-activateMarkerVisuals(index, marker);
+    // Double Click: Zooms (Native event, no timer needed)
+    marker.addEventListener("dblclick", (evt) => {
+      evt.stopPropagation();
+      activateMarkerVisuals(index, marker); 
+      selectGarrisonByIndex(index, true, false); 
+    });
 
-if (clickCount === 1) {
-clickTimer = setTimeout(() => { clickCount = 0; }, 300);
-} else if (clickCount === 2) {
-clearTimeout(clickTimer);
-clickCount = 0;
-selectGarrisonByIndex(index, true, false); // Zoom in
-}
-});
-
-markersContainer.appendChild(marker);
+    markersContainer.appendChild(marker);
 
 visibleMarkersList.push({
 xPct: point.x,
@@ -1403,10 +1398,10 @@ if (controlsToggle && controlsPanel) {
 
 // remove legacy optional coordinate capture hook
 
-// --- RADIUS TOGGLE LOGIC (Mobile Optimized + Persistent) ---
+// --- RADIUS TOGGLE LOGIC (Mobile Robust + Persistent) ---
 const radiusToggleBtn = document.getElementById("radiusToggleBtn");
 const miniSwitch = radiusToggleBtn ? radiusToggleBtn.querySelector(".mini-switch") : null;
-const RADIUS_STORAGE_KEY = "hll-radius-enabled"; // Key for localStorage
+const RADIUS_STORAGE_KEY = "hll-radius-enabled"; 
 
 if (radiusToggleBtn && markersContainer && miniSwitch) {
 
@@ -1419,19 +1414,25 @@ if (radiusToggleBtn && markersContainer && miniSwitch) {
       miniSwitch.classList.remove("is-active");
       markersContainer.classList.add("rings-hidden");
     }
-    // Save to browser storage
     localStorage.setItem(RADIUS_STORAGE_KEY, isActive);
   };
 
-  // 2. Initialize State on Page Load
-  // Check storage. If null (first visit), default to "true" (Active)
+  // 2. Load State (Run immediately on load)
   const storedState = localStorage.getItem(RADIUS_STORAGE_KEY);
+  // If no save found, default to true. Otherwise compare string "true"
   const initialState = storedState === null ? true : (storedState === "true");
   setRadiusState(initialState);
 
-  // 3. Handle User Interaction
+  // 3. Interaction Handler (With Double-Fire Protection)
+  let lastToggleTime = 0;
+
   const handleToggle = () => {
-    // Check current visual state and flip it
+    // Prevent double-firing (touch + ghost click)
+    const now = Date.now();
+    if (now - lastToggleTime < 300) return;
+    lastToggleTime = now;
+
+    // Toggle based on current visual state
     const isCurrentlyActive = miniSwitch.classList.contains("is-active");
     setRadiusState(!isCurrentlyActive);
   };
@@ -1443,7 +1444,7 @@ if (radiusToggleBtn && markersContainer && miniSwitch) {
     handleToggle();
   }, { passive: false });
 
-  // Stop map drag
+  // Stop map drag on button touch
   radiusToggleBtn.addEventListener("touchstart", (e) => {
     e.stopPropagation();
   }, { passive: false });
