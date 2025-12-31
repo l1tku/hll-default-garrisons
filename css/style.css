@@ -198,6 +198,8 @@ header {
   /* Visuals moved here */
   background: var(--panel);
   border-right: 1px solid var(--panel-border);
+  /* Optimization: Tells browser this panel's contents don't affect outside layout */
+  contain: strict;
   backdrop-filter: blur(16px);
   box-shadow: var(--shadow);
   overflow-y: auto;
@@ -817,6 +819,8 @@ select option {
     border-bottom: none;
     gap: 12px;
     touch-action: pan-y; /* Allow scrolling inside panel */
+    /* Optimization: Isolates the bottom bar */
+    contain: layout style;
   }
 
   /* Adjust inputs for touch */
@@ -1173,6 +1177,8 @@ select option {
   flex-direction: column;
   gap: 8px;
   pointer-events: auto;
+  /* Optimization: Isolates legend */
+  contain: content;
 }
 
 /* --- NEW LEGEND HEADER STYLES --- */

@@ -739,6 +739,12 @@ let isRenderPending = false;
 let zoomTransitionTimeout = null;
 let mapClickListenerAttached = false;
 
+// Global cache vars to prevent DOM thrashing
+let _lastScaleWidth = -1;
+let _lastScaleTextEnd = "";
+let _lastScaleTextMid = "";
+let _last10mVisible = null; // null forces initial check
+
 // --- CALIBRATION SETTINGS ---
 const ANCHOR_OFFSET_X = 0;
 const ANCHOR_OFFSET_Y = -6;
@@ -878,7 +884,7 @@ function updateRealScale(effectiveZoom) {
   
   // Mobile-specific: Reduce max scale width on smaller screens
   const isMobile = window.innerWidth <= 768;
-  const maxAllowedWidthPx = isMobile ? 150 : 250; // Smaller on mobile
+  const maxAllowedWidthPx = isMobile ? 150 : 250; 
   
   const maxCapacity = metersPerPixel * maxAllowedWidthPx;
   
@@ -888,33 +894,43 @@ function updateRealScale(effectiveZoom) {
 
   const drawnWidth = selectedScale / metersPerPixel;
   
-  // Direct DOM updates (low cost compared to layout reflows)
-  scaleWrapper.style.width = `${drawnWidth}px`;
-  scaleTextEnd.textContent = `${selectedScale}m`;
-  scaleTextMid.textContent = `${selectedScale / 2}m`;
+  // OPTIMIZATION: Only touch the DOM if values actually changed
+  if (Math.abs(drawnWidth - _lastScaleWidth) > 0.5) {
+    scaleWrapper.style.width = `${drawnWidth}px`;
+    _lastScaleWidth = drawnWidth;
+  }
+
+  const textEnd = `${selectedScale}m`;
+  if (textEnd !== _lastScaleTextEnd) {
+    scaleTextEnd.textContent = textEnd;
+    _lastScaleTextEnd = textEnd;
+  }
+
+  const textMid = `${selectedScale / 2}m`;
+  if (textMid !== _lastScaleTextMid) {
+    scaleTextMid.textContent = textMid;
+    _lastScaleTextMid = textMid;
+  }
   
-  // Update 10m text and position - calculate proportional position
-  const tenMeterPosition = 10 / metersPerPixel; // 10m in pixels
-  const tenMeterPercentage = (10 / selectedScale) * 100; // 10m as percentage of total scale
+  // 10m Indicator Logic
+  const shouldShow10m = (effectiveZoom === 10 && !isMobile);
   
-  // Only show 10m indicator when zoom level is exactly 10x and not on mobile
-  if (scaleText10m && effectiveZoom === 10 && !isMobile) {
-    scaleText10m.textContent = '10m';
-    scaleText10m.style.display = 'block';
-    scaleText10m.style.left = '20%'; // 10m is 20% of 50m scale
+  if (shouldShow10m !== _last10mVisible) {
+    // Only update style if visibility state changed
+    const displayVal = shouldShow10m ? 'block' : 'none';
     
-    // Also update the tick position
+    if (scaleText10m) {
+      scaleText10m.style.display = displayVal;
+      if (shouldShow10m) scaleText10m.style.left = '20%'; 
+    }
+    
     const tick10m = document.querySelector('.t-10m');
     if (tick10m) {
-      tick10m.style.display = 'block';
-      tick10m.style.left = '20%';
+      tick10m.style.display = displayVal;
+      if (shouldShow10m) tick10m.style.left = '20%';
     }
-  } else if (scaleText10m) {
-    scaleText10m.style.display = 'none';
-    const tick10m = document.querySelector('.t-10m');
-    if (tick10m) {
-      tick10m.style.display = 'none';
-    }
+    
+    _last10mVisible = shouldShow10m;
   }
 }
 
