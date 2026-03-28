@@ -755,12 +755,33 @@ body {
 .gar-btn.zoom-btn {
     border-left: 1px solid rgba(255,255,255,0.15);
     border-right: 1px solid rgba(255,255,255,0.15);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Touch feedback - immediate visual response */
+.gar-btn.zoom-btn:active {
+    background: #ffc107 !important;
+    color: #000 !important;
+    transform: scale(0.92);
+    transition: transform 0.05s ease, background 0.05s ease;
+}
+
+.gar-btn.zoom-btn:active svg {
+    fill: #000 !important;
 }
 
 .gar-btn.zoom-btn svg {
     width: 24px;
     height: 24px;
     fill: #ffc107;
+}
+
+.gar-btn:hover.zoom-btn svg,
+.gar-btn.zoom-btn:hover svg {
+    fill: #000;
 }
 
 /* --- GARRISON INTERACTION STYLES --- */

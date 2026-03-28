@@ -42,6 +42,10 @@ let labelCache = [];
 let isRendering = false; 
 let selectedGarrisonId = null; // Track selection by unique ID 
 
+// === NEW: Garrison Zoom Toggle State ===
+let zoomedGarrisonId = null;   // Which garrison we are currently zoomed into
+let preZoomScale = 1;          // Remember the zoom level before we zoomed in 
+
 // Add these with your other Global State variables
 let lastClickTime = 0;
 let lastClickId = null; 
@@ -815,10 +819,9 @@ function renderMarkers() {
                  <span>${point.label}</span>
                  </div>
 
-              <div class="gar-btn zoom-btn">
-                 <svg viewBox="0 0 24 24">
-                     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                     <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/> 
+              <div class="gar-btn zoom-btn" id="garrisonZoomBtn">
+                 <svg id="zoomIcon" viewBox="0 0 24 24" width="24" height="24">
+                     <!-- Will be updated by JS -->
                  </svg>
               </div>
 
@@ -831,6 +834,10 @@ function renderMarkers() {
              
              // 1. Update Selection
              selectedGarrisonId = targetPoint.id;
+             
+             // FIX: Reset zoom state when switching garrisons
+             zoomedGarrisonId = null;
+             preZoomScale = 1;
              
              // 2. Pan to the new target (keep current zoom)
              animateToLocation(targetPoint.gameX, targetPoint.gameY, null);
@@ -847,15 +854,59 @@ function renderMarkers() {
           btnPrev.addEventListener('click', (e) => switchGar(e, prevPoint));
           btnNext.addEventListener('click', (e) => switchGar(e, nextPoint));
           
-          // Zoom button click handler
-          btnZoom.addEventListener('click', (e) => {
+          // === ZOOM BUTTON TOGGLE ( +  →  -  ) ===
+          const handleZoomToggle = (e) => {
               e.stopPropagation();
-              
-              // ANIMATE ZOOM: Target level 7.0 (Adjust closer/further as needed)
-              animateToLocation(point.gameX, point.gameY, 7.0); 
-              
+              if (e.type === 'touchstart') e.preventDefault();
+
+              const isCurrentlyZoomed = (zoomedGarrisonId === point.id);
+
+              if (!isCurrentlyZoomed) {
+                  // === ZOOM IN ===
+                  preZoomScale = state.scale;
+                  zoomedGarrisonId = point.id;
+
+                  const isMobile = window.innerWidth <= 768;
+                  const targetZoom = isMobile ? 15.0 : 7.0;
+                  
+                  animateToLocation(point.gameX, point.gameY, targetZoom);
+              } else {
+                  // === ZOOM OUT ===
+                  zoomedGarrisonId = null;
+                  const savedPreZoom = preZoomScale;
+                  preZoomScale = 1;
+                  
+                  animateToLocation(point.gameX, point.gameY, savedPreZoom);
+              }
+
+              renderMarkers();
               if (navigator.vibrate) navigator.vibrate(10);
-          });
+          };
+          
+          btnZoom.addEventListener('click', handleZoomToggle);
+          btnZoom.addEventListener('touchstart', handleZoomToggle, { passive: false });
+
+          // Dynamic zoom icon ( +  or  - )
+          const zoomBtn = controlUI.querySelector('.zoom-btn');
+          const zoomIcon = controlUI.querySelector('#zoomIcon');
+
+          const updateZoomIcon = () => {
+              const isZoomed = (zoomedGarrisonId === point.id);
+              if (isZoomed) {
+                  // Minus icon - magnifying glass with minus centered inside
+                  zoomIcon.innerHTML = `
+                      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                      <rect x="6" y="8.5" width="7" height="2" rx="0.5"/>   <!-- centered minus -->
+                  `;
+              } else {
+                  // Plus icon
+                  zoomIcon.innerHTML = `
+                      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                      <path d="M9.5 6v7M6 9.5h7" stroke="currentColor" stroke-width="2" fill="none"/>   <!-- centered plus -->
+                  `;
+              }
+          };
+          updateZoomIcon();   // Set correct icon immediately
 
           el.appendChild(controlUI);
       }
@@ -1689,6 +1740,9 @@ mapContainer.addEventListener("click", (e) => {
   if (e.target.id === "mapStage" || e.target.id === "mapImage" || e.target.id === "gridLayer") {
       if (selectedGarrisonId !== null) {
           selectedGarrisonId = null;
+          // FIX: Reset zoom state when deselecting
+          zoomedGarrisonId = null;
+          preZoomScale = 1;
           renderMarkers();
       }
   }

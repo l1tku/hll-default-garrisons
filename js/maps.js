@@ -674,7 +674,7 @@ REM: {
 
       // --- NEUTRAL SECTORS (Middle/River) ---
       { label: "ST. SEVERIN CHAPEL", id: "B9", gameX: -39275.0, gameY: 12967.0, radius: 4000.0, team: "neu", type: "strongpoint" }, 
-      { label: "LUDENDORFF BRIDGE", id: "B1", gameX: 3032.2412, gameY: -7.021, radius: 8000.0, team: "neu", type: "strongpoint" }, 
+      { label: "LUDENDORFF BRIDGE", id: "B1", gameX: 3032.2412, gameY: -7.0210953, radius: 8000.0, team: "neu", type: "strongpoint" }, 
       { label: "BAUERNHOF AM RHEIN", id: "B6", gameX: 38817.02, gameY: -15613.944, radius: 4000.0, team: "neu", type: "strongpoint" }, 
 
       // --- ALLIES SECTORS (South/Bottom) ---
@@ -683,7 +683,7 @@ REM: {
       { label: "SCHLIEFFEN AUSWEG", id: "B5", gameX: 39053.0, gameY: -38264.0, radius: 4000.0, team: "us", type: "strongpoint" }, 
       { label: "WALDBURG", id: "B8", gameX: -40954.977, gameY: -80279.71, radius: 4000.0, team: "us", type: "strongpoint" }, 
       { label: "MÜHLENWEG", id: "B3", gameX: 3742.6152, gameY: -72094.91, radius: 4000.0, team: "us", type: "strongpoint" }, 
-      { label: "HAGELKREUZ", id: "B4", gameX: 37607.746, gameY: -68933.32, radius: 4000.0, team: "us", type: "strongpoint" }, 
+      { label: "HAGELKREUZ", id: "B4", gameX: 37607.746, gameY: -68933.32, radius: 4000.0, team: "us", type: "strongpoint" },
 
       // --- GARRISON POSITIONS ---
       // ALLIES (US)
