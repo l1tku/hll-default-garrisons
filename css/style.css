@@ -1,2350 +1,2683 @@
-@font-face {
-  font-family: "SpecialElite";
-  src: url("../fonts/SpecialElite.ttf") format("truetype");
-  font-display: swap;
-  border-right: 1px solid var(--panel-border);
-}
-
-@font-face {
-  font-family: "bolf-font";
-  src: url("../fonts/bolf-font.ttf") format("truetype");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "RobotoBlack";
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url("https://fonts.gstatic.com/s/roboto/v50/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWuZtammT.ttf") format("truetype");
-  font-display: swap;
-}
-
-:root {
-  --bg: radial-gradient(circle at 20% 20%, #1d1f27, #0f1116 55%);
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel-border: rgba(255, 255, 255, 0.06);
-  --control-border: rgba(255, 255, 255, 0.1);
-  --control-bg: rgba(255, 255, 255, 0.05);
-  --accent: #ffcc66;
-  --text: #e8edf5;
-  --muted: #aab3c2;
-  --shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-  --radius: 2px;
-  --font: "SpecialElite", "Segoe UI", "Inter", system-ui, -apple-system, sans-serif;
-  --sidebar-panel-width: min(360px, 85vw);
-  --sidebar-tab: 68px;
-}
-
-:root[data-theme="light"] {
-  --bg: radial-gradient(circle at 22% 28%, #f1e7d5, #e4d6b8 55%);
-  --panel: rgba(248, 241, 223, 0.95);
-  --panel-border: rgba(139, 111, 63, 0.4);
-  --control-border: rgba(92, 70, 40, 0.35);
-  --control-bg: rgba(92, 70, 40, 0.06);
-  --accent: #7a5c2b;
-  --text: #2b2416;
-  --muted: #5b4a2d;
-  --shadow: 0 14px 32px rgba(58, 43, 24, 0.18);
-  --font: "SpecialElite", "Georgia", "Times New Roman", serif;
-}
-
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 36px 18px 48px;
-}
-
-.shell {
-  width: min(1200px, 100%);
-  display: grid;
-  gap: 18px;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-  white-space: nowrap;
-}
-
-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  position: relative;
-  padding-left: 70px; /* Clear space for sidebar toggle button (50px + 20px gap) */
-  min-height: 42px;
-}
-
-.header-copy {
-  flex: 1 1 auto;
-}
-
-/* Sidebar Toggle (Unified for desktop/mobile) */
-.sidebar-toggle {
-  /* Positioning: Always fixed to the screen */
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 2000 !important; /* High but below sidebar */
-  
-  /* Size & Shape */
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  
-  /* Visuals */
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  backdrop-filter: blur(10px);
-  color: var(--text);
-  
-  /* Flex layout for hamburger icon */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.sidebar-toggle:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
-}
-
-.sidebar-toggle:active {
-  transform: translateY(0);
-}
-
-.hamburger {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.hamburger span {
-  display: block;
-  width: 20px;
-  height: 2px;
-  background: currentColor;
-  border-radius: 2px;
-  margin: 2px 0;
-}
-
-@media (max-width: 700px) {
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 720px) {
-  :root {
-    --sidebar-tab: 56px;
-    --sidebar-panel-width: min(320px, 82vw);
-  }
-}
-
-/* FIXED SIDEBAR - Removes ghost borders */
-.sidebar {
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  width: var(--sidebar-panel-width);
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  z-index: 2100 !important;
-  display: flex;
-  flex-direction: column;
-  /* CRITICAL: Transparent container */
-  padding: 0;
-  background: transparent;
-  border: none;
-  backdrop-filter: none;
-  pointer-events: none;
-}
-
-.sidebar-open .sidebar {
-  transform: translateX(0);
-  pointer-events: auto;
-}
-
-.sidebar-panel {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 24px;
-  /* Visuals moved here */
-  background: var(--panel);
-  border-right: 1px solid var(--panel-border);
-  /* Optimization: Tells browser this panel's contents don't affect outside layout */
-  contain: strict;
-  backdrop-filter: blur(16px);
-  box-shadow: var(--shadow);
-  overflow-y: auto;
-  pointer-events: auto;
-}
-
-.sidebar-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.sidebar-close {
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text);
-  font-size: 20px;
-  cursor: pointer;
-  padding: 4px;
-  transition: color 0.15s ease;
-}
-
-.sidebar-close:hover {
-  color: var(--accent);
-}
-
-.eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 11px;
-  color: var(--muted);
-  margin: 0 0 8px;
-}
-
-.sidebar-lede {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.sidebar-tool {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 18px;
-  border-radius: 12px;
-  border: 1px solid var(--control-border);
-  background: rgba(0, 0, 0, 0.25);
-}
-
-:root[data-theme="light"] .sidebar-tool {
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.sidebar-tool.is-active {
-  border-color: var(--accent);
-  background: rgba(255, 204, 102, 0.1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-.sidebar-tool.is-active .eyebrow {
-  color: var(--accent);
-}
-
-.tool-copy {
-  margin: 6px 0 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.cta {
-  padding: 12px 18px;
-  border-radius: 999px;
-  border: none;
-  background: var(--accent);
-  color: #1b1203;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
-}
-
-.cta.is-disabled,
-.cta:disabled {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.6);
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-}
-
-.ghost-link {
-  color: var(--text);
-  font-size: 13px;
-  text-decoration: none;
-  opacity: 0.8;
-}
-
-.ghost-link:hover {
-  opacity: 1;
-  text-decoration: underline;
-}
-
-.site-version {
-  margin-top: 18px;
-  text-align: center;
-  color: var(--muted);
-  font-family: "SpecialElite", var(--font);
-  font-size: 12px;
-  letter-spacing: 0.6px;
-}
-
-:root[data-theme="light"] .site-version {
-  color: rgba(43, 36, 22, 0.65);
-}
-
-.sidebar-backdrop,
-#sidebarBackdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(3px);
-  z-index: 800;
-  transition: opacity 0.3s ease;
-  display: none;
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-
-.sidebar-open #sidebarBackdrop {
-  display: block !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  visibility: visible !important;
-}
-
-#sidebarBackdrop[hidden] {
-  display: none !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-}
-
-.title {
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  margin: 0;
-}
-
-.subtitle {
-  margin: 2px 0 0;
-  color: var(--accent);
-  font-size: 14px;
-  letter-spacing: 0.2px;
-}
-
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  border-radius: var(--radius);
-  backdrop-filter: blur(6px);
-  box-shadow: var(--shadow);
-  padding: 14px;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  position: relative;
-  z-index: 120;
-  touch-action: pan-y;
-}
-
-.faction-group {
-  display: flex;
-  gap: 8px;
-  margin-right: auto;
-}
-
-.faction-group .toggle {
-  min-width: 84px;
-  text-align: center;
-}
-
-.faction-group .toggle:nth-child(3) {
-  min-width: 70px;
-}
-
-.toggle.active {
-  background-color: var(--accent);
-  color: #1d1f27;
-  font-weight: 700;
-  border-color: var(--accent);
-  box-shadow: 0 0 12px rgba(255, 204, 102, 0.35);
-}
-
-:root[data-theme="light"] .toggle.active {
-  color: #f1e7d5;
-}
-
-@media (max-width: 600px) {
-  .faction-group {
-    margin-right: 0;
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-label {
-  font-size: 14px;
-  color: var(--muted);
-}
-
-select {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--control-border);
-  background: var(--control-bg);
-  color: var(--text);
-  min-width: 200px;
-  font-size: 16px;
-  height: 44px;
-}
-
-select option {
-  background: #1a1d24;
-  color: #e8edf5;
-  opacity: 1;
-}
-
-:root[data-theme="light"] select option {
-  background: #f1e7d5;
-  color: #2b2416;
-  opacity: 1;
-}
-
-.toggle {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--control-border);
-  background: var(--control-bg);
-  color: var(--text);
-  cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
-}
-
-.toggle:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-}
-
-:root[data-theme="light"] .toggle {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-}
-
-.map-wrap {
-  --zoom: 1;
-  position: relative;
-  
-  /* TIGHT WRAPPING MAGIC */
-  display: inline-flex;
-  width: fit-content;
-  height: auto;
-  margin: 0 auto;
-  overflow: hidden;
-  
-  /* NEW: Removes the gap caused by the .panel class */
-  padding: 0;
-  
-  border-radius: var(--radius);
-  user-select: none;
-  -webkit-user-select: none;
-  border: 1px solid var(--panel-border);
-  background: transparent;
-  backdrop-filter: none !important;
-  box-shadow: none !important;
-  touch-action: none;
-}
-
-.map-stage {
-  cursor: crosshair;
-  touch-action: none;
-}
-
-.map-wrap.dragging .map-stage {
-  cursor: grabbing;
-}
-
-.map-image {
-  display: block;
-  /* changed from height: 75vh to max-height so it shrinks to fit */
-  max-height: 75vh; 
-  height: auto;     
-  
-  width: auto;
-  max-width: 100vw;
-  
-  object-fit: contain;
-  
-  /* Changed from #06070b to transparent to remove the black bars */
-  background: transparent;
-  
-  /* Helps Chrome Mobile sharpness */
-  image-rendering: -webkit-optimize-contrast;
-}
-
-.map-picture {
-  display: contents;
-}
-
-.map-stage {
-  width: max-content;
-  height: max-content;
-  transform-origin: 0 0;
-  /* Use translate3d to force hardware acceleration */
-  transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(var(--zoom));
-  /* will-change: transform; */
-  backface-visibility: hidden;
-  -webkit-font-smoothing: subpixel-antialiased;
-}
-
-.map-stage.zoom-transition {
-  transition: transform 0.22s ease-out;
-}
-
-/* --- OPTIMIZED SVG GRID --- */
-.grid-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 2;
-  /* transform: translateZ(0); */
-}
-
-.legend-icon-image {
-  width: 16px;
-  height: 16px;
-  display: block;
-  object-fit: contain;
-}
-
-.legend-example-icon {
-  width: 20px;
-  height: 20px;
-  margin-left: -5px; /* Reduced from 6px to move closer to text */
-  display: block;
-  object-fit: contain;
-}
-
-.grid-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  overflow: visible;
-  /* transition: opacity 0.15s; */
-}
-
-.grid-line {
-  stroke: rgba(255, 255, 255, 0.8);
-  stroke-width: 1.5px;
-  vector-effect: non-scaling-stroke;
-  shape-rendering: crispEdges;
-}
-
-.subgrid-line {
-  stroke: rgba(0, 0, 0, 0.4);
-  stroke-width: 0.3px;
-  vector-effect: non-scaling-stroke;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.detailed-grid .subgrid-line {
-  opacity: 1;
-}
-
-.grid-labels {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(10, 1fr);
-}
-
-.grid-label-cell {
-  position: relative;
-}
-
-.grid-label-text {
-  position: absolute;
-  top: 4px;
-  left: 6px;
-  font-family: "RobotoBlack", sans-serif;
-  font-weight: 900;
-  color: #ffffff;
-  font-size: 24px;
-  line-height: 1;
-  transform-origin: top left;
-  transform: scale(var(--inverse-zoom, 1));
-  text-shadow: 1px 1px 2px #000;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-/* NEW: Style for the Red Dots Overlay */
-.markers-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 10;
-  overflow: hidden;
-}
-
-/* --- UPDATED MARKER STYLES --- */
-
-.marker {
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  transform: translate3d(-50%, -50%, 0);
-  cursor: pointer;
-  pointer-events: auto;
-  display: block;
-  transform-origin: center center;
-  /* transform-origin: center center; */
-  --y-offset: 7px; 
-}
-
-
-
-/* 3. THE ICON ITSELF */
-.marker > img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 32px;
-  height: 32px;
-  display: block;
-  z-index: 2;
-  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.65)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
-  background: none;
-  border-radius: 50%;
-  transform-origin: center center;
-  transform: translate(-50%, -50%);
-  transition: transform 0.2s ease;
-}
-
-/* 4. HOVER EFFECT */
-.markers-layer:not(.has-selection) .marker:not(.active):hover > img {
-  transform: translate(-50%, -50%) scale(1.2);
-}
-
-/* 5. STATIC DANGER RADIUS CIRCLE (50m) */
-.marker::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: var(--danger-radius, 60px);
-  height: var(--danger-radius, 60px);
-  /* Added var(--y-offset) */
-  transform: translate(-50%, calc(-50% + var(--y-offset)));
-  border-radius: 50%;
-  border: 2px dashed rgba(64, 64, 64, 0.8);
-  background: rgba(255, 200, 0, 0.3);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* 5b. INNER DANGER RADIUS CIRCLE (15m) */
-.marker .inner-radius {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: var(--inner-radius, 20px);
-  height: var(--inner-radius, 20px);
-  /* Added var(--y-offset) */
-  transform: translate(-50%, calc(-50% + var(--y-offset)));
-  border-radius: 50%;
-  border: 2px solid rgba(220, 60, 60, 0.8);
-  background: rgba(220, 80, 80, 0.4);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* 6. SOFT BASE SHADOW */
-.marker::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 40px;
-  height: 40px;
-  transform: translate(-50%, -50%) scale(1);
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.25) 45%, transparent 75%);
-  filter: blur(3px);
-  opacity: 0.95;
-  pointer-events: none;
-  z-index: -1;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.marker:hover::before,
-.marker.active::before {
-  opacity: 0.75;
-  /* CHANGED: -8% back to -50% to stop it from moving down */
-  transform: translate(-50%, -50%) scale(1.2);
-}
-
-/* --- MOBILE LAYOUT SUPPORT --- */
-@media (max-width: 768px) {
-  body {
-    padding: 0;
-    height: 100dvh; /* Use dynamic viewport height */
-    overflow: hidden;
-  }
-
-  /* 1. Full Screen Map */
-  .shell {
-    width: 100%;
-    height: 100%;
-    gap: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .map-wrap {
-    position: relative;
-    top: auto; left: auto;
-    width: 100%; 
-    height: 100%;
-    flex: 1 1 auto;
-    border: none;
-    border-radius: 0;
-    z-index: 1;
-    /* CRITICAL: Stop browser handling gestures */
-    touch-action: none; 
-  }
-
-  .map-image {
-    max-height: none;
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-
-  /* 2. Header placed above map */
-  header {
-    position: fixed;
-    top: 20px;
-    left: 80px; /* leave space for button */
-    right: 10px;
-    z-index: 20;
-    pointer-events: none;
-    display: flex;
-    justify-content: center;
-    padding: 0;
-    background: transparent;
-  }
-
-  .header-copy {
-    background: rgba(15, 17, 22, 0.85);
-    backdrop-filter: blur(8px);
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid var(--control-border);
-    pointer-events: auto;
-    display: inline-block;
-    width: auto;
-    max-width: 100%;
-    text-align: center;
-  }
-  .subtitle { display: none; } /* Save space */
-  .title {
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    line-height: 1.2;
-    margin: 0;
-  }
-
-  /* 3. Bottom Controls Tray */
-  .panel.controls {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-    flex-direction: column;
-    padding: 16px;
-    z-index: 100;
-    background: rgba(15, 17, 22, 0.95);
-    border: 1px solid var(--accent);
-    border-bottom: none;
-    gap: 12px;
-    touch-action: pan-y; /* Allow scrolling inside panel */
-    /* Optimization: Isolates the bottom bar */
-    contain: layout style;
-  }
-
-  /* Adjust inputs for touch */
-  select {
-    width: 100%;
-    height: 44px;
-    font-size: 16px; /* Prevents iOS zoom */
-  }
-  
-  .faction-group {
-    width: 100%;
-    display: flex;
-  }
-  .faction-group .toggle { flex: 1; }
-  
-  /* Hide Legend to save space */
-  .legend { display: none; }
-
-  /* 5. Markers: Fix Touch Target & Alignment */
-  .marker {
-    width: 44px; /* Big touch target */
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    /* NEW: Override the vertical offset for Mobile only */
-    /* Desktop was 8px. Mobile needs less because the container is smaller. */
-    /* Try values between -4px and -8px until perfect */
-    --y-offset: -200px !important; 
-  }
-  
-  .marker img {
-    /* Restore visual size */
-    width: 32px !important; 
-    height: 32px !important;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  /* Ensure ring matches icon size, not touch target size */
-  .marker::before {
-    width: 32px !important;
-    height: 32px !important;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  /* Ensure danger radius circle scales properly on mobile */
-  .marker::after {
-    width: var(--danger-radius, 60px) !important;
-    height: var(--danger-radius, 60px) !important;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  /* Ensure inner radius circle scales properly on mobile */
-  .marker .inner-radius {
-    width: var(--inner-radius, 20px) !important;
-    height: var(--inner-radius, 20px) !important;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  /* Fix flag alignment in labels */
-  .label-text {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-}
-
-/* Container for the label and buttons */
-.marker-label {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  /* Ensure transform is clean to prevent blurry text */
-  transform: translate(-50%, 0); 
-  margin-bottom: 14px;
-  
-  /* Visual styling */
-  background: rgba(0, 0, 0, 0.85); /* Slightly darker for better contrast in light mode */
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  padding: 6px 10px; /* A bit more padding for touch targets */
-  
-  /* Layout */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-width: 140px; /* Slightly wider to prevent text wrapping */
-  
-  /* Hidden by default */
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-  transition: opacity 0.2s, transform 0.2s;
-  
-  /* Z-INDEX FIX: Ensure it sits on top of everything */
-  z-index: 9999 !important; 
-  
-  /* Shadow to separate it from the map */
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-
-/* ACTIVE STATE - Lift it up slightly */
-.marker.active .marker-label {
-  opacity: 1;
-  pointer-events: auto;
-  visibility: visible;
-  border-color: var(--accent);
-  /* The active lift calculation */
-  transform: translate(-50%, -8px); 
-}
-
-/* 2. HOVER STATE (Conditional) */
-/* Only show hover label if NO selection is currently active */
-.markers-layer:not(.has-selection) .marker:hover .marker-label {
-  opacity: 1;
-  pointer-events: auto;
-  visibility: visible;
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateX(-50%) translateY(-5px);
-}
-
-/* The Text Span */
-.label-text {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  font-family: "RobotoBlack", sans-serif;
-  text-align: center;
-  flex-grow: 1;
-  user-select: none;
-  white-space: nowrap;
-  
-  /* --- FLEXBOX ALIGNMENT --- */
-  display: inline-flex;
-  flex-direction: row; /* Force left-to-right layout */
-  align-items: center; /* Vertically center items */
-  justify-content: center; /* Center the group in the label box */
-  gap: 8px; /* Space between flag and text */
-}
-
-/* Ensure the flag behaves as a flex item, not absolute */
-.label-flag {
-  height: 16px;
-  width: auto;
-  object-fit: contain;
-  margin: 0; 
-  display: block; /* Important: remove inline-block quirks */
-  position: static; /* Important: prevent it from floating away */
-  border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  flex-shrink: 0; /* Don't let the flag squash */
-}
-
-.label-copy {
-  display: inline-block;
-  line-height: 1; /* Prevent vertical misalignment */
-}
-
-/* The Arrow Buttons */
-.nav-arrow {
-  background: transparent;
-  border: none;
-  color: var(--accent);
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  
-  /* --- NEW HITBOX LOGIC --- */
-  /* This creates a 44x44px invisible touch area around the small arrow */
-  min-width: 44px; 
-  min-height: 44px;
-  margin: -10px; /* Pull it back so it doesn't mess up layout */
-  padding: 10px; /* Internal spacing */
-  /* ------------------------ */
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.1s, color 0.1s;
-  
-  /* Prevent browser zoom on double-tap of the button */
-  touch-action: manipulation;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.nav-arrow:hover {
-  color: #ffffff;
-  transform: scale(1.2);
-  text-shadow: 0 0 5px var(--accent);
-}
-
-.nav-arrow:active {
-  transform: scale(0.95);
-}
-
-.legend {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--control-bg);
-  border: 1px solid var(--control-border);
-}
-
-.chip img {
-  width: 20px;
-  height: 20px;
-}
-
-.note {
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.zoom-overlay {
-  position: absolute;
-  right: 30px;
-  bottom: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-  padding: 0;
-  background: transparent;
-  color: var(--text);
-  pointer-events: none;
-  z-index: 20;
-}
-
-:root[data-theme="light"] .zoom-overlay {
-  background: transparent;
-}
-
-.map-wrap.dragging {
-  cursor: grabbing;
-}
-
-.map-wrap.dragging .map-stage {
-  transition: none !important;
-}
-
-.scale-wrapper {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  pointer-events: none;
-  transition: width 0.1s linear;
-}
-
-.scale-bar-graphic {
-  position: relative;
-  height: 8px;
-  border: 1px solid rgba(255,255,255,0.3);
-  background: rgba(0, 0, 0, 0.6);
-  width: 100%;
-}
-
-.scale-bar-graphic::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 50%;
-  background: rgba(255, 255, 255, 0.8);
-}
-
-.scale-tick {
-  position: absolute;
-  bottom: -6px;
-  width: 2px;
-  height: 8px;
-  background: #fff;
-  z-index: 2;
-  text-shadow: 0 1px 2px black;
-}
-
-.t-start { left: 0; }
-.t-mid   { left: 50%; transform: translateX(-50%); }
-.t-end   { right: 0; }
-
-.scale-labels {
-  display: flex;
-  width: 100%;
-  height: 20px;
-  position: relative;
-  margin-top: 6px;
-}
-
-.zoom-lbl {
-  font-family: "RobotoBlack", sans-serif;
-  font-size: 20px;
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000;
-  margin-bottom: 2px;
-  text-align: right;
-}
-
-.scale-lbl {
-  font-family: "RobotoBlack", sans-serif;
-  font-size: 12px;
-  color: #fff;
-  font-weight: 700;
-  text-shadow: 0 0 3px #000, 0 0 3px #000;
-  position: absolute;
-  transform: translateX(-50%);
-}
-
-.l-start { left: 0; }
-.l-mid   { left: 50%; }
-.l-end   { left: 100%; }
-
-@media (max-width: 720px) {
-  body { padding: 22px 14px; }
-  .map-wrap { border-radius: 10px; }
-  .marker { width: 36px; height: 36px; }
-}
-
-/* --- RADIUS LEGEND --- */
-.radius-legend {
-  position: absolute;
-  top: 85px;
-  right: 10px;
-  z-index: 30;
-  background: rgba(15, 17, 22, 0.65);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--control-border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  pointer-events: auto;
-  /* Optimization: Isolates legend */
-  contain: content;
-}
-
-/* --- NEW LEGEND HEADER STYLES --- */
-.legend-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-}
-
-.legend-title {
-  font-family: "SpecialElite", sans-serif;
-  font-size: 12px;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* The Mini Switch */
-.mini-switch {
-  width: 28px;
-  height: 16px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--control-border);
-  border-radius: 99px;
-  position: relative;
-  transition: background 0.2s, border-color 0.2s;
-}
-
-.mini-switch::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 10px;
-  height: 10px;
-  background: var(--muted);
-  border-radius: 50%;
-  transition: transform 0.2s, background 0.2s;
-}
-
-/* Active State for Switch */
-.mini-switch.is-active {
-  background: rgba(122, 92, 43, 0.3);
-  border-color: var(--accent);
-}
-
-.mini-switch.is-active::after {
-  transform: translateX(12px);
-  background: var(--accent);
-}
-
-/* Hover Effect */
-.legend-head:hover .mini-switch {
-  border-color: #fff;
-}
-
-/* Light Mode Support for Header */
-:root[data-theme="light"] .legend-head {
-  border-bottom-color: rgba(139, 111, 63, 0.2);
-}
-
-/* --- LOGIC TO HIDE RINGS --- */
-/* When .rings-hidden is added to the #markers container */
-
-.markers-layer.rings-hidden .marker::after {
-  display: none !important; /* Hides 50m Yellow Ring */
-}
-
-.markers-layer.rings-hidden .marker .inner-radius {
-  display: none !important; /* Hides 15m Red Ring */
-}
-
-.markers-layer.rings-hidden .marker.active::before {
-  /* Only hide the selection ring when active, not the base shadow */
-  display: none !important; 
-}
-
-.legend-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #fff;
-  font-size: 13px;
-  font-family: "RobotoBlack", sans-serif;
-  font-weight: 700;
-  text-shadow: 0 1px 2px #000;
-  margin-bottom: 10px; /* Add vertical spacing between rows */
-}
-
-.legend-row:first-child {
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Separator line */
-}
-
-.legend-icon {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: block;
+/* ==========================================
+   GLOBAL SETTINGS
+   ========================================== */
+* {
   box-sizing: border-box;
 }
 
-.ring-15m {
-  border: 2px solid rgba(220, 60, 60, 0.8);
-  background: rgba(220, 80, 80, 0.4); /* Slightly more visible in legend for clarity */
-}
-
-.ring-50m {
-  border: 2px dashed rgba(64, 64, 64, 0.8);
-  background: rgba(255, 200, 0, 0.5); /* Increased opacity from 0.3 to 0.5 */
-}
-
-/* --- LIGHT MODE SUPPORT --- */
-:root[data-theme="light"] .radius-legend {
-  background: rgba(248, 241, 223, 0.9);
-  border-color: rgba(139, 111, 63, 0.4);
-}
-
-:root[data-theme="light"] .legend-row {
-  color: #ffffff;
-  text-shadow: none;
-}
-
-/* --- MOBILE ADJUSTMENT --- */
-@media (max-width: 768px) {
-  .radius-legend {
-    top: 80px; /* Position below the header */
-    bottom: auto; /* Remove bottom positioning */
-    right: 10px;
-    padding: 8px 10px;
-    gap: 6px;
-  }
+:root {
+  --bg: #1d1f27;
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --grid-color: rgba(255, 255, 255, 1.0);
+  --major-width: 2px; 
+  --minor-width: 1px;
+  color-scheme: dark; /* Force dark system controls */
   
-  .legend-row {
-    font-size: 11px;
-  }
+  /* Z-INDEX SCALE - consolidated for maintainability */
+  --z-loading: 4000;
+  --z-modal: 3000;
+  --z-drawer: 2000;
+  --z-markers: 1000;
+  --z-grid: 500;
+  --z-ui: 300;
 }
 
-/* --- ACTIVE MARKER STATE (WW2 MAP STYLE) --- */
+/* --- Flag Styles --- */
 
-/* 1. 50m Radius (::after) */
-.marker.active::after {
-  /* Keep these to ensure layering and position remain correct */
-  opacity: 1;
-  z-index: 0;
-  transform: translate(-50%, calc(-50% + var(--y-offset))); 
-
-  /* --- DELETED "Grease Pencil" STYLES --- */
-  /* By removing border and background, it will use the 
-     standard yellow colors defined in .marker::after */
+/* --- Flag Styles --- */
+.faction-flag {
+  width: 28px;
+  height: auto;
+  margin-right: 8px;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  vertical-align: middle;
 }
 
-/* 2. 15m Radius (inner-radius) */
-.marker.active .inner-radius {
-  /* Keep these to ensure layering and position remain correct */
-  opacity: 1;
-  z-index: 1;
-  transform: translate(-50%, calc(-50% + var(--y-offset)));
-
-  /* --- DELETED "Grease Pencil" STYLES --- */
-  /* By removing border and background, it will use the 
-     standard red colors defined in .marker .inner-radius */
-}
-
-/* 3. The Icon Itself - Standard Pop (KEEP THIS) */
-.marker.active > img {
-  transform: translate(-50%, -50%) scale(1.3);
-  /* Simple ink shadow, no glow */
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
-  z-index: 50; 
-}
-
-/* 4. The Base Shadow (::before) - KEEP VISIBLE & CENTERED (KEEP THIS) */
-.marker.active::before {
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.25) 45%, transparent 75%);
-  border: none;
-  box-shadow: none !important;
-  transform: translate(-50%, -50%) scale(1.3);
-  z-index: -1;
-  opacity: 0.75;
-}
-
-/* --- LOADING OVERLAY --- */
-.map-loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(15, 17, 22, 0.85);
+/* Ensure flex alignment in the dropdown items */
+.dropdown-item {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  z-index: 50;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  backdrop-filter: blur(4px);
 }
 
-.map-loader.visible {
-  opacity: 1;
-  pointer-events: auto;
+/* Ensure flex alignment in the main button */
+#factionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid var(--control-bg);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 12px;
+#factionBtn .icon {
+  margin-left: auto;
 }
 
-.loading-text {
-  color: var(--accent);
-  font-family: "SpecialElite", sans-serif;
-  font-size: 14px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Coordinate readout */
-.coord-readout {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  padding: 10px 12px;
-  background: rgba(0, 0, 0, 0.7);
-  color: #fff;
-  font-family: "RobotoBlack", sans-serif;
-  font-size: 13px;
-  border: 1px solid var(--control-border);
-  border-radius: 8px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.18s ease, transform 0.18s ease;
-  pointer-events: none;
-}
-
-.coord-readout.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Force clicks to pass through overlays so they hit the map */
-.map-overlay, 
-.grid-overlay, 
-.markers-layer {
-  pointer-events: none !important;
-}
-
-/* Allow clicking on the markers themselves */
-.marker {
-  pointer-events: auto !important;
-}
-
-/* css/style.css - Performance Patch */
-
-/* 1. HIDE THE HEAVY GRID WHILE ZOOMING */
-/* This is the #1 performance fix. It stops the expensive recalculations. */
-.is-interacting .grid-overlay {
-  opacity: 0;
-  transition: opacity 0.05s ease; /* Fade out instantly */
-}
-
-/* 2. DISABLE FANCY IMAGE SMOOTHING */
-/* While moving, use "pixelated" rendering which is 10x faster */
-.is-interacting .map-image {
-  image-rendering: pixelated; 
-}
-
-/* 3. DISABLE SHADOWS & BLURS */
-/* Shadows force the GPU to repaint the whole area every frame */
-.is-interacting .map-wrap {
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-}
-
-/* 4. SIMPLIFY MARKERS (UPDATED) */
-/* We ONLY hide the pulsing animation ring (::before) to save performance. */
-/* We KEEP the shadows (::after and img filters) so the icon stays visible against the map. */
-.is-interacting .marker::before {
-  display: none !important;
-}
-
-/* Previously, we hid ::after and removed img filters here. 
-   By removing those lines, the shadows will now persist while dragging. */
-
-/* 5. SMOOTH RETURN */
-/* When you stop zooming, fade everything back in nicely */
-.grid-overlay, .marker, .map-wrap {
-  transition: opacity 0.15s, box-shadow 0.15s, filter 0.15s;
-}
-
-/* --- MOBILE LAYOUT OVERRIDES --- */
-@media (max-width: 768px) {
-  body {
-    padding: 0;
-    flex-direction: column;
-    height: 100dvh;
-    overflow: hidden;
-  }
-
-  /* 1. Full Screen Map */
-  .shell {
-    width: 100%;
-    height: 100%;
-    gap: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .map-wrap {
-    position: relative;
-    width: 100%; 
-    height: 100%;
-    flex: 1 1 auto;
-    border: none;
-    border-radius: 0;
-    z-index: 1;
-    touch-action: none; 
-    margin: 0; 
-  }
-
-  .map-image {
-    max-height: none;
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-
-  /* 2. Header: Positioned Top-Left (Next to Button) */
-  header {
-    position: fixed;
-    top: 10px;      /* Align vertically with button */
-    left: 70px;     /* Push right to clear the button (50px button + 20px gap) */
-    right: 10px;    /* Stop before right edge */
-    z-index: 20;
-    padding: 0;
-    pointer-events: none;
-    display: flex;
-    justify-content: flex-start; /* Align text block to the left */
-    background: transparent;
-    align-items: flex-start; /* Align top */
-  }
-
-  .header-copy {
-    background: rgba(15, 17, 22, 0.90);
-    backdrop-filter: blur(8px);
-    padding: 8px 12px;
-    border-radius: 12px;
-    border: 1px solid var(--control-border);
-    pointer-events: auto;
-    text-align: left;
-    width: auto;
-    /* Limit width to ensure wrapping happens before screen edge */
-    max-width: 100%; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  }
-
-  .title { 
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    color: var(--accent);
-    text-shadow: 0 1px 2px black;
-    line-height: 1.3;
-    margin: 0;
-    
-    /* Allow Text Wrapping */
-    white-space: normal; 
-    overflow: visible;
-    text-overflow: clip;
-    word-wrap: break-word;
-  }
-  
-  .subtitle { display: none; } 
-
-  /* 3. Sidebar Button (Fixed Top Left) */
-  .sidebar-toggle {
-    top: 10px; 
-    left: 10px;
-    width: 50px; 
-    height: 50px;
-    background: rgba(15, 17, 22, 0.90) !important;
-    border: 1px solid var(--control-border) !important;
-    border-radius: 12px;
-    z-index: 2000 !important; /* Ensure high z-index, but lower than sidebar */
-  }
-
-  /* 4. Controls Panel (Bottom) */
-  .panel.controls {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-    flex-direction: column;
-    padding: 16px;
-    z-index: 100;
-    
-    /* UPDATED: Matches the arrow transparency */
-    background: rgba(15, 17, 22, 0.65) !important;
-    backdrop-filter: blur(10px);
-    
-    border: 1px solid var(--accent);
-    border-bottom: none;
-    gap: 12px;
-    max-height: 60vh;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    
-    /* OPTIONAL: Remove the heavy shadow so it looks lighter */
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
-  }
-
-  .panel.controls > label:first-child { display: none; }
-  
-  .panel.controls > select:first-of-type {
-    width: 100%;
-    margin-bottom: 8px;
-    font-size: 16px;
-    height: 44px;
-  }
-
-  .faction-group {
-    width: 100%;
-    display: flex;
-  }
-  .faction-group .toggle { flex: 1; min-width: auto; }
-
-  .panel.controls > .toggle:last-child {
-    width: 100%;
-    margin-top: 4px;
-  }
-
-  /* 5. Version Tag: FIXED to screen so address bars don't cover it */
-  .site-version {
-    position: fixed; /* Changed from absolute to fixed */
-    
-    /* 90px from bottom ensures it clears the yellow toggle button */
-    bottom: calc(30px + env(safe-area-inset-bottom, 10px)); /* Increased from 90px to 105px (15px more) */ 
-    
-    left: 50%;
-    transform: translateX(-50%);
-    right: auto;
-    top: auto;
-    
-    margin: 0;
-    padding: 0;
-    
-    background: transparent;
-    color: rgba(255, 255, 255, 0.8) !important;
-    font-family: "SpecialElite", monospace;
-    font-size: 10px;
-    text-shadow: 0 1px 2px #000;
-    pointer-events: none;
-    z-index: 10;
-    width: max-content;
-  }
-  
-  /* Zoom/Scale Overlay: FIXED to screen above Version Tag */
-  .zoom-overlay {
-    position: fixed; /* Changed from absolute to fixed */
-    
-    left: 50%;
-    transform: translateX(-50%);
-    right: auto;
-    
-    /* 115px from bottom ensures it sits above the version text */
-    bottom: calc(115px + env(safe-area-inset-bottom, 10px)); 
-    
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    text-align: center;
-    gap: 2px;
-    
-    background: transparent;
-    pointer-events: none;
-    z-index: 10;
-    width: auto;
-  }
-
-  /* Hide Legend */
-  .legend { display: none; }
-
-  /* 5. Markers: Fix Touch Target & Alignment */
-  .marker {
-    width: 44px; /* Big touch target */
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    /* STEP 1: Set this to 0px first. */
-    /* Positive numbers (e.g. 4px) move the icon DOWN. */
-    /* Negative numbers (e.g. -4px) move the icon UP. */
-    --y-offset: 7px !important; 
-  }
-  
-  /* CRITICAL FIX: Added ">" to only target the garrison icon, not the flag */
-  .marker > img {
-    width: 32px !important; 
-    height: 32px !important;
-    position: absolute;
-    top: 50%; left: 50%;
-    /* ICON STAYS CENTERED - NO OFFSET */
-    transform: translate(-50%, -50%);
-  }
-
-  /* Ensure ring matches icon size and offset */
-  .marker::before {
-    width: 75% !important; 
-    height: 75% !important;
-    top: 50%; left: 50%;
-    /* CHANGED: Replaced -50% with calculation */
-    transform: translate(-50%, calc(-50% + var(--y-offset)));
-  }
-  
-  /* Ensure Label Layout is correct */
-  .label-text {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  
-  /* Ensure flag is static (not absolute) so it sits next to text */
-  .label-flag {
-    position: static !important;
-    transform: none !important;
-    margin: 0 !important;
-  }
-
-  /* You must also fix the active/radius circles if they are defined in mobile */
-  .marker::after {
-    transform: translate(-50%, calc(-50% + var(--y-offset)));
-  }
-  
-  .marker .inner-radius {
-     transform: translate(-50%, calc(-50% + var(--y-offset)));
-  }
-
-  /* Sidebar Fix */
-  .sidebar { backdrop-filter: none !important; }
-
-  /* Move only the zoom level indicator */
-  #zoomLevelIndicator {
-    position: relative;
-    transform: translate(110px, 30px);
-  }
-}
-
-/* --- MOBILE PANEL TOGGLE (DROPBAR) --- */
-@media (max-width: 768px) {
-  /* 1. The Toggle Handle button */
-  .controls-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    position: absolute;
-    top: -28px; /* Height of the handle, sitting on top */
-    left: 50%;
-    transform: translateX(-50%);
-    
-    width: 60px;
-    height: 28px;
-    
-    background: rgba(15, 17, 22, 0.65);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--accent);
-    border-bottom: none; /* Connect visually to the panel */
-    border-radius: 8px 8px 0 0;
-    
-    cursor: pointer;
-    z-index: 110;
-    padding: 0;
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.25);
-  }
-
-  /* 2. The Chevron Icon (CSS arrow) */
-  .controls-toggle::after {
-    content: '';
-    display: block;
-    width: 8px;
-    height: 8px;
-    border-right: 2px solid var(--accent);
-    border-bottom: 2px solid var(--accent);
-    transform: rotate(45deg) translate(-2px, -2px); /* Points Down initially */
-    transition: transform 0.3s ease;
-  }
-
-  /* 3. Enable Smooth Animation on the Panel */
-  .panel.controls {
-    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    transform: translateY(0); /* Default state: Visible */
-  }
-
-  /* 4. Minimized State (Hidden) */
-  .panel.controls.minimized {
-    /* Moves the panel 100% down. The handle remains visible because of top: -28px */
-    transform: translateY(100%); 
-  }
-
-  /* 5. Flip the arrow when minimized */
-  .panel.controls.minimized .controls-toggle::after {
-    transform: rotate(-135deg) translate(-2px, -2px); /* Points Up */
-  }
-}
-
-/* Hide toggle on desktop */
-@media (min-width: 769px) {
-  .controls-toggle {
-    display: none;
-  }
-}
-
-/* PERFORMANCE BOOSTERS */
-.map-stage {
-  contain: layout style; /* Removed 'paint' and 'will-change' to fix blur */
-  /* transform: translate3d(...) is already hardware accelerated automatically */
-}
-
-.marker {
-  /* Markers don't affect the layout of the map image */
-  contain: layout style;
-}
-
-.grid-overlay {
-  /* The grid is complex, isolate it */
-  contain: strict;
-}
-
-/* Removes the grey tap highlight on mobile */
-.marker, 
-.nav-arrow, 
-.controls-toggle, 
-button, 
-select {
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-}
-
-/* Prevent context menu and save image on map */
-.map-image,
-.map-stage,
-.map-wrap {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  pointer-events: none;
-}
-
-.map-stage {
-  pointer-events: auto;
-}
-
-/* FORCE WHITE TEXT IN LABELS (Even in Light Mode) */
-.marker-label,
-.marker-label .label-text,
-.marker-label .label-copy {
-  color: #ffffff !important; 
-  text-shadow: none !important;
-}
-
-/* Ensure arrows are visible on the dark label background */
-.nav-arrow {
-  color: var(--accent) !important;
-}
-.nav-arrow:hover {
-  color: #ffffff !important;
-}
-
-/* --- MOBILE LIGHT MODE FIXES --- */
-
-/* 1. Make Version Text Dark Grey */
-:root[data-theme="light"] .site-version {
-  color: #5b4a2d !important;      /* Dark brown/grey */
-  text-shadow: none !important;    /* Remove the black shadow */
-  font-weight: bold;
-}
-
-/* 2. Make Zoom Level Text Dark */
-:root[data-theme="light"] .zoom-lbl {
-  color: #2b2416 !important;       /* Almost black */
-  text-shadow: 0 0 4px #ffffff !important; /* White halo to separate from map lines */
-}
-
-/* 3. Make Scale Bar Text Dark */
-:root[data-theme="light"] .scale-lbl {
-  color: #2b2416 !important;
-  text-shadow: 0 0 4px #ffffff !important;
-}
-
-/* 4. Fix Scale Bar Colors (Ticks & Lines) */
-:root[data-theme="light"] .scale-tick {
-  background: #2b2416 !important;  /* Dark ticks */
-}
-
-:root[data-theme="light"] .scale-bar-graphic {
-  border-color: #5b4a2d !important; /* Dark border */
-  background: rgba(255, 255, 255, 0.5) !important; /* Semi-transparent white bar */
-}
-
-/* 5. Fix the Dropbar Handle (Yellow Button) */
-:root[data-theme="light"] .controls-toggle {
-  background: #f1e7d5 !important;   /* Match Light Mode panel background */
-  border-color: #7a5c2b !important; /* Dark border */
-}
-
-:root[data-theme="light"] .controls-toggle::after {
-  border-color: #7a5c2b !important; /* Dark arrow icon */
-}
-
-/* --- MOBILE HEADER & MENU BUTTON LIGHT MODE FIXES --- */
-@media (max-width: 768px) {
-  
-  /* 1. Fix the Header Text Box background and border */
-  .header-copy {
-    background: rgba(15, 17, 22, 0.65) !important;
-    backdrop-filter: blur(8px);
-  }
-  
-  .sidebar-toggle {
-    background: rgba(15, 17, 22, 0.65) !important;
-    backdrop-filter: blur(8px);
-  }
-
-  :root[data-theme="light"] .header-copy {
-    background: rgba(248, 241, 223, 0.70) !important; /* Light Panel Color */
-    border-color: rgba(139, 111, 63, 0.4) !important;  /* Light Border Color */
-    box-shadow: 0 4px 12px rgba(58, 43, 24, 0.15) !important; /* Soft brown shadow */
-  }
-
-  /* 2. Fix the Title Text (Color and remove black shadow) */
-  :root[data-theme="light"] .header-copy .title {
-    color: #7a5c2b !important; /* Dark Accent Color */
-    text-shadow: none !important; /* Remove the black text shadow */
-  }
-
-  /* 3. Fix the Menu Button (Sidebar Toggle) */
-  :root[data-theme="light"] .sidebar-toggle {
-    background: rgba(248, 241, 223, 0.90) !important; /* Light Panel Color */
-    border-color: rgba(139, 111, 63, 0.4) !important;
-    color: #2b2416 !important; /* Dark Hamburger Icon Color */
-  }
-  
-  /* Optional: Add hover effect for the menu button in light mode */
-  :root[data-theme="light"] .sidebar-toggle:hover {
-     border-color: #7a5c2b !important;
-  }
-}
-
-/* --- MOBILE CONTROLS LIGHT MODE FIX --- */
-@media (max-width: 768px) {
-  
-  /* 1. Fix the Bottom Control Panel Background */
-  :root[data-theme="light"] .panel.controls {
-    background: rgba(248, 241, 223, 0.95) !important; /* Light Beige Theme Color */
-    border-color: rgba(139, 111, 63, 0.4) !important;  /* Light Border Color */
-  }
-
-  /* 2. Fix the Toggle Handle (The small tab on top of the panel) */
-  :root[data-theme="light"] .controls-toggle {
-    background: rgba(248, 241, 223, 0.95) !important; /* Match Panel */
-    border-color: rgba(139, 111, 63, 0.4) !important;
-  }
-  
-  /* 3. Fix the Dropdown (Map Selection) to be Solid White */
-  :root[data-theme="light"] select {
-    background-color: #ffffff !important;  /* Solid White Background */
-    color: #2b2416 !important;             /* Dark Text */
-    border: 1px solid rgba(139, 111, 63, 0.4) !important;
-  }
-  
-  /* Optional: Ensure the dropdown arrow is visible */
-  :root[data-theme="light"] .controls-toggle::after {
-    border-color: #7a5c2b !important; /* Dark Arrow */
-  }
-}
-
-/* --- LIGHT MODE SIDEBAR & BUTTON FIXES --- */
-
-/* 1. Fix the 'Open SPA Calculator' Button */
-/* We flip the colors: Dark Brown Background, Light Cream Text */
-:root[data-theme="light"] .cta {
-  background-color: var(--accent) !important; /* Dark Brown */
-  color: #f1e7d5 !important;                  /* Light Cream Text */
-  box-shadow: 0 6px 12px rgba(91, 74, 45, 0.25);
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Hover State for the button */
-:root[data-theme="light"] .cta:hover {
-  background-color: #5b4a2d !important;       /* Even darker brown on hover */
-  color: #ffffff !important;                  /* Pure white text */
-  box-shadow: 0 8px 16px rgba(91, 74, 45, 0.35);
-  transform: translateY(-2px);
-}
-
-/* 2. Improve the Card Background Contrast */
-/* Make the background slightly more solid so text is sharper */
-:root[data-theme="light"] .sidebar-tool {
-  background: rgba(248, 241, 223, 0.85);      /* More opaque beige */
-  border: 1px solid rgba(139, 111, 63, 0.3);  /* Define the border clearly */
-}
-
-/* 3. Sharpen the Text Headers inside the tool */
-:root[data-theme="light"] .sidebar-tool h3 {
-  color: #2b2416;                             /* Almost black/brown */
-  text-shadow: none;
+@font-face {
+  font-family: 'GothamSS';
+  src: url('../fonts/Gotham.otf') format('opentype');
   font-weight: 900;
+  font-style: normal;
+  font-display: swap;
 }
 
-/* 4. Sharpen the Body Text inside the tool */
-:root[data-theme="light"] .tool-copy {
-  color: #4a3b22;                             /* Deep brown */
-  font-weight: 500;
+/* Chrome/Blink rendering fixes */
+.marker-label, 
+.hll-grid-label,  
+.data-value {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- LIGHT MODE SELECTED GARRISON LABEL FIX --- */
+html {
+    /* STOPS Pull-to-Refresh on Android */
+    overscroll-behavior-y: none; 
+    
+    /* STOPS the whole page from bouncing on iOS */
+    overflow: hidden; 
+    
+    /* STOPS double-tap to zoom on buttons */
+    touch-action: none;
 
-/* 1. Change the Label Background to Light Beige */
-:root[data-theme="light"] .marker-label {
-  background: rgba(248, 241, 223, 0.95) !important; /* Light Panel Background */
-  border: 1px solid rgba(139, 111, 63, 0.5) !important; /* Dark Brown Border */
-  box-shadow: 0 6px 16px rgba(58, 43, 24, 0.25) !important; /* Soft Brown Shadow */
+    /* Fixes the "Address Bar" jumping issue */
+    height: 100dvh; 
 }
 
-/* 2. Change the Text Color to Dark Brown */
-/* We use !important to override the "Force White Text" rule defined earlier */
-:root[data-theme="light"] .marker-label .label-text,
-:root[data-theme="light"] .marker-label .label-copy {
-  color: #2b2416 !important; 
-  text-shadow: none !important;
+body {
+  margin: 0; height: 100dvh; width: 100vw;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; font-family: sans-serif;
+  user-select: none;           
+  -webkit-user-select: none;   
+  -moz-user-select: none;      
+  -ms-user-select: none;       
 }
 
-/* 3. Adjust the Arrows for the Light Background */
-:root[data-theme="light"] .nav-arrow {
-  color: #7a5c2b !important; /* Use the dark accent color */
+.shell {
+  width: 100%; height: 100%; padding: 20px;
+  box-sizing: border-box; display: flex; flex-direction: column;
 }
 
-/* Arrow Hover State */
-:root[data-theme="light"] .nav-arrow:hover {
-  color: #2b2416 !important; /* Almost black on hover */
-  text-shadow: none !important;
-  transform: scale(1.2);
-}
-
-/* --- LIGHT MODE ACTIVE MARKER SHADOW FIX --- */
-
-/* 1. Ensure Shadow persists in Light Mode */
-:root[data-theme="light"] .marker.active::before {
-  /* Keep the shadow gradient */
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.25) 45%, transparent 75%) !important;
-  border: none !important;
-  box-shadow: none !important;
-  opacity: 0.75;
-}
-
-/* 2. Ensure Radiuses remain flat */
-:root[data-theme="light"] .marker.active::after,
-:root[data-theme="light"] .marker.active .inner-radius {
-  box-shadow: none !important;
-}
-
-/* 3. Icon Shadow */
-:root[data-theme="light"] .marker.active > img {
-  filter: drop-shadow(0 12px 18px rgba(91, 74, 45, 0.65)) drop-shadow(0 4px 8px rgba(91, 74, 45, 0.35));
-}
-
-/* --- LIGHT MODE FLAG FIX --- */
-
-/* Remove the dark shadow box around the flag so it looks clean */
-:root[data-theme="light"] .label-flag {
-  box-shadow: none !important;
-  border: none !important;
-}
-
-/* --- SCALE INDICATOR PIXEL-PERFECT FIX --- */
-
-/* 1. Base Tick Style */
-.scale-tick {
-  position: absolute;
+/* ==========================================
+   MAP CONTAINER & STAGE
+   ========================================== */
+.map-wrap {
+  position: relative; width: 100%; height: 100%;
+  background: #000;
+  border: 1px solid var(--panel-border);
+  border-radius: 4px; overflow: hidden; 
   
-  /* HEIGHT ADJUSTMENT: Increased from 8px to 12px */
-  height: 12px; 
+  /* FIX 1: Performance Isolation */
+  /* Tells browser this container is isolated, preventing layout thrashing */
+  contain: layout paint style; 
+
+  /* --- CUSTOM CURSOR --- */
+  /* 16 16 sets the "hotspot" (click point) to the center of a 32x32 image. */
+  /* Change 'png' to 'webp' if your file is .webp */
+  /* cursor: url('../images/ui/garrison_lining_dot_2.png') 16 16, auto; */
+}
+
+/* Ensure the cursor changes to a grabbing hand when you click/drag */
+.map-wrap:active {
+  cursor: grabbing;
+}
+
+/* ==========================================
+   MAP CONTAINER & STAGE
+   ========================================== */
+/* --- FIX 3: Performance Safety --- */
+.map-stage {
+  transform-origin: 0 0; 
+  position: absolute; 
+  top: 0; 
+  left: 0;
+  transition: opacity 0.4s ease-in-out;
   
-  /* Positioning: -6px bottom means it hangs 6px below the bar 
-     and extends 6px up into the bar (since bar is 8px tall). */
-  bottom: -6px;
+  /* --- FIX: REMOVE THESE LINES --- */
+  /* will-change: transform; */
+  /* -webkit-backface-visibility: hidden; */
+  /* backface-visibility: hidden; */
   
-  width: 2px;
-  background: #fff;
-  z-index: 2;
+  /* Modern browsers handle 2D transforms efficiently on the CPU/Compositor 
+     without forcing a dedicated high-memory layer. */
+}
+
+/* ==========================================
+   DESKTOP SMOOTH ZOOM FIX (Safe for Mobile)
+   ========================================== */
+/* 1025px ensures this NEVER runs on phones (even Pro Max in landscape) */
+@media (min-width: 1025px) {
   
-  /* Clean up styling */
-  text-shadow: none !important;
-  box-shadow: none !important;
-  transform: translateZ(0); /* Hardware accel for smooth scaling */
-}
-
-/* 2. Start Tick: Align to outer left edge */
-.t-start {
-  /* Pull left by 1px to align the 2px tick over the 1px border */
-  left: -1px !important;
-}
-
-/* 3. Middle Tick: Center alignment */
-.t-mid {
-  left: 50%;
-  transform: none !important; 
-  /* Center the 2px width perfectly on the 50% line */
-  margin-left: -1px; 
-}
-
-/* 4. End Tick: Align to outer right edge */
-.t-end {
-  /* Pull right by 1px to align perfectly with the border */
-  right: -1px !important;
-  left: auto !important;
-}
-
-/* --- LIGHT MODE SCALE BAR: STRICT BLACK & WHITE --- */
-
-/* 1. The Bar Container: Use Gradient for distinct Black/White halves */
-:root[data-theme="light"] .scale-bar-graphic {
-  /* Left Half = Black (#000), Right Half = White (#fff) */
-  background: linear-gradient(to right, #000000 50%, #ffffff 50%) !important;
+  /* 1. Hardware Acceleration Removed (Fixes Mobile Chrome Checkerboarding) */
+  /* Modern Chrome auto-promotes transform elements without will-change */
   
-  /* Solid Black Border */
-  border: 1px solid #000000 !important;
+  .marker, .hll-grid-line {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0); 
+  }
+
+  /* 2. Smooth Zoom Transitions (Desktop Only) */
+  /* We move the transition logic HERE so mobile doesn't crash trying to animate huge textures */
+  .map-stage.zoom-transition {
+    transition: transform 0.25s cubic-bezier(0.1, 0.2, 0.1, 1.0) !important;
+  }
+
+  .label-layer.zoom-transition .hll-grid-label {
+    transition: transform 0.25s cubic-bezier(0.1, 0.2, 0.1, 1.0) !important;
+    /* will-change: transform; REMOVED - causes checkerboarding on mobile Chrome */
+  }
+
+  /* FIX: Smooth out BOTH position and scale */
+  .map-stage.zoom-transition .marker-label {
+    transition: 
+        transform 0.25s cubic-bezier(0.1, 0.2, 0.1, 1.0),
+        top 0.25s cubic-bezier(0.1, 0.2, 0.1, 1.0) !important;
+        
+    /* Tells the GPU to get ready to animate these properties */
+    will-change: transform, top; 
+  }
+
+  /* FIX: Smooth out the arrow fading too */
+  .map-stage.zoom-transition .marker-label::after {
+    transition: opacity 0.25s cubic-bezier(0.1, 0.2, 0.1, 1.0) !important;
+  }
+}
+
+.map-image {
+  display: block; 
+  pointer-events: none; 
+  max-width: none; 
+  max-height: none;
+  /* FIX 2: Reduce Scaling Cost */
+  /* CHANGE: high-quality causes checkerboarding on mobile zoom. Use auto. */
+  image-rendering: auto;
+  /* Ensure no hardware acceleration hints are accidentally applied */
+  transform: none;
+  transition: opacity 0.3s ease-in-out;
+  background-color: black; /* Prevents white flashes */
+}
+
+/* ==========================================
+   GRID SYSTEM
+   ========================================== */
+.grid-layer {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 2;
+}
+
+.keypad-grid {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.7) var(--minor-width), transparent var(--minor-width)),
+    linear-gradient(to bottom, rgba(0,0,0,0.7) var(--minor-width), transparent var(--minor-width));
   
-  /* Remove shadow for a crisp, flat look */
-  box-shadow: none !important;
+  shape-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 2. Hide the old overlay element (::after) since we use gradient now */
-:root[data-theme="light"] .scale-bar-graphic::after {
-  display: none !important;
+/* --- GRID LINES (FIXED: No Dark Overlaps) --- */
+.hll-grid-line {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    
+    /* 1. White Core */
+    background-color: #ffffff !important;
+    
+    /* 2. No standard border */
+    border: none !important; 
+    
+    /* 3. THE FIX: Use a subtle hard shadow instead of a fuzzy one */
+    /* We reduce opacity to 0.5 so the overlap isn't as harsh */
+    box-shadow: 
+        1px 0 0 rgba(0, 0, 0, 0.5),
+        -1px 0 0 rgba(0, 0, 0, 0.5),
+        0 1px 0 rgba(0, 0, 0, 0.5),
+        0 -1px 0 rgba(0, 0, 0, 0.5) !important;
+        
+    /* Optional: Mix-blend-mode can help lines merge, 
+       but 'normal' is usually safest for UI overlays */
+    mix-blend-mode: normal; 
 }
 
-/* 3. The Ticks: Solid Black */
-:root[data-theme="light"] .scale-tick {
-  background: #000000 !important;
-  width: 2px !important;
-  z-index: 5;
-  box-shadow: none !important;
+/* Ensure JS thickness logic works */
+.hll-grid-line.vertical {
+    width: var(--major-width, 1px);
+    height: 100%;
+    transform-origin: top left; /* Sharp rendering */
 }
 
-/* 4. The Text Labels: Solid Black with Strong White Outline */
-:root[data-theme="light"] .scale-lbl,
-:root[data-theme="light"] .zoom-lbl {
-  color: #000000 !important;
-  /* Strong white outline to ensure legibility against map lines */
-  text-shadow: 
-    1px 1px 0 #fff, -1px -1px 0 #fff, 
-    1px -1px 0 #fff, -1px 1px 0 #fff !important;
-  font-weight: 900 !important;
+.hll-grid-line.horizontal {
+    height: var(--major-width, 1px);
+    width: 100%;
+    transform-origin: top left;
 }
 
-/* --- FORCE MAP OVERLAYS TO DARK STYLE (EVEN IN LIGHT MODE) --- */
-
-/* 1. Reset Version Text to White/Grey */
-:root[data-theme="light"] .site-version {
-  color: rgba(255, 255, 255, 0.8) !important;
-  text-shadow: 0 1px 2px #000 !important;
-  font-weight: normal !important;
+/* ==========================================
+   LABELS (Sticky Axis)
+   ========================================== */
+.label-layer {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 10; overflow: hidden;
 }
 
-/* 2. Reset Zoom Level Text to White with Black Outline */
-:root[data-theme="light"] .zoom-lbl {
-  color: #fff !important;
-  text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000 !important;
-}
-
-/* 3. Reset Scale Labels to White with Shadow */
-:root[data-theme="light"] .scale-lbl {
-  color: #fff !important;
-  text-shadow: 0 0 3px #000, 0 0 3px #000 !important;
-}
-
-/* 4. Reset Scale Bar Graphic (Dark bar with White Fill) */
-:root[data-theme="light"] .scale-bar-graphic {
-  background: rgba(0, 0, 0, 0.6) !important;       /* Dark background */
-  border: 1px solid rgba(255,255,255,0.3) !important; /* White border */
-  box-shadow: none !important;
-}
-
-/* 5. Restore the "Half-Filled" White Bar */
-:root[data-theme="light"] .scale-bar-graphic::after {
-  display: block !important;
-  content: '';
+/* ==========================================
+   LABELS (Sticky Axis)
+   ========================================== */
+.hll-grid-label {
   position: absolute;
   top: 0; left: 0;
-  height: 100%; width: 50%;
-  background: rgba(255, 255, 255, 0.8) !important; /* White fill */
-  opacity: 1 !important;
-}
-
-/* 6. Reset Ticks to White */
-:root[data-theme="light"] .scale-tick {
-  background: #fff !important;
-  box-shadow: none !important;
-  text-shadow: 0 1px 2px black !important;
-}
-
-/* --- MOBILE GRID THICKNESS FIX --- */
-@media (max-width: 768px) {
-  .grid-line {
-    /* Reduced from 1.5px to 0.75px for a cleaner look on small screens */
-    stroke-width: 0.75px; 
-  }
-}
-
-/* --- LIGHT MODE ACTIVE TOOL HIGHLIGHT FIX --- */
-
-:root[data-theme="light"] .sidebar-tool.is-active {
-  /* 1. Stronger Border */
-  border-color: #7a5c2b !important; 
+  font-family: 'GothamSS', sans-serif; 
+  font-weight: 900; 
+  font-size: 24px;
+  color: #ffffff;
   
-  /* 2. Visible Background Tint (Warm Brown) */
-  /* Replaces the invisible yellow with a 15% opacity brown that sits well on beige */
-  background: rgba(122, 92, 43, 0.15) !important;
+  /* --- THE FIX --- */
+  /* 1. Remove the old shadow hack */
+  text-shadow: none !important;
   
-  /* 3. Soft Shadow/Glow */
-  /* Adds depth to make it lift off the panel */
-  box-shadow: 0 8px 24px rgba(122, 92, 43, 0.15) !important;
-}
-
-/* Optional: Make the "You're here" disabled button legible in light mode */
-:root[data-theme="light"] .cta:disabled {
-  background: rgba(122, 92, 43, 0.08) !important; /* Faint brown fill */
-  color: #7a5c2b !important; /* Dark text */
-  border: 1px solid rgba(122, 92, 43, 0.2) !important; /* Subtle border */
-}
-
-/* =========================================
-   FINAL VISUAL FIXES
-   ========================================= */
-
-/* --- 1. WARNING LEGEND (Top Right) --- */
-/* Transparent background, NO BLUR */
-.radius-legend {
-  background: rgba(15, 17, 22, 0.65) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* --- 2. MOBILE HEADER & MENU BUTTON (Top Left) --- */
-@media (max-width: 768px) {
-  /* Main Header Text - Transparent, NO BLUR */
-  .header-copy {
-    background: rgba(15, 17, 22, 0.65) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Restore shadow for readability */
-  }
-
-  /* Hamburger Menu Button - Transparent, NO BLUR */
-  .sidebar-toggle {
-    background: rgba(15, 17, 22, 0.65) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-}
-
-/* --- 3. BOTTOM MAP SELECTION MENU --- */
-@media (max-width: 768px) {
+  /* 2. Add a real vector stroke (Black, 3px thick) */
+  -webkit-text-stroke: 3px #000000;
   
-  /* The Big Menu Panel - SOLID BLACK + NO BLUR */
-  .panel.controls {
-    background: #0f1116 !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
-  }
+  /* 3. CRITICAL: Draw the stroke BEHIND the white fill */
+  /* Without this, the black line will cover half your white text */
+  paint-order: stroke fill;
+  /* ---------------- */
+  
+  display: flex; align-items: center; justify-content: center;
+  width: 0; height: 0; pointer-events: none; z-index: 3;
+  transform-origin: center center;
+  transition: none !important;
+}
 
-  /* The Arrow Tab on Top - SOLID BLACK + NO BLUR */
-  .controls-toggle {
-    /* Use the dark theme hex code directly */
-    background: #0f1116 !important; 
+/* ==========================================
+   UNIFIED TOGGLE CONTROLS (Grid & Strongpoints)
+   ========================================== */
+
+/* 1. Visibility States */
+.grid-layer.grid-hidden,
+.label-layer.grid-hidden,
+.markers-layer.strongpoints-hidden .marker.strongpoint {
+    display: none !important;
+}
+
+/* 2. Unified Disabled Button Opacity (Grid & Strongpoints) */
+#btnToggleGrid.disabled,
+#btnToggleStrongpoints.disabled {
+    /* Dim the button background slightly */
+    background-color: rgba(10, 10, 10, 0.95) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Dim the actual icons/svg inside both buttons equally */
+#btnToggleGrid.disabled svg,
+#btnToggleStrongpoints.disabled svg {
+    opacity: 0.5 !important;
+}
+
+/* Ensure the Grid icon uses strokes instead of fills to stay sharp */
+#btnToggleGrid svg {
+    fill: none !important;
+    stroke: currentColor !important;
+}
+
+/* Match the strongpoint button's disabled look exactly */
+#btnToggleGrid.disabled svg {
+    opacity: 0.5 !important;
+    /* Optional: shift color to a dimmer grey when OFF */
+    stroke: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ==========================================
+   PERFORMANCE FIX: GPU LABEL SCALING
+   ========================================== */
+
+/* Apply variables to the container so all children inherit instantly */
+#markers {
+    /* Set default values to prevent pop-in */
+    --label-arrow-op: 0;
+    --label-top: 0%;
+    --label-transform: translate(-50%, -100%) scale(1);
+}
+
+
+/* ==========================================
+   MARKERS
+   ========================================== */
+
+/* ==========================================
+   MARKER LABELS (Strongpoint Text) - FIXED
+   ========================================== */
+
+/* 1. The Text Box */
+.marker-label {
+    /* Layout & Position */
+    position: absolute;
+    left: 50%;
+    /* READ values from parent #markers container for performance */
+    top: var(--label-top, 50%) !important;
+    transform: var(--label-transform, translate(-50%, -100%) scale(1)) !important;
     
-    /* Remove blur so it looks sharp */
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    z-index: 15 !important;
     
-    /* Border matching the accent color */
-    border: 1px solid var(--accent) !important;
-    /* Hide the bottom border to blend with the panel */
-    border-bottom: 1px solid #0f1116 !important; 
-  }
-  
-  /* FLIPPED ARROW (When menu is open/minimized) */
-  /* This ensures the arrow itself stays visible on the black background */
-  .controls-toggle::after {
-    border-color: var(--accent) !important;
-  }
+    /* Box Styling */
+    padding: 2px 6px; 
+    background-color: rgba(20, 20, 20, 0.70); 
+    border-radius: 2px;
+    
+    /* Font Styling */
+    font-size: 42px; 
+    font-family: 'GothamSS', sans-serif; 
+    font-weight: 700; 
+    color: white;
+    text-align: center; 
+    white-space: nowrap; 
+    pointer-events: none;
+
+    /* Text Rendering Quality */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    
+    /* Performance */
+    /* REMOVED: will-change: transform, top; */
+    /* REMOVED: backface-visibility: hidden; */
+    
+    /* Use standard transition only for desktop/hover-capable devices */
+    transition: none !important;
 }
 
-/* =========================================================
-   FORCE RADIUS LEGEND TO STAY DARK (EVEN IN LIGHT MODE)
-   ========================================================= */
+/* 2. The Arrow Pointer (The "Black Bar" Fix) */
+.marker-label::after {
+    content: ''; 
+    position: absolute; 
+    
+    /* Position exactly below the label */
+    top: 100%; 
+    left: 50%; 
+    transform: translateX(-50%);
+    
+    /* --- THE FIX: Explicitly set size to 0 to force triangle shape --- */
+    width: 0 !important;
+    height: 0 !important;
+    border-style: solid;
+    /* --------------------------------------------------------------- */
 
-/* 1. Force the Box Background to Dark & Remove Blur Change */
-:root[data-theme="light"] .radius-legend {
-  /* CHANGED: Reverted from 0.90 back to 0.65 to match Dark Mode exactly */
-  background: rgba(15, 17, 22, 0.65) !important; 
+    /* Triangle Shape */
+    border-left: 20px solid transparent;    
+    border-right: 20px solid transparent;   
+    border-top: 20px solid rgba(20, 20, 20, 0.70); 
+    
+    /* Opacity Sync (Fixed variable name mismatch) */
+    opacity: var(--label-arrow-op, 0) !important; 
+    
+    transition: none !important;
+}
+.markers-layer {
+  position: absolute; top: 0; left: 0; 
+  /* We will set width/height in JS to match the map image exactly */
+  /* width: 100%; height: 100%;  <-- These will be overridden by JS */
   
-  border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+  pointer-events: none;
+  z-index: 50; 
+  text-rendering: geometricPrecision;
+  shape-rendering: geometricPrecision;
   
-  /* CRITICAL FIX: Remove the blur completely to kill the "crystal" effect */
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  /* FIX: Clip dashed lines at the edge of the map */
+  overflow: hidden !important;
+}
+
+.marker {
+  position: absolute;
+  pointer-events: auto;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* --- ARTILLERY ICONS (Dynamic Scaling Fix) --- */
+.marker.point {
+    /* 1. DYNAMIC SIZING */
+    width: var(--dynamic-icon-size, 32px) !important;
+    height: var(--dynamic-icon-size, 32px) !important;
+    
+    /* 2. INSTANT CENTERING */
+    margin-left: calc(var(--dynamic-icon-size, 32px) / -2) !important;
+    margin-top: calc(var(--dynamic-icon-size, 32px) / -2) !important;
+    
+    /* 3. PERFORMANCE: NO TRANSITIONS */
+    transition: none !important; 
+    
+    /* 4. ALIGNMENT & LAYER */
+    z-index: 100; /* Stays above labels */
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    position: absolute;
+    pointer-events: auto; /* Keeps them clickable for gun switching */
+}
+
+.arty-icon {
+    /* Force the image to fill the dynamic container completely */
+    width: 100% !important; 
+    height: 100% !important;
+    
+    display: block; 
+    pointer-events: none;
+    
+    /* Rotation transition remains */
+    transition: transform 0.2s ease-out;
+    
+    outline: 1px solid transparent;
+    image-rendering: auto; 
+}
+
+.marker.dimmed-gun { opacity: 1.0 !important; transition: opacity 0.2s ease; filter: none !important; }
+
+
+
+/* --- UNSELECTED GUNS (Dimmed State) --- */
+.marker.dimmed-gun {
+    /* Sit below the active gun */
+    z-index: 90 !important; 
+    
+    opacity: 0.8 !important; 
+    
+    /* VISUAL FIX: Slight grayscale makes the active gun color pop more */
+    filter: grayscale(0.8) !important; 
+    
+    /* REMOVED TRANSITION: Instant state change */
+    transition: none !important;
+}
+
+.marker.active-gun .arty-icon {
+  filter: invert(1);
+}
+
+.marker.strongpoint { 
+    background: none; border: none; border-radius: 0;
+    display: flex; justify-content: center; align-items: center;
+    position: absolute; overflow: visible;
+    transform-origin: center center; box-sizing: border-box; 
+    /* Lower than the line (was 25) */
+    z-index: 10 !important; 
+}
+
+.marker.strongpoint .marker-visual {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 50%; box-sizing: border-box; 
+    /* Draw outline INSIDE the circle (do not grow the circle outward) */
+    border: none;
+    background-color: transparent; 
+    background-image: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1) 16px, #000000 16px, #000000 18px);
+    pointer-events: none; z-index: 1; 
+    box-shadow:
+      inset 0 0 0 8px #000000,
+      0 0 4px rgba(0,0,0,0.5);
+}
+
+
+
+/* Position the label above the Garrison icon */
+.marker.garrison_default .selected-garrison-label {
+    position: absolute;
+    bottom: 120%; /* Sits above the icon */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20, 20, 20, 0.9);
+    border: 1px solid #ffc107;
+    padding: 6px 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none; /* Don't block clicks to the icon */
+    
+    /* Font styles */
+    font-family: 'GothamSS', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+}
+
+/* The small arrow pointing down */
+.selected-garrison-label::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    width: 0 !important;
+    height: 0 !important;
+    border-style: solid !important;
+
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #ffc107;
+}
+
+/* Anchor container: This stays exactly on the coordinate */
+.marker.garrison_default {
+    position: absolute;
+    width: 32px; /* Fixed reference size */
+    height: 32px;
+    margin-left: -16px;
+    margin-top: -16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+
+/* ==========================================
+   GARRISON VISUALS & CONTROLS
+   ========================================== */
+
+/* 1. DEFAULT GARRISON: Double Shadow for Max Visibility */
+.garrison-main-icon {
+    position: absolute;
+    width: var(--dynamic-icon-size, 32px);
+    height: var(--dynamic-icon-size, 32px);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 2;
+    transform: translateY(-22%);
+    
+    pointer-events: auto !important; 
+    cursor: pointer;
+
+    /* CHANGE: We now stack TWO shadows to make it look "more than 100%" opaque */
+    filter: 
+        /* Shadow 1: Tight and Hard (Outline feel) */
+        drop-shadow(0 calc(2px * var(--ui-counter-scale, 1)) 0 rgba(0, 0, 0, 0.7))
+}
+
+/* ==========================================
+   MOBILE-SAFE ANIMATIONS (No will-change)
+   ========================================== */
+
+/* For the Pulse Animation we added earlier */
+.marker.garrison_default:not(.selected) .garrison-main-icon::before {
+    /* ... existing pulse styles ... */
+    
+    /* Ensure this stays empty to avoid checkerboarding */
+    will-change: auto;
+}
+
+/* --- UPDATE: Grid Box Styling (Clean Version) --- */
+.grid-box-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* REMOVED: Background/Border (It's now part of the tab itself) */
+    background: transparent;
+    border: none;
+    padding: 0;
+    height: auto;
+    margin: 0;
+    min-width: auto;
+}
+
+/* Make text slightly larger/clearer since it has its own space */
+.grid-text {
+    font-size: 13px;
+    font-weight: 900;
+    color: #ffc107;
+    margin-right: 6px;
+    line-height: 1;
+}
+
+/* Adjust the keypad dots to align perfectly */
+.visual-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1px;
+    width: 11px;
+    height: 11px;
+    transform: translateZ(0); /* Keep it sharp */
+}
+
+.kp-cell {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.kp-cell.active {
+    background-color: #ffc107;
+    box-shadow: 0 0 2px rgba(255, 193, 7, 0.8);
+    z-index: 2;
+}
+
+/* ==========================================
+   GARRISON CONTROL BAR - TOP-RIGHT GRID TAB (Pixel Perfect)
+   ========================================== */
+.garrison-control-ui {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    margin-bottom: calc( (var(--dynamic-icon-size) / 2) + (25px * var(--ui-counter-scale, 1)) );
+    transform: translateX(-50%) scale(var(--ui-counter-scale, 1));
+    transform-origin: bottom center;
+
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    background: #1d1f27;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 0;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+    z-index: 1000;
+    overflow: visible;
+    pointer-events: auto;
+    padding: 0;
+    height: 40px;               /* Desktop */
+}
+
+/* 1. GRID TAB - Top-Right Corner (exactly like your first design) */
+.garrison-grid-tab {
+    position: absolute;
+    top: -33px;                 /* Move up 1px */
+    right: -1px;                 /* Move 1px right for alignment */
+    background-color: #25272f;  /* SAME as buttons */
+    border: 1px solid rgba(255,255,255,0.25);
+    border-bottom: none;
+    border-radius: 0 !important;
+    width: 81px;                /* +1px to cover the main bar's border */
+    height: 33px;               /* 1px taller to overlap */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 6px;
+    z-index: 999;
+}
+
+/* 2. LABEL - safe truncation for long names */
+.gar-label-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-family: 'GothamSS', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(to bottom, #2a2d35, #1d1f27);
+}
+
+/* 3. BUTTONS - always visible */
+.gar-btn {
+    width: 40px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #25272f;
+    color: #ffc107;
+    font-size: 20px;
+    border-left: 1px solid rgba(255,255,255,0.15);
+    transition: all 0.1s ease;
+    pointer-events: auto;
+}
+
+.gar-btn:hover {
+    background: #ffc107;
+    color: #000;
+}
+
+.gar-btn:active {
+    background: #e0a800;
+    transform: scale(0.95);
+}
+
+/* Arrow icons */
+.gar-btn.arrow-left::after  { content: '◄'; }
+.gar-btn.arrow-right::after { content: '►'; }
+
+/* Zoom button */
+.gar-btn.zoom-btn {
+    border-left: 1px solid rgba(255,255,255,0.15);
+    border-right: 1px solid rgba(255,255,255,0.15);
+}
+
+.gar-btn.zoom-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: #ffc107;
+}
+
+/* --- GARRISON INTERACTION STYLES --- */
+
+.marker.garrison_default {
+    cursor: pointer;
+    /* Instant z-index change so it pops to top immediately */
+    transition: z-index 0s linear 0s; 
+}
+
+/* 1. STATE: SELECTED (Active on both Mobile & Desktop) 
+   When clicked, it stays big and glowing so you know which one is active.
+*/
+.marker.garrison_default.selected {
+    z-index: 1500 !important;
+}
+
+/* 2. SELECTED STATE: Max Opacity (1.0) */
+.marker.garrison_default.selected .garrison-main-icon {
+    /* CHANGE: Increased alpha from 0.8 to 1.0 (Maximum) */
+    filter: drop-shadow(0 0 10px rgba(255, 193, 7, 1.0)) brightness(1.1);
+    transform: translateY(-22%) scale(1.15);
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 2. STATE: HOVER (Desktop Only) 
+   We wrap this in a media query so mobile phones IGNORE it.
+   This fixes the "Sticky Hover" bug where it stays yellow after you tap elsewhere.
+*/
+@media (hover: hover) {
+    .marker.garrison_default:hover {
+        z-index: 1500 !important;
+    }
+
+    .marker.garrison_default:hover .garrison-main-icon {
+        /* CHANGE: Increased alpha from 0.6 to 0.9 */
+        filter: drop-shadow(0 0 10px rgba(255, 193, 7, 0.9)) brightness(1.1);
+        transform: translateY(-22%) scale(1.15);
+    }
+}
+
+/* 3. STATE: ACTIVE (Pressing Down) 
+   Gives instant feedback when your finger touches the screen 
+*/
+.marker.garrison_default:active .garrison-main-icon {
+    transform: translateY(-22%) scale(0.95); /* Subtle shrink on press */
+    filter: brightness(0.8);
+    transition: transform 0.05s ease-out;
+}
+
+
+/* --- CONTROLS DRAWER --- */
+.controls-drawer {
+  /* Position absolute at bottom to allow sliding off screen */
+  position: relative; 
+  /* --- FIX: Stop stretching to match the scale bar --- */
+  width: fit-content !important;  
+  /* -------------------------------------------------- */
+  max-width: 100%; 
   
-  /* CHANGED: Removed the shadow completely */
+  /* Animation settings */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0); /* Default: Open */
+  
+  /* Flex to center the content */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none; /* Let clicks pass through invisible areas */
+    /* CHANGE: High Z-Index to beat the HUD */
+    z-index: 1000 !important; 
+    
+    background-color: rgba(0,0,0,0);
+}
+
+/* CLOSED STATE: Slide down 100% (flush with bottom) */
+.controls-drawer.closed,
+.controls-drawer.hidden-by-default {
+  /* CHANGE: Removed " + 20px" so it tucks away perfectly */
+  transform: translateY(100%);
+}
+
+/* ==========================================
+   UNIFIED UI THEME (Exact Color Match Fix)
+   ========================================== */
+
+/* Define the exact shared background color here */
+:root {
+    --drawer-bg: #181818; 
+}
+
+/* LAYER 1: The Drawer Tab (Lowest) */
+.drawer-tab {
+    position: absolute;
+    top: -31px !important;
+    height: 32px;
+    width: 80px;
+    
+    /* Z-INDEX 1200: Lower than the Panel */
+    z-index: 1200 !important; 
+    
+    /* EXACT COLOR MATCH */
+    background-color: var(--drawer-bg) !important;
+    
+    /* Borders */
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: none !important;
+    
+    /* Shape */
+    border-radius: 10px 10px 0 0 !important;
+    cursor: pointer;
+    pointer-events: auto;
+    display: flex; align-items: center; justify-content: center;
+    
+    /* REMOVE SHADOWS to flatten the look */
+    box-shadow: none !important;
+}
+
+/* LAYER 2: The Main Panel (Middle) */
+.controls-content {
+    position: relative;
+    top: 1px;
+    z-index: 1300 !important; 
+    background-color: var(--drawer-bg) !important; 
+    
+    display: flex; 
+    justify-content: center;
+
+    /* --- FIX: Only be as wide as the buttons --- */
+    width: fit-content !important;
+    /* ------------------------------------------- */
+
+    max-width: 600px;
+    margin: 0 auto; 
+    padding: 8px 12px; 
+    gap: 10px;
+    
+    /* Borders */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+}
+
+/* LAYER 2.5: The "Eraser" Patch */
+.controls-content::before {
+    content: "";
+    position: absolute;
+    
+    /* Position slightly higher to cover the seam aggressively */
+    top: -3px; 
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* Width matches the inner width of the tab (80px - borders) */
+    width: 78px; 
+    
+    /* Taller height to ensure full coverage */
+    height: 6px; 
+    
+    /* EXACT COLOR MATCH */
+    background-color: var(--drawer-bg);
+    
+    z-index: 1301;
+}
+
+/* --- 4. THE ARROW (White) --- */
+.tab-arrow {
+  color: transparent; 
+  display: block;
+  width: 8px;
+  height: 8px;
+  
+  /* WHITE lines to match sidebar icons */
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  
+  /* Orientation: Down */
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 0.3s ease;
+}
+
+/* Arrow Orientation: Up (Closed) */
+.controls-drawer.closed .tab-arrow {
+  transform: rotate(225deg) translateY(-2px);
+}
+
+/* ==========================================
+   UI CONTROLS
+   ========================================== */
+/* 1. RAISE THE MAIN UI CONTAINER (Map/Faction/Gun Panel) */
+.main-ui-overlay {
+  position: absolute; 
+  bottom: 0; /* CHANGE: Was 20px. Now 0 to dock it to the edge. */
+  left: 50%; 
+  transform: translateX(-50%);
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 5px;
+  
+  /* CRITICAL CHANGE: Increased to 3000 to beat EVERYTHING */
+  z-index: 3000 !important; 
+  
+  pointer-events: none; /* Lets clicks pass through empty spaces */
+}
+
+/* SCALE BAR & ZOOM INDICATOR */
+.scale-container { 
+  width: 100%; 
+  max-width: 400px;
+  display: flex; 
+  justify-content: center; 
+  align-items: flex-end; 
+  margin-bottom: 35px;    
+  position: relative; 
+  padding: 0; 
+  
+  /* THE FIX: Let touches pass through the empty space around the bar */
+  pointer-events: none !important; 
+}
+
+.scale-wrapper { 
+  display: flex; flex-direction: column; align-items: center; 
+  width: 0px; transition: width 0.1s linear; 
+}
+
+.scale-bar-graphic {
+  position: relative; height: 8px; width: 100%;
+  box-sizing: border-box; 
+  /* FIX: Sharp white border, no fuzzy shadow */
+  border: 1px solid #ffffff; 
+  background: linear-gradient(to right, #ffffff 50%, #000000 50%);
   box-shadow: none !important;
 }
 
-/* 2. Force the "RADIUS TOGGLE" Title to Yellow */
-:root[data-theme="light"] .legend-title {
-  color: #ffcc66 !important; 
+.scale-lbl {
+  position: absolute; bottom: 0; transform: translateX(-50%);
+  font-family: "GothamSS", sans-serif; font-weight: 900; 
+  font-size: 12px; color: #ffffff; white-space: nowrap; 
+  line-height: 1;
+  /* FIX: Use stroke instead of shadow */
+  text-shadow: none !important;
+  -webkit-text-stroke: 2px #000000;
+  paint-order: stroke fill;
 }
 
-/* 3. Force the "15m/50m" Text to White with Shadow */
-:root[data-theme="light"] .legend-row {
-  color: #ffffff !important;
-  text-shadow: 0 1px 2px #000 !important;
+.scale-tick { 
+  position: absolute; bottom: -6px; width: 2px; height: 14px; 
+  z-index: 5; background: #fff; box-shadow: 0 0 1px black;
+}
+.t-start { left: 0; transform: translateX(-50%); }
+.t-mid   { left: 50%; transform: translateX(-50%); }
+.t-end   { right: 0; transform: translateX(50%); }
+
+.scale-labels { 
+  position: relative; width: 100%; height: 16px; margin-top: 4px; 
 }
 
-/* 4. Force the divider line to white-ish */
-:root[data-theme="light"] .legend-head {
-  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+.l-start { left: 0%; }
+.l-mid { left: 50%; }
+.l-end { left: 100%; }
+
+/* ==========================================================================
+   MOBILE OPTIMIZATION: COMPACT GARRISON LABEL
+   ========================================================================== */
+/* ==========================================
+   MOBILE - compact & pixel-perfect
+   ========================================== */
+@media (max-width: 768px) {
+    .garrison-control-ui {
+        height: 32px !important;
+        margin-bottom: calc( (var(--dynamic-icon-size) / 2) + (12px * var(--ui-counter-scale, 1)) ) !important;
+    }
+    
+    .garrison-grid-tab {
+        top: -21px;          /* Smaller overlap on mobile */
+        height: 21px;
+        width: 68px;
+    }
+    
+    .gar-label-text {
+        font-size: 11px !important;
+        padding: 0 8px !important;
+    }
+    
+    .gar-btn {
+        width: 34px !important;
+        font-size: 18px !important;
+    }
+    
+    .gar-btn.zoom-btn svg {
+        width: 20px !important;
+        height: 20px !important;
+    }
 }
 
-/* 5. Force the Toggle Switch Button colors (The Track) */
-:root[data-theme="light"] .mini-switch {
-  background: rgba(0, 0, 0, 0.4) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+/* ZOOM INDICATOR */
+.zoom-indicator-inline {
+  /* CHANGE: Moved further right (was -40px) to prevent overlap */
+  position: absolute; right: -70px; bottom: 15px; margin-right: 0px; 
+  pointer-events: none; 
 }
 
-/* 6. Force the Active State (The Track when ON) */
-:root[data-theme="light"] .mini-switch.is-active {
-  background: rgba(122, 92, 43, 0.3) !important;
-  border-color: #ffcc66 !important; /* Yellow Accent */
+#zoomIndicator {
+    text-align: left !important;
+    font-size: 16px !important;
+    display: block !important;
+    line-height: 1 !important;
+    color: #fff;
+    
+    /* --- THE FIXES --- */
+    /* 1. Force the font to be thick/heavy so the white shows through */
+    font-family: 'GothamSS', sans-serif !important;
+    font-weight: 900 !important; 
+
+    /* 2. Remove Shadow */
+    text-shadow: none !important;
+    
+    /* 3. Use a thinner stroke (1.5px) for this small text */
+    /* 2px was too thick for 16px text */
+    -webkit-text-stroke: 2px #000000;
+    paint-order: stroke fill;
 }
 
-/* 7. Force the Toggle Dot (The Circle inside) */
-:root[data-theme="light"] .mini-switch::after {
-  background: #aab3c2 !important; /* Muted Grey (OFF state) */
+.controls-row {
+  display: flex; align-items: stretch; gap: 10px;
+  background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 4px;
+  width: 100%;
 }
 
-:root[data-theme="light"] .mini-switch.is-active::after {
-  background: #ffcc66 !important; /* Yellow Dot (ON state) */
+
+/* ==========================================
+   LOADING OVERLAY
+   ========================================== */
+.loading-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  z-index: 4000; transition: opacity 0.3s ease-out; opacity: 1; pointer-events: auto;
+}
+.loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loading-spinner {
+  width: 40px; height: 40px; border: 4px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%; border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite; margin-bottom: 12px;
+}
+.loading-text {
+  color: white; font-size: 16px; font-family: 'GothamSS', sans-serif;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Ensure SVG icons scale with font-size and inherit color */
+svg.icon {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  display: block; /* Removes baseline gap issues */
 }
 
-/* =========================================================
-   END OF RADIUS LEGEND DARK MODE OVERRIDES
-   ========================================================= */
+/* --- MODAL FOOTER ICON SIZE INCREASE --- */
 
+/* Target icons only inside modal footer */
+.modal-footer .footer-btn .icon {
+    /* Increased from 20px/22px to 28px for better visibility */
+    width: 28px !important;
+    height: 28px !important;
+    
+    /* Ensure colors and strokes stay consistent */
+    fill: none !important;
+    stroke: currentColor !important;
+    vector-effect: non-scaling-stroke !important;
+}
+
+
+/* Desktop: Adjust spacing for the larger icons */
+@media (min-width: 769px) {
+    .modal-footer .footer-btn .icon {
+        margin-right: 15px !important; /* More breathing room for bigger icon */
+    }
+    
+    .modal-footer .footer-btn {
+        padding: 0 30px !important; /* Wider buttons to accommodate size */
+    }
+}
+
+
+/* --- DESKTOP WHITE BLOCK FIX --- */
+@media (min-width: 769px) {
+  /* 1. Force the icon to be an outline, not a solid block */
+  .modal-footer .footer-btn .icon {
+    position: static !important;
+    transform: none !important;
+    fill: none !important; /* This stops the white background block */
+    stroke: currentColor !important; /* This ensures the lines are visible */
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 12px !important;
+    display: inline-block !important;
+  }
+
+
+  /* 3. Ensure the button doesn't force absolute centering on desktop */
+  .modal-footer .footer-btn:first-child {
+    width: auto !important;
+    flex: 0 1 auto !important;
+    padding: 0 20px !important;
+  }
+}
+
+/* --- DESKTOP FOOTER: UNIFIED SPACING & SIZE --- */
+@media (min-width: 769px) {
+  
+  /* Target BOTH buttons explicitly to override any specific previous rules */
+  .modal-footer .footer-btn,
+  .modal-footer .footer-btn:first-child, 
+  .modal-footer .footer-btn:last-child {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    height: 54px !important;
+    width: auto !important;
+    
+    /* THE FIX: Identical spacing for BOTH buttons */
+    padding-left: 15px !important;  /* Edge -> Icon */
+    gap: 15px !important;           /* Icon -> Text */
+    padding-right: 25px !important; /* Text -> Edge */
+  }
+
+  /* 1. Calculator Icon (Keep it slightly larger as requested before) */
+  #btnOpenManualCalc .icon {
+    position: static !important;
+    width: 32px !important;  
+    height: 32px !important; 
+    margin: 0 !important; 
+    display: inline-block !important;
+    vertical-align: middle;
+  }
+
+  /* 2. More Projects Icon (Standard Size) */
+  #btnOtherProjects .icon {
+    position: static !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle;
+  }
+}
+
+
+/* ==========================================
+   ERROR FEEDBACK ANIMATION
+   ========================================== */
+
+/* Margin-based shake (Safe for Mobile layers) */
+@keyframes shake-red-safe {
+    0%, 100% { margin-left: 0; }
+    20% { margin-left: -4px; border-color: #ff4444; color: #ff4444; }
+    40% { margin-left: 4px; border-color: #ff4444; color: #ff4444; }
+    60% { margin-left: -4px; border-color: #ff4444; color: #ff4444; }
+    80% { margin-left: 4px; border-color: #ff4444; color: #ff4444; }
+}
+
+.btn-error {
+    animation: shake-red-safe 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    /* Force colors */
+    border-color: #ff4444 !important;
+    color: #ff4444 !important;
+    /* Ensure relative positioning for margins to work */
+    position: relative; 
+}
+
+/* Hide the default tooltip if the error is active 
+   (Prevents double text on Desktop) */
+.btn-error::before,
+.btn-error::after {
+    display: none !important;
+}
+
+/* ==========================================
+   ALLOW 2-LINE TEXT WRAPPING
+   ========================================== */
+
+/* --- UNIFY THE BASE BUTTON COLOR --- */
+.btn-map-select {
+  /* Allow height to grow for 2 lines */
+  height: auto !important; 
+  
+  /* Force a minimum height that fits 2 lines of text */
+  min-height: 56px !important;
+  
+  /* Vertical Padding helps when text wraps */
+  padding: 4px 10px;
+  
+  /* Use Flexbox to vertically center single-line text (like 'Germany') */
+  display: flex;
+  align-items: center; 
+  justify-content: space-between;
+  
+  /* Optional: Ensure text wrapping for long map names */
+  white-space: normal;
+  line-height: 1.2;
+  text-align: left;
+  
+  /* CHANGE: Replace the gradient with a solid charcoal to match the menu */
+  background: rgba(29, 31, 39, 0.9) !important; 
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-left: 3px solid #ffc107; 
+  border-radius: 0 3px 3px 0; 
+  
+  /* Keep your existing Gotham font styles */
+  color: white;
+  font-family: 'GothamSS', sans-serif; 
+  font-weight: 900;
+  font-size: 13px; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px;
+  cursor: pointer; 
+  pointer-events: auto;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  transition: background 0.2s ease;
+}
+
+/* 2. Text Labels: Fix Wrapping Logic */
+#currentMapName,
+#factionLabel,
+#gunLabel {
+  /* ENABLE WRAPPING but keep words intact */
+  white-space: normal;       /* Allow wrapping */
+  
+  /* CRITICAL FIX: Stop breaking words like "BRITI-SH" */
+  word-break: normal;        
+  overflow-wrap: break-word; /* Only break if a single word is wider than the box */
+  
+  /* Layout improvements */
+  line-height: 1.1;       
+  text-align: left;          /* Or 'center' if you prefer */
+  margin-right: 4px;         /* Reduced margin to give text more space */
+  display: block; 
+  flex: 1;
+}
+
+/* Active state for faction button when dropdown is open */
+.btn-map-select.active {
+    background-color: rgba(45, 48, 60, 1) !important; /* Slightly lighter when menu is open */
+}
+
+button.btn-map-select:active {
+  background: rgba(60, 60, 60, 1);
+}
+
+select.btn-map-select {
+  appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat; background-position: right 8px center;
+  background-size: 14px; padding-right: 28px; height: 100%;
+}
+
+select.btn-map-select option {
+  background-color: #1d1f27; color: #ffffff; padding: 12px;
+}
+
+.btn-map-select.compact {
+  min-width: auto; padding: 12px 15px; font-size: 14px; gap: 15px;
+  border-left: 1px solid rgba(255,255,255,0.2); 
+  height: 32px;
+}
+
+.btn-map-select .icon {
+  font-size: 14px; color: rgba(255,255,255,0.5);
+  transition: color 0.2s, transform 0.2s ease; display: inline-block;
+}
+
+.btn-map-select.active .icon { transform: rotate(180deg); color: white; }
+@media (hover: hover) {
+  .btn-map-select:hover .icon { color: white; }
+}
+
+/* ==========================================
+   MAP SELECTOR GRID (FIXED)
+   ========================================== */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 3000; transition: opacity 0.2s ease-in-out; opacity: 0; pointer-events: none;
+  /* FIX 4: Disable Backdrop Filter on Mobile (GPU Hog) */
+  /* Default: No Blur (Mobile Safe) */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+
+/* FIX 4: Desktop Only: Re-enable Blur */
+@media (min-width: 769px) {
+    /* Desktop Only: Re-enable Blur */
+    .modal-overlay {
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+}
+
+.modal-content {
+  background-color: #15171e; border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px; width: 90%; max-width: 1100px; height: 85%; /* Increased height slightly */
+  overflow-y: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9);
+  display: flex; flex-direction: column;
+  transform: translateY(20px); transition: transform 0.2s ease-in-out;
+}
+.modal-overlay.active .modal-content { transform: translateY(0); }
+
+/* ==========================================
+   MODAL HEADERS (UPDATED X POSITION)
+   ========================================== */
+
+.modal-brand-header {
+  position: relative; /* REQUIRED to anchor the X button */
+  padding: 25px 20px;
+  background: rgba(0, 0, 0, 0.4); 
+  border-bottom: 1px solid rgba(255, 193, 7, 0.3); 
+  
+  font-family: 'GothamSS', sans-serif;
+  font-weight: 900;
+  font-size: 32px; 
+  color: #ffc107; 
+  
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px rgba(255, 193, 7, 0.4); 
+  flex-shrink: 0;
+}
+
+.modal-subtitle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.modal-search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+#mapSearchInput {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 4px;
+  padding: 10px 40px 10px 15px;
+  color: white;
+  font-family: 'GothamSS', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#mapSearchInput:focus {
+  border-color: #ffc107;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 12px; /* Move to right edge since search icon is removed */
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  display: none; /* Hidden by default */
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+@supports (-moz-appearance: none) {
+  .search-clear-btn {
+    top: 45%; /* Adjust for Firefox */
+  }
+}
+
+.search-clear-btn:hover {
+  color: #ff4444;
+}
+
+/* Show the clear button only when there is text in the input */
+#mapSearchInput:not(:placeholder-shown) ~ .search-clear-btn {
+  display: block;
+}
+
+.modal-sub-header {
+  padding: 15px 25px;
+  background: rgba(255, 255, 255, 0.03); 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.modal-subtitle {
+  font-family: 'GothamSS', sans-serif; 
+  font-size: 14px; 
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7); 
+  text-transform: uppercase; 
+  letter-spacing: 1.5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.arrow-down {
+  color: #ffc107;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.close-btn {
+  position: absolute; 
+  right: 15px;         /* Move to corner */
+  top: 10px;           /* Pin to top */
+  transform: none;     /* Remove the centering transform */
+  
+  background: none; 
+  border: none; 
+  color: rgba(255, 255, 255, 0.4); 
+  font-size: 32px; 
+  line-height: 1; 
+  cursor: pointer; 
+  padding: 0;
+  transition: all 0.2s ease;
+  z-index: 2000;       /* Ensure it sits on top of everything */
+}
+
+/* Hover effect */
+.close-btn:hover { 
+  color: #ff4444; 
+  transform: scale(1.1); /* Subtle zoom only */
+}
+
+.map-grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: grid;
+  /* CHANGE: Use grid-auto-rows to ensure all rows are exactly the same height */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: min-content; 
+  align-content: start; /* Forces the grid to the top of the container */
+  gap: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   MAP SELECTOR GRID IMAGE FIX              */
+/* ========================================== */
+.map-card {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #111;
+    
+    /* FIX: Ensure border exists but is transparent so it doesn't jump */
+    border: 3px solid transparent; 
+    
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    
+    /* FIX: Add box-shadow to the transition so the glow fades in/out smoothly */
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.map-card-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 1 !important; /* Force visibility */
+    transition: transform 0.3s ease;
+}
+
+/* --- DESKTOP HOVER: YELLOW HIGHLIGHT --- */
+@media (hover: hover) and (min-width: 769px) {
+    /* When hovering ANY card that is NOT currently selected */
+    .map-card:not(.active):hover {
+        border-color: #ffc107; /* Tactical Yellow */
+        box-shadow: 0 0 15px rgba(255, 193, 7, 0.4); /* Yellow Glow */
+        transform: translateY(-2px); /* Subtle lift effect */
+        z-index: 5; /* Ensure glow sits on top of neighbors */
+    }
+
+    /* Optional: When hovering the ALREADY SELECTED (Green) card */
+    .map-card.active:hover {
+        /* Keep Green Border */
+        border-color: #28a745 !important; 
+        /* Add Green Glow instead of Yellow */
+        box-shadow: 0 0 15px rgba(40, 167, 69, 0.5); 
+        transform: translateY(-2px);
+    }
+}
+
+/* Ensure the green highlight beats everything */
+.map-card.active {
+    border-color: #28a745 !important;
+}
+
+
+.map-card-name {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+  color: white; padding: 8px 10px;
+  font-family: 'GothamSS', sans-serif; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; pointer-events: none; text-shadow: 0 1px 2px black;
+}
+
+/* 3. NEW: Modal Footer */
+.modal-footer {
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-shrink: 0; /* Prevents shrinking */
+}
+
+/* 4. NEW: Footer Buttons */
+.footer-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'GothamSS', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-btn .icon {
+  font-size: 16px;
+  filter: grayscale(1); /* Muted icon */
+}
+
+.footer-btn:hover {
+  background: rgba(255, 193, 7, 0.1);
+  border-color: #ffc107;
+  color: #ffc107;
+  box-shadow: 0 0 15px rgba(255, 193, 7, 0.1);
+}
+
+.footer-btn:hover .icon {
+  filter: none; /* Color icon on hover */
+}
+
+/* Optional: Different style for "Other Projects" if you want */
+.footer-btn.secondary {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================
+   CUSTOM DROPDOWNS
+   ========================================== */
+.custom-dropdown {
+  position: relative; 
+  height: auto; 
+  display: flex; 
+  flex-direction: column;
+  /* Above the 'Eraser' patch and Tab */
+  z-index: 1400 !important;
+}
+
+/* --- UNIFY THE DROPDOWN MENU COLOR --- */
+.dropdown-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  min-width: 150px;
+  
+  /* MATCH: Use the exact same color as the button */
+  background-color: rgba(29, 31, 39, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  
+  /* FIX 4: Disable Backdrop Filter on Mobile (GPU Hog) */
+  /* Default: No Blur (Mobile Safe) */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+  z-index: 9999 !important;
+  opacity: 1; transform: translateY(0); transition: opacity 0.15s, transform 0.15s;
+  pointer-events: auto;
+}
+
+/* FIX 4: Desktop Only: Re-enable Blur */
+@media (min-width: 769px) {
+    /* Desktop Only: Re-enable Blur */
+    .dropdown-menu {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+}
+
+.dropdown-menu.hidden {
+  opacity: 0; pointer-events: none; transform: translateY(10px);
+}
+
+.dropdown-item {
+  padding: 12px 15px; color: white; font-family: 'GothamSS', sans-serif;
+  font-weight: 700; font-size: 14px; cursor: pointer;
+  transition: background 0.1s; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.dropdown-item:last-child { border-bottom: none; }
+/* --- HOVER STATE UNIFICATION --- */
+.dropdown-item:hover,
+button.btn-map-select:hover {
+  /* Use a lighter grey for the hover highlight */
+  background-color: rgba(60, 64, 75, 1) !important;
+  color: #ffc107; /* Tactical yellow text on hover */
+}
+
+.dropdown-item:hover { border-left-color: #ffffff; }
+button.btn-map-select:hover { border-left-color: #ffffff; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.text-yellow { color: #ffc107; }
+.text-green { color: #28a745; }
+.text-red { color: #ff4444; }
+
+/* ==========================================
+   VERTICAL ZOOM SLIDER
+   ========================================== */
+.zoom-slider-container {
+  position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+  
+  /* UPDATED: Reduced height for more compact appearance */
+  height: 350px; 
+  
+  width: 40px; 
+  display: flex; flex-direction: column;
+  align-items: center; gap: 20px; z-index: 100; 
+  
+  /* THE FIX: Let touches pass through the gaps between buttons */
+  pointer-events: none !important; 
+}
+
+.zoom-slider-track {
+  position: relative; flex: 1; 
+  width: 24px; 
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 0; cursor: pointer;
+  
+  pointer-events: auto !important; /* Allow clicking the slider track */
+}
+
+.zoom-slider-fill {
+  position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; 
+  background-color: #ffc107; border-radius: 0; pointer-events: none;
+}
+
+.zoom-slider-handle {
+  position: absolute; left: 50%; bottom: 0%; transform: translate(-50%, 50%); 
+  width: 24px; height: 16px; background-color: #ffffff;
+  border: 2px solid #000000; border-radius: 0; 
+  cursor: grab; touch-action: none; 
+  
+  pointer-events: auto !important; /* Allow grabbing the handle */
+  /* CHANGE: Removed box-shadow */
+  box-shadow: none !important;
+}
+
+.zoom-slider-handle:active {
+  cursor: grabbing; background-color: #ffc107; border-color: #fff;
+}
+
+.zoom-icons {
+  display: flex; flex-direction: column; gap: 8px; width: 100%; align-items: center;
+}
+
+.zoom-icons span {
+  width: 32px; height: 32px; background-color: rgba(20, 20, 20, 0.95);
+  pointer-events: auto !important; /* Allow clicking the buttons (+, -, etc.) */
+  color: white; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0; 
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'GothamSS', sans-serif; font-weight: 900; font-size: 20px;
+  cursor: pointer; user-select: none; transition: background-color 0.1s;
+  -webkit-tap-highlight-color: transparent; 
+  /* CHANGE: Removed box-shadow */
+  box-shadow: none !important;
+}
+
+@media (hover: hover) {
+  .zoom-icons span:hover {
+    background-color: #ffc107; color: black; border-color: #ffc107;
+  }
+}
+
+.zoom-icons span:active,
+.zoom-icons span.pressed {
+  background-color: #ffc107 !important; color: black !important;
+  border-color: #ffc107 !important; transform: scale(0.95);
+  /* CHANGE: Force shadow removal on press */
+  box-shadow: none !important;
+}
+
+
+
+
+
+
+
+/* --- TACTICAL INDICATOR TOOLTIPS --- */
+
+[data-tooltip] {
+  position: relative;
+}
+
+/* Tooltip Box Styling */
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: calc(100% + 12px); /* Spacing to the left of buttons */
+  top: 50%;
+  transform: translateY(-50%) scale(0.9);
+  
+  /* Tactical Aesthetics matching GothamSS font */
+  background-color: rgba(29, 31, 39, 0.95);
+  color: #ffc107; 
+  font-family: 'GothamSS', sans-serif;
+  font-weight: 900;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  white-space: nowrap;
+  pointer-events: none;
+  
+  opacity: 0;
+  transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+}
+
+/* Small Indicator Arrow */
+[data-tooltip]::after {
+  content: '';
+  position: absolute;
+  right: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 6px solid rgba(255, 193, 7, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease-out;
+}
+
+/* Desktop Hover Interaction */
+@media (hover: hover) {
+  [data-tooltip]:hover::before {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  [data-tooltip]:hover::after {
+    opacity: 1;
+  }
+}
+
+/* Ensure arrow is fully opaque on hover */
+@media (hover: hover) {
+  [data-tooltip]:hover::after {
+    opacity: 1 !important; /* Forces full visibility */
+  }
+}
+
+/* Hub specific content size */
+.projects-hub-content {
+  max-width: 500px !important;
+  height: auto !important;
+}
+
+.projects-list {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* THE ALIGNMENT FIX: Ensure buttons in modal use same flex logic */
+.projects-list .footer-btn {
+  display: flex;
+  align-items: center;      /* Vertically centers icon/emoji and text */
+  justify-content: flex-start; /* Aligns to left side */
+  text-align: left;
+  margin-bottom: 0;         /* Use gap from parent container instead */
+}
+
+/* Ensure images and emojis share exact same width for text alignment */
+.projects-list .footer-project-icon, 
+.projects-list .icon {
+  width: 24px;              /* Consistent width for all icons */
+  height: 24px;
+  margin-right: 15px;       /* Consistent spacing to text */
+  flex-shrink: 0;
+  object-fit: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* GitHub specific left border color */
+.github-btn {
+  border-left-color: #ffffff !important;
+}
+
+/* Increase main title size for all devices */
+.main-title {
+  font-size: 36px !important;
+}
+
+/* Credits line should be much smaller than main title */
+.main-subtitle-credits {
+  font-size: 10px !important;
+  letter-spacing: 2px !important;
+  font-weight: 700 !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  text-transform: uppercase !important;
+  margin-top: 4px !important;
+}
+
+/* Smaller title for projects modal */
+#projectsModal .main-title {
+  font-size: 24px !important;
+}
+
+
+/* Ensure the Manual Calculator Modal doesn't have dead space */
+#calcModal .modal-content {
+    height: auto !important;
+    min-height: unset !important;
+    max-height: 90vh;
+    align-self: center; /* Centers vertically if it's short */
+}
+
+
+/* ==========================================
+   DESKTOP HOVER FIX: MORE PROJECTS
+   ========================================== */
+@media (hover: hover) and (min-width: 769px) {
+    /* Target button AND icon inside when hovering */
+    .modal-footer #btnOtherProjects:hover {
+        background: rgba(255, 193, 7, 0.1) !important; /* Subtle yellow glow BG */
+        border-color: #ffc107 !important;            /* Bright yellow border */
+        color: #ffc107 !important;                   /* Yellow text */
+        box-shadow: 0 0 15px rgba(255, 193, 7, 0.1) !important;
+    }
+
+    /* Ensure the icon specifically turns yellow too */
+    .modal-footer #btnOtherProjects:hover .icon {
+        stroke: #ffc107 !important;
+        filter: none !important; /* Removes any grayscale if present */
+    }
+}
+
+/* --- PROJECTS HUB EXTERNAL LINK ICONS --- */
+
+.projects-list .footer-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding-left: 20px !important;
+    /* Reduced right padding to let the icon get closer to the edge */
+    padding-right: 15px !important; 
+    width: 100% !important;
+}
+
+/* This forces the text to take up all available space, pushing the icon to the end */
+.projects-list .footer-btn span {
+    flex-grow: 1 !important;
+    text-align: left !important;
+}
+
+.external-link-icon {
+    width: 14px !important;
+    height: 14px !important;
+    opacity: 0.4;
+    transition: all 0.2s ease;
+    
+    /* Ensure it doesn't shrink and stays at the very end */
+    flex-shrink: 0 !important;
+    margin-left: 10px !important; 
+}
+
+/* Hover highlight for the whole button */
+.projects-list .footer-btn:hover {
+    border-color: #ffc107 !important;
+    color: #ffc107 !important;
+}
+
+.projects-list .footer-btn:hover .external-link-icon {
+    opacity: 1;
+    color: #ffc107;
+    /* Subtle pop effect on hover */
+    transform: translateX(2px); 
+}
+
+/* ==========================================
+   FINAL FIX: MOBILE STICKY HOVER RESET (WHITE ICONS)
+   ========================================== */
+@media (hover: none) {
+  /* 1. BACKGROUND: Force Grey (No Yellow) on Focus/Hover */
+  .footer-btn:hover,
+  .footer-btn:focus,
+  .footer-btn:focus-visible,
+  .projects-list .footer-btn:hover, 
+  .projects-list .footer-btn:focus {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  /* 2. ICONS: Force them BRIGHT WHITE (opacity 1), not Grey */
+  .footer-btn:hover .icon,
+  .footer-btn:focus .icon,
+  .footer-btn:focus-visible .icon,
+  .projects-list .footer-btn:hover .external-link-icon,
+  .projects-list .footer-btn:focus .external-link-icon {
+    stroke: #ffffff !important; /* Force Bright White */
+    fill: none !important;
+    opacity: 1 !important;      /* CHANGED: 0.4 -> 1 (Fully Visible) */
+    transform: none !important;
+  }
+
+  /* 2b. DOTS: Ensure dots inside calculator icon are also white */
+  .footer-btn:hover .icon circle,
+  .footer-btn:focus .icon circle {
+    fill: #ffffff !important;
+    stroke: none !important;
+  }
+
+  /* 3. ACTIVE: The ONLY time it should be yellow (While finger is down) */
+  .footer-btn:active,
+  .projects-list .footer-btn:active {
+    background: rgba(255, 193, 7, 0.2) !important;
+    border-color: #ffc107 !important;
+    color: #ffc107 !important;
+    transition: none !important;
+  }
+  
+  .footer-btn:active .icon,
+  .projects-list .footer-btn:active .external-link-icon {
+      opacity: 1 !important;
+      stroke: #ffc107 !important; /* Yellow when actually pressing */
+  }
+  
+  .footer-btn:active .icon circle {
+      fill: #ffc107 !important;
+  }
+}
+
+/* ==========================================================================
+   FINAL UNIFIED MOBILE OPTIMIZATIONS (MAX-WIDTH: 768PX)
+   ========================================================================== */
+@media (max-width: 768px) {
+
+    /* --- 1. MAIN UI & DRAWER --- */
+    
+    /* THE FULL-SIZE FIX: Remove borders and padding from the main wrapper */
+    .shell {
+        padding: 0 !important;
+        margin: 0 !important;
+        height: 100dvh !important;
+        width: 100vw !important;
+    }
+
+    /* THE FULL-SIZE FIX: Make the map container cover the entire screen */
+    .map-wrap {
+        border: none !important;      /* Removes the grey border line */
+        border-radius: 0 !important;  /* Square edges for full-screen look */
+        height: 100dvh !important;    /* Force full viewport height */
+        width: 100vw !important;      /* Force full viewport width */
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .main-ui-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        z-index: 3000 !important;
+        pointer-events: none;
+    }
+
+    .controls-drawer {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        z-index: 2000 !important;
+        overflow: visible !important;
+    }
+
+    .controls-content {
+        width: 100% !important;
+        max-width: none !important;
+        border-radius: 12px 12px 0 0 !important;
+        
+        /* FIX: Reduced bottom padding from 25px to 12px */
+        padding: 10px 10px 12px 10px !important; 
+        
+        gap: 8px;
+        background-color: #181818 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: none !important;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: stretch;
+        position: relative;
+        z-index: 1300 !important;
+        
+        /* FIX: Force height to fit content exactly */
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    /* Eraser Patch (Centered without translateX) */
+    .controls-content::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        
+        /* THE GPU-SAFE CENTERING FIX */
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        width: 78px; /* Fixed width matching the tab's inner seam */
+        
+        /* Remove transform to prevent checkerboarding */
+        transform: none !important; 
+        
+        height: 4px;
+        background-color: #181818;
+        z-index: 1301;
+    }
+
+    /* Drawer Tab (Centered without translateX) */
+    .drawer-tab {
+        position: absolute !important;
+        top: -31px !important;
+        
+        /* THE GPU-SAFE CENTERING FIX */
+        left: 0 !important;
+        right: 0 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 80px !important; /* Specific width allows margin:auto to work */
+        
+        /* Remove transform to avoid checkerboarding */
+        transform: none !important; 
+        
+        height: 32px !important;
+        z-index: 1000 !important;
+        background-color: #181818 !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-bottom: none !important;
+        border-radius: 10px 10px 0 0 !important;
+        box-shadow: none !important;
+        pointer-events: auto;
+    }
+
+    /* --- 2. DROPDOWNS & BUTTONS --- */
+    .custom-dropdown {
+        position: relative;
+        z-index: 1400 !important;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .dropdown-menu { z-index: 1500 !important; }
+
+    /* Map Button (Full Width) */
+    .custom-dropdown:nth-child(1),
+    .btn-map-select:nth-child(1) {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* Faction (Full Width) */
+    .custom-dropdown:nth-child(2) {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* Ensure the entire button area is a single hit-target for Firefox */
+    .btn-map-select {
+        font-size: 13px !important;
+        padding: 10px 12px !important;
+        min-height: 48px !important;
+        background: rgba(29, 31, 39, 0.9) !important;
+        
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-grow: 1;
+        
+        /* THE FIX: Ensure no internal elements block the click */
+        cursor: pointer !important;
+        pointer-events: auto !important;
+        user-select: none !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* VITAL FOR FIREFOX: Force labels to pass clicks to the parent button */
+    #currentMapName, 
+    #factionLabel, 
+    #gunLabel,
+    .btn-map-select .item-text,
+    .btn-map-select .icon {
+        font-size: 14px !important;
+        line-height: 1.1 !important;
+        font-weight: 900 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: block !important;
+        
+        /* THE FIX: Text/Icons won't "swallow" the touch event */
+        pointer-events: none !important; 
+    }
+
+
+    /* --- 4. SCALE BAR (FIXED: Spacing & Centering) --- */
+    .scale-container {
+        /* 1. Use Flexbox to center the child wrapper */
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-end !important;
+        
+        /* 2. Position the container itself */
+        width: 100% !important;
+        height: 50px !important;
+        margin-bottom: 190px !important; 
+        position: relative !important;
+        z-index: 5 !important;
+        pointer-events: none !important;
+        padding: 0 !important;
+    }
+
+    .scale-wrapper {
+        /* 3. Disable Absolute/Stretching logic */
+        position: relative !important; 
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        margin: 0 !important;
+        
+        /* 4. Allow JS to control the width */
+        width: auto; 
+        /* The JavaScript style="width: 240px" will now apply correctly 
+           and Flexbox will keep it centered. */
+
+        /* 5. Performance & Safety */
+        transform: none !important; 
+        transition: none !important;
+        pointer-events: none !important;
+    }
+
+    /* 6. VERTICAL SPACING FIX */
+    .scale-labels { 
+        position: relative; 
+        width: 100%; 
+        height: 16px; 
+        margin-top: 4px !important; 
+    }
+
+    /* 7. CLEAN TEXT STYLE (Stroke Method) */
+    .scale-lbl {
+        position: absolute; 
+        bottom: 0; 
+        
+        /* 1. GPU-SAFE CENTERING */
+        transform: none !important;
+        width: 40px; 
+        margin-left: -20px; 
+        text-align: center; 
+        
+        /* 2. FONT STYLING */
+        font-family: "GothamSS", sans-serif; 
+        font-weight: 900; 
+        font-size: 12px; 
+        color: #ffffff !important; 
+        white-space: nowrap; 
+        line-height: 1;
+        letter-spacing: 1px; 
+
+        /* 3. THE FIX: SIMPLE STROKE */
+        /* We remove the complex shadow and use a real vector stroke */
+        text-shadow: none !important;
+        -webkit-text-stroke: 2px #000000;
+        
+        /* This ensures the stroke stays BEHIND the white fill */
+        paint-order: stroke fill;
+    }
+
+    /* --- 5. ZOOM SLIDER (RIGHT SIDE - ADJUSTED) --- */
+    .zoom-slider-container {
+        position: absolute !important;
+        right: 5px !important;
+        left: auto !important;
+        
+        /* UPDATED: Reduced height for more compact mobile appearance */
+        height: 350px !important;
+        max-height: 85vh !important; 
+        
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none !important;
+        z-index: 2200 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .zoom-slider-track {
+        width: 32px !important;
+        border: 4px solid transparent;
+        background-clip: padding-box;
+        touch-action: none;
+        pointer-events: auto !important;
+    }
+
+    .zoom-slider-handle {
+        width: 30px !important;
+        height: 24px !important;
+        border-radius: 4px !important;
+    }
+
+    .zoom-icons span {
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation;
+        pointer-events: auto !important;
+    }
+    
+    /* Reset hover/pressed states for mobile */
+    .zoom-icons span:hover {
+        background-color: rgba(20, 20, 20, 0.95) !important;
+        color: white !important;
+    }
+    .zoom-icons span.pressed {
+        transform: scale(0.82) !important;
+    }
+
+    /* --- 6. ZOOM INDICATOR TEXT (CENTERED - NO TRANSFORMS) --- */
+    .zoom-indicator-inline {
+        position: fixed !important;
+        
+        /* THE GPU-SAFE CENTERING FIX */
+        left: 0 !important;
+        right: 0 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 100px !important; /* Set a fixed width to allow margin:auto to work */
+        
+        /* Removed transform: translateX to prevent checkerboarding */
+        transform: none !important; 
+        
+        /* Vertical position */
+        bottom: 170px !important; 
+        
+        top: auto !important;
+        z-index: 3000 !important;
+        display: block !important;
+        pointer-events: none !important;
+    }
+
+    #zoomIndicator {
+        text-align: center !important; 
+        font-size: 16px !important;
+        display: block !important;
+        line-height: 1 !important;
+        
+        /* Unified Sharp Style */
+        font-family: 'GothamSS', sans-serif !important;
+        font-weight: 900 !important;
+        text-shadow: none !important;
+        -webkit-text-stroke: 2px #000000;
+        paint-order: stroke fill;
+        color: #fff;
+    }
+
+
+    /* --- 9. MODALS & MENUS --- */
+    .modal-content {
+        height: 92vh !important;
+        max-height: none !important;
+        margin: 0 !important;
+        width: 95% !important;
+    }
+
+    /* --- THE FIX: Force Projects Modal to shrink to fit content --- */
+    .modal-content.projects-hub-content {
+        height: auto !important;       /* Disable the fixed 92vh height */
+        min-height: auto !important;   /* Allow shrinking */
+        flex: 0 1 auto !important;     /* Flexbox: Don't grow, allow shrink */
+        
+        /* Optional: Vertical centering if the overlay uses flex */
+        margin: auto !important;       
+        max-height: 85vh !important;   /* Safety cap */
+    }
+    /* 1. Header Container: Forced Symmetrical Padding */
+    .modal-brand-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;      /* Centers title and version horizontally */
+        justify-content: center !important;   /* Centers them vertically */
+        text-align: center !important;
+        
+        /* THE ALIGNMENT FIX: 50px on both sides balances the Close Button */
+        padding: 20px 50px !important; 
+        gap: 6px !important;
+        min-height: 70px !important;
+        position: relative !important;
+    }
+
+    /* 2. Main Title: Center Locked */
+    .main-title {
+        font-size: 22px !important;
+        letter-spacing: 1px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        display: block !important;
+    }
+
+    /* 3. Credits/Version: Center Locked */
+    .main-subtitle-credits {
+        font-size: 9px !important;
+        letter-spacing: 1.5px !important;
+        justify-content: center !important; /* Centers the flex content */
+        margin-top: 0 !important;
+        width: 100% !important;
+    }
+
+    /* 4. Close Button: Absolute Top-Right Corner */
+    .close-btn {
+        position: absolute !important;
+        right: 5px !important;    /* Tucked into the right edge */
+        top: 5px !important;      /* Tucked into the top edge */
+        
+        /* Reset centering from previous steps */
+        transform: none !important; 
+        
+        /* Tactical sizing & look */
+        width: 44px !important;
+        height: 44px !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px !important;
+        color: rgba(255, 255, 255, 0.4) !important;
+        background: none !important;
+        border: none !important;
+        z-index: 3100 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .map-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    /* Footer Layout */
+    .modal-footer {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        padding: 12px 10px !important;
+        flex-shrink: 0 !important;
+    }
+    .modal-footer .footer-btn:first-child {
+        position: relative !important;
+        flex: 0 0 54px !important;
+        width: 54px !important;
+        height: 54px !important;
+        padding: 0 !important;
+        font-size: 0 !important;
+    }
+    .modal-footer .footer-btn:first-child .icon {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 32px !important;
+        height: 32px !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+    /* 2. PROJECTS BUTTON (Mobile: Grid Layout) */
+    .modal-footer #btnOtherProjects {
+        flex: 1 !important;
+        height: 54px !important;
+        
+        /* GRID LAYOUT: [Icon] [----- Remaining Space -----] */
+        display: grid !important;
+        grid-template-columns: auto 1fr !important; 
+        align-items: center !important;
+        
+        /* Gap between Icon and Text */
+        gap: 15px !important;
+        
+        /* Safe distance from the button edges */
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        
+        font-size: 16px !important;
+        
+        /* Reset Flex/Align properties */
+        justify-content: unset !important;
+    }
+
+    /* ICON: Occupies Column 1 */
+    .modal-footer #btnOtherProjects .icon {
+        position: static !important; /* Sits naturally in the grid */
+        transform: none !important;  /* Remove old centering hacks */
+        
+        width: 28px !important;  
+        height: 28px !important; 
+        
+        /* Reset margins/padding */
+        margin: 0 !important; 
+        padding: 0 !important;
+        flex-shrink: 0 !important; 
+    }
+    
+    /* TEXT: Occupies Column 2 (The Remaining Space) */
+    .modal-footer #btnOtherProjects span {
+        /* Center yourself inside the remaining space */
+        text-align: center !important; 
+        
+        width: 100% !important;
+        display: block !important;
+        
+        /* Safety: Truncate if screen is microscopic */
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        
+        /* Reset padding since Grid Gap handles the spacing */
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+
+    /* Projects Hub List Fix */
+    .projects-list .footer-btn {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 54px !important;
+        font-size: 13px !important;
+        padding: 12px 20px !important;
+        justify-content: flex-start !important;
+    }
+    .projects-list .footer-project-icon, 
+    .projects-list .icon {
+        position: static !important;
+        transform: none !important;
+        margin-right: 15px !important;
+        width: 24px !important;
+        height: 24px !important;
+    }
+
+    /* --- 10. HIDES & UTILITIES --- */
+    [data-tooltip]::before,
+    [data-tooltip]::after {
+        display: none !important;
+    }
+    
+    .panel-credits { font-size: 8px; bottom: 3px; }
+    
+
+
+    /* REDUCE STICKY GRID LABELS (Mobile) */
+    .hll-grid-label {
+        font-size: 20px !important; /* Reduced from 24px */
+        
+        /* Adjust black outline thickness for smaller text */
+        -webkit-text-stroke: 2px #000000 !important; 
+    }
+  }
+  
+ /* END OF MOBILE MEDIA QUERY */
+
+/* ==========================================
+   FIX: REMOVE EXTRA ARROWS (CLEAN UI)
+   ========================================== */
+
+/* 1. Hide the two extra "Fire Guide" arrows in the HTML */
+.fire-guide-arrow {
+    display: none !important;
+}
+
+/* 2. Ensure the Main Drawer Toggle is Clean */
+.drawer-tab {
+    /* Hide any text color inherited by the button */
+    color: transparent !important;
+}
+
+.tab-arrow {
+    /* Hide the text "▼" inside the span */
+    font-size: 0 !important;
+    
+    /* Draw the single clean line-arrow */
+    display: block !important;
+    width: 10px !important;
+    height: 10px !important;
+    border-right: 2px solid white !important;
+    border-bottom: 2px solid white !important;
+    border-top: none !important;
+    border-left: none !important;
+    
+    /* Center and Rotate */
+    margin: 0 auto !important;
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform 0.3s ease;
+}
+
+/* Rotate UP when closed */
+.controls-drawer.closed .tab-arrow {
+    transform: rotate(225deg) translateY(-2px);
+}
+
+/* ==========================================
+   STRONGPOINTS TOGGLE LOGIC
+   ========================================== */
+
+/* When this class is added to the Markers Layer, hide all strongpoints */
+.markers-layer.strongpoints-hidden .marker.strongpoint {
+    display: none !important;
+}
+
+/* Optional: Visual feedback for the button when OFF (hidden) */
+/* This makes the button look "dimmed" or "crossed out" when points are hidden */
+#btnToggleStrongpoints.disabled {
+    color: #555 !important; /* Dim the icon */
+    background-color: rgba(10, 10, 10, 0.95) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+#btnToggleStrongpoints.disabled svg {
+    opacity: 0.5;
+}
+
+/* Ensure SVG icon centers perfectly inside the square button */
+#btnToggleStrongpoints svg {
+    pointer-events: none; /* Let clicks pass to the span */
+    display: block;
+}

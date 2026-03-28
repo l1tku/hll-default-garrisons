@@ -1,1462 +1,2426 @@
-// Offensive tacmaps (all entries are offensive mode)
-const maps = {
-  EBR: { name: "Elsenborn Ridge", webp: "images/maps/TacMap_EBR_L_1944.webp", src: "images/maps/TacMap_EBR_L_1944.webp" },
-  MOR: { name: "Mortain", webp: "images/maps/TacMap_MOR_L_1944.webp", src: "images/maps/TacMap_MOR_L_1944.webp" },
-  SMO: { name: "Smolensk", webp: "images/maps/TacMap_SMO_L_1943.webp", src: "images/maps/TacMap_SMO_L_1943.webp" },
-  TOB: { name: "Tobruk", webp: "images/maps/TacMap_TOB_L_1942.webp", src: "images/maps/TacMap_TOB_L_1942.webp" },
-  CAR: { name: "Carentan", webp: "images/maps/map_Carentan.webp", src: "images/maps/map_Carentan.webp" },
-  DRI: { name: "Driel", webp: "images/maps/map_driel.webp", src: "images/maps/map_driel.webp" },
-  ELA: { name: "El Alamein", webp: "images/maps/map_elalamein.webp", src: "images/maps/map_elalamein.webp" },
-  FOY: { name: "Foy", webp: "images/maps/map_foy.webp", src: "images/maps/map_foy.webp" },
-  H4:  { name: "Hill 400", webp: "images/maps/map_hill400.webp", src: "images/maps/map_hill400.webp" },
-  HUR: { name: "Hurtgen Forest", webp: "images/maps/map_hurtgen.webp", src: "images/maps/map_hurtgen.webp" },
-  KHA: { name: "Kharkov", webp: "images/maps/map_kharkov.webp", src: "images/maps/map_kharkov.webp" },
-  KUR: { name: "Kursk", webp: "images/maps/map_kursk.webp", src: "images/maps/map_kursk.webp" },
-  OMA: { name: "Omaha Beach", webp: "images/maps/map_omaha.webp", src: "images/maps/map_omaha.webp" },
-  PHL: { name: "Purple Heart Lane", webp: "images/maps/map_purpleheartlane.webp", src: "images/maps/map_purpleheartlane.webp" },
-  REM: { name: "Remagen", webp: "images/maps/map_remagen.webp", src: "images/maps/map_remagen.webp" },
-  SMM: { name: "Sainte-Marie-du-Mont", webp: "images/maps/map_smdmv2.webp", src: "images/maps/map_smdmv2.webp" },
-  STA: { name: "Stalingrad", webp: "images/maps/map_stalingrad.webp", src: "images/maps/map_stalingrad.webp" },
-  SME: { name: "Sainte-Mère-Église", webp: "images/maps/map_stmereeglise.webp", src: "images/maps/map_stmereeglise.webp" },
-  UTA: { name: "Utah Beach", webp: "images/maps/map_utahbeach.webp", src: "images/maps/map_utahbeach.webp" }
-};
+// ==========================================
+// 1. DATA & CONFIGURATION
+// ==========================================
 
-/**
- * Default garrison coordinates per map.
- * x/y are percentages of the map image (0-100).
- * Each map now holds coordinates for both factions.
- */
-const garrisonsData = {
-  EBR: {
-    axis: [
-      { label: "New Garrison", x: 26.5764, y: 26.7752 },
-      { label: "New Garrison 2", x: 51.6233, y: 24.6752 },
-      { label: "New Garrison 3", x: 78.4453, y: 24.5701 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 73.3367, y: 78.0919 },
-      { label: "New Garrison 2", x: 54.9684, y: 72.6770 },
-      { label: "New Garrison 3", x: 26.3866, y: 77.6348 }
-    ]
-  },
-  MOR: {
-    axis: [
-      { label: "New Garrison", x: 28.2763, y: 26.2510 },
-      { label: "New Garrison 2", x: 26.3828, y: 53.6870 },
-      { label: "New Garrison 3", x: 23.4527, y: 77.5821 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 78.7639, y: 22.1362 },
-      { label: "New Garrison 2", x: 78.1513, y: 52.4613 },
-      { label: "New Garrison 3", x: 77.2142, y: 72.4553 }
-    ]
-  },
-  SMO: {
-    allies: [
-      { label: "New Garrison", x: 22.8081, y: 27.8282 },
-      { label: "New Garrison 2", x: 25.4047, y: 48.0705 },
-      { label: "New Garrison 3", x: 24.1763, y: 69.1399 }
-    ],
-    axis: [
-      { label: "New Garrison", x: 75.3313, y: 27.3640 },
-      { label: "New Garrison 2", x: 73.3592, y: 49.5776 },
-      { label: "New Garrison 3", x: 74.4260, y: 70.3789 }
-    ]
-  },
-  TOB: {
-    allies: [
-      { label: "New Garrison", x: 25.6834, y: 34.1966 },
-      { label: "New Garrison 2", x: 23.6744, y: 49.2122 },
-      { label: "New Garrison 3", x: 24.8945, y: 67.3214 }
-    ],
-    axis: [
-      { label: "New Garrison", x: 77.2658, y: 29.6758 },
-      { label: "New Garrison 2", x: 74.9141, y: 45.9365 },
-      { label: "New Garrison 3", x: 77.2530, y: 72.4699 }
-    ]
-  },
-  CAR: {
-    axis: [
-      { label: "New Garrison", x: 32.0775, y: 34.6327 },
-      { label: "New Garrison 2", x: 36.4559, y: 51.5468 },
-      { label: "New Garrison 3", x: 29.1161, y: 65.3169 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 68.5946, y: 32.6029 },
-      { label: "New Garrison 2", x: 70.5005, y: 49.4304 },
-      { label: "New Garrison 3", x: 63.5202, y: 75.8426 }
-    ]
-  },
-  DRI: {
-    axis: [
-      { label: "New Garrison", x: 28.8254, y: 68.9080 },
-      { label: "New Garrison 2", x: 51.9583, y: 70.4492 },
-      { label: "New Garrison 3", x: 72.2985, y: 67.6618 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 30.3190, y: 33.3876 },
-      { label: "New Garrison 2", x: 52.7736, y: 29.8291 },
-      { label: "New Garrison 3", x: 68.3767, y: 29.6294 }
-    ]
-  },
-  ELA: {
-    axis: [
-      { label: "New Garrison", x: 73.6436, y: 32.6860 },
-      { label: "New Garrison 2", x: 76.4492, y: 45.3327 },
-      { label: "New Garrison 3", x: 70.5872, y: 68.9386 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 30.0403, y: 33.1940 },
-      { label: "New Garrison 2", x: 29.1255, y: 47.4299 },
-      { label: "New Garrison 3", x: 29.5245, y: 68.9015 }
-    ]
-  },
-  FOY: {
-    allies: [
-      { label: "New Garrison", x: 31.0238, y: 25.8663 },
-      { label: "New Garrison 2", x: 43.1917, y: 33.6310 },
-      { label: "New Garrison 3", x: 73.7406, y: 31.2951 }
-    ],
-    axis: [
-      { label: "New Garrison", x: 31.1937, y: 62.4359 },
-      { label: "New Garrison 2", x: 55.2840, y: 66.2495 },
-      { label: "New Garrison 3", x: 72.3515, y: 63.5722 }
-    ]
-  },
-  H4: {
-    axis: [
-      { label: "New Garrison", x: 29.3660, y: 26.2411 },
-      { label: "New Garrison 2", x: 32.4670, y: 55.2356 },
-      { label: "New Garrison 3", x: 29.4358, y: 64.7351 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 63.7967, y: 31.6612 },
-      { label: "New Garrison 2", x: 63.9266, y: 48.7657 },
-      { label: "New Garrison 3", x: 67.6321, y: 72.4510 }
-    ]
-  },
-  HUR: {
-    axis: [
-      { label: "New Garrison", x: 29.3849, y: 26.2402 },
-      { label: "New Garrison 2", x: 32.4577, y: 55.2593 },
-      { label: "New Garrison 3", x: 29.4254, y: 64.4697 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 60.7959, y: 37.8016 },
-      { label: "New Garrison 2", x: 66.7795, y: 54.9569 },
-      { label: "New Garrison 3", x: 64.9551, y: 77.2430 }
-    ]
-  },
-  KHA: {
-    axis: [
-      { label: "New Garrison", x: 34.9850, y: 20.4737 },
-      { label: "New Garrison 2", x: 56.5151, y: 20.0707 },
-      { label: "New Garrison 3", x: 76.9114, y: 23.2100 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 28.6739, y: 78.9722 },
-      { label: "New Garrison 2", x: 53.8057, y: 79.0704 },
-      { label: "New Garrison 3", x: 69.1915, y: 78.1189 }
-    ]
-  },
-  KUR: {
-    axis: [
-      { label: "New Garrison", x: 33.6533, y: 24.4179 },
-      { label: "New Garrison 2", x: 52.3938, y: 21.7314 },
-      { label: "New Garrison 3", x: 74.7527, y: 20.6189 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 36.6365, y: 74.7925 },
-      { label: "New Garrison 2", x: 50.0941, y: 74.4242 },
-      { label: "New Garrison 3", x: 66.3864, y: 75.8449 }
-    ]
-  },
-  OMA: {
-    allies: [
-      { label: "New Garrison", x: 21.0942, y: 34.3431 },
-      { label: "New Garrison 2", x: 20.7194, y: 48.9125 },
-      { label: "New Garrison 3", x: 21.0616, y: 66.7241 }
-    ],
-    axis: [
-      { label: "New Garrison", x: 78.0468, y: 26.6036 },
-      { label: "New Garrison 2", x: 77.4488, y: 45.8406 },
-      { label: "New Garrison 3", x: 71.5673, y: 67.8883 }
-    ]
-  },
-  PHL: {
-    axis: [
-      { label: "New Garrison", x: 29.4218, y: 31.7287 },
-      { label: "New Garrison 2", x: 48.1351, y: 34.8851 },
-      { label: "New Garrison 3", x: 68.5690, y: 33.4797 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 33.6231, y: 62.8173 },
-      { label: "New Garrison 2", x: 48.9657, y: 64.2756 },
-      { label: "New Garrison 3", x: 77.5020, y: 61.5952 }
-    ]
-  },
-  REM: {
-    allies: [
-      { label: "New Garrison", x: 28.2594, y: 28.5719 },
-      { label: "New Garrison 2", x: 52.6297, y: 26.0786 },
-      { label: "New Garrison 3", x: 68.2245, y: 29.0742 }
-    ],
-    axis: [
-      { label: "New Garrison", x: 33.2534, y: 69.5042 },
-      { label: "New Garrison 2", x: 50.9749, y: 71.5767 },
-      { label: "New Garrison 3", x: 69.2615, y: 68.4195 }
-    ]
-  },
-  SMM: {
-    axis: [
-      { label: "New Garrison", x: 31.3531, y: 32.9404 },
-      { label: "New Garrison 2", x: 51.3946, y: 32.3620 },
-      { label: "New Garrison 3", x: 64.4658, y: 30.6766 }
-    ],
-    allies: [
-      { label: "New Garrison", x: 30.4593, y: 66.4874 },
-      { label: "New Garrison 2", x: 51.1316, y: 70.2952 },
-      { label: "New Garrison 3", x: 71.7253, y: 63.9113 }
-    ]
-  },
-  STA: {
-    allies: [
-      { label: "New Garrison", x: 27.4142, y: 24.5372 },
-      { label: "New Garrison 2", x: 23.8895, y: 55.2424 },
-      { label: "New Garrison 3", x: 24.7630, y: 76.2281 }
-    ],
-    axis: [
-      { label: "New Garrison", x: 78.6803, y: 29.2218 },
-      { label: "New Garrison 2", x: 77.4140, y: 50.1327 },
-      { label: "New Garrison 3", x: 78.7988, y: 67.8971 }
-    ]
-  },
-  SME: {
-    allies: [
-      { label: "New Garrison", x: 32.2965, y: 28.0727 },
-      { label: "New Garrison 2", x: 36.0324, y: 40.7232 },
-      { label: "New Garrison 3", x: 33.9574, y: 69.5006 }
-    ],
-    axis: [
-      { label: "New Garrison", x: 69.7825, y: 35.2163 },
-      { label: "New Garrison 2", x: 68.4197, y: 52.5084 },
-      { label: "New Garrison 3", x: 71.8347, y: 71.3896 }
-    ]
-  },
-  UTA: {
-    allies: [
-      { label: "New Garrison", x: 28.1592, y: 25.1906 },
-      { label: "New Garrison 2", x: 26.8216, y: 50.0068 },
-      { label: "New Garrison 3", x: 23.7690, y: 75.6686 }
-    ],
-    axis: [
-      { label: "New Garrison", x: 76.8213, y: 27.7427 },
-      { label: "New Garrison 2", x: 78.2830, y: 50.2344 },
-      { label: "New Garrison 3", x: 71.2563, y: 69.7611 }
-    ]
-  }
-};
-
-const FACTION_FLAG_PATHS = {
-  us: "images/flags/us.png",
-  gb: "images/flags/gb.png",
-  ger: "images/flags/ger.png",
-  soviet: "images/flags/rus.png"
-};
-
-const factionFlags = {
-  CAR: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  DRI: { allies: FACTION_FLAG_PATHS.gb, axis: FACTION_FLAG_PATHS.ger },
-  EBR: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  ELA: { allies: FACTION_FLAG_PATHS.gb, axis: FACTION_FLAG_PATHS.ger },
-  FOY: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  H4:  { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  HUR: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  KHA: { allies: FACTION_FLAG_PATHS.soviet, axis: FACTION_FLAG_PATHS.ger },
-  KUR: { allies: FACTION_FLAG_PATHS.soviet, axis: FACTION_FLAG_PATHS.ger },
-  MOR: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  OMA: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  PHL: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  REM: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  SMM: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  SME: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger },
-  SMO: { allies: FACTION_FLAG_PATHS.soviet, axis: FACTION_FLAG_PATHS.ger },
-  STA: { allies: FACTION_FLAG_PATHS.soviet, axis: FACTION_FLAG_PATHS.ger },
-  TOB: { allies: FACTION_FLAG_PATHS.gb, axis: FACTION_FLAG_PATHS.ger },
-  UTA: { allies: FACTION_FLAG_PATHS.us, axis: FACTION_FLAG_PATHS.ger }
-};
-
-function getFactionFlag(mapKey, faction) {
-  return factionFlags[mapKey]?.[faction] ?? null;
+// CRITICAL: Check if MAP_DATABASE is defined (from js/maps.js)
+if (typeof MAP_DATABASE === 'undefined') {
+  console.error('MAP_DATABASE is missing! Make sure js/maps.js loaded before script.js');
+  alert('Error: Map data failed to load. Please refresh the page.');
 }
 
-// --- FACTION STATE ---
-let currentFaction = "all";
+const APP_VERSION = "v1.0.3"; // UPDATES EVERYWHERE
 
-// --- DOM ELEMENTS ---
-const mapSelect = document.getElementById("mapSelect");
-const mapImage = document.getElementById("mapImage");
-const mapSourceWebp = document.getElementById("mapSourceWebp");
+// Detect Firefox to enable specific optimizations (sub-pixel rendering)
+const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
+// Map Dimensions
+const MAP_WIDTH_METERS = 2000.0; 
+const GAME_UNITS_PER_METER = 100.0;
+const MAP_SDK_WIDTH = MAP_WIDTH_METERS * GAME_UNITS_PER_METER; // 200,000
+const MAP_SDK_HEIGHT = MAP_SDK_WIDTH; // Square map
+
+// SDK Boundaries
+const GAME_LEFT = -MAP_SDK_WIDTH / 2; // -100,000
+const GAME_RIGHT = MAP_SDK_WIDTH / 2; // 100,000
+const GAME_TOP = MAP_SDK_HEIGHT / 2;  // 100,000
+const GAME_BOTTOM = -MAP_SDK_HEIGHT / 2; // -100,000
+
+// Map state
+const MIN_ZOOM = 1;
+let MAX_ZOOM = 10; 
+const ZOOM_STEP = 0.5; 
+const MARKER_ROTATION_DEG = 0; 
+
+// Initial State
+let state = { scale: 1, fitScale: 1, panning: false, pointX: 0, pointY: 0, startX: 0, startY: 0 };
+let currentZoomLevel = 1;
+let activeFaction = null;   
+let activeTarget = null;
+let activeMapKey = "CAR"; 
+let currentStrongpoints = []; 
+let labelCache = [];
+let isRendering = false; 
+let selectedGarrisonId = null; // Track selection by unique ID 
+
+// Add these with your other Global State variables
+let lastClickTime = 0;
+let lastClickId = null; 
+
+// UNDECLARED GLOBAL VARIABLES - explicitly declared to avoid pollution
+let trajSliderEnabled = false;
+let activeGunIndex = -1; 
+
+
+
+// --- PERFORMANCE CACHE ---
+let stickyLabelsCache = { cols: [], rows: [] }; // Stores grid label elements
+let cachedSubGrid = null; // Stores the keypad grid element
+
+
+
+// Performance optimization: Real Cache (Lazy Loaded)
+const cached = {
+    _ele: {}, // Internal storage
+    getElem(id) {
+        if (!this._ele[id]) this._ele[id] = document.getElementById(id);
+        return this._ele[id];
+    },
+    get mapImage() { return this.getElem("mapImage"); },
+    get markersLayer() { return this.getElem("markers"); },
+    get mapContainer() { return this.getElem("mapContainer"); },
+    get mapStage() { return this.getElem("mapStage"); },
+    get factionLabel() { return this.getElem("factionLabel"); },
+    get zoomIndicator() { return this.getElem("zoomIndicator"); },
+    // Add scale elements to cache too
+    get scaleWrapper() { return this.getElem("scaleWrapper"); },
+    get scaleTextMid() { return this.getElem("scaleTextMid"); },
+    get scaleTextEnd() { return this.getElem("scaleTextEnd"); }
+};
+
+// DOM Elements
+const mapContainer = document.getElementById("mapContainer");
 const mapStage = document.getElementById("mapStage");
-const markersContainer = document.getElementById("markers");
-const mapLoader = document.getElementById("mapLoader");
-const gridOverlay = document.getElementById("gridOverlay");
-const btnAxis = document.getElementById("btnAxis");
-const btnAllies = document.getElementById("btnAllies");
-const btnAllFactions = document.getElementById("btnAllFactions");
-const sidebarToggle = document.getElementById("sidebarToggle");
-const sidebarClose = document.getElementById("sidebarClose");
-const sidebar = document.getElementById("utilitySidebar");
-const sidebarBackdrop = document.getElementById("sidebarBackdrop");
-const spaCalculatorBtn = document.getElementById("spaCalculatorBtn");
+const zoomIndicator = document.getElementById("zoomIndicator");
 
-// --- NAVIGATION STATE ---
-let visibleMarkersList = []; // Stores objects { x, y, label, element }
-let currentMarkerIndex = -1;
-
-const scaleWrapper = document.getElementById("scaleWrapper");
-const scaleText10m = document.getElementById("scaleText10m");
-const scaleTextMid = document.getElementById("scaleTextMid");
-const scaleTextEnd = document.getElementById("scaleTextEnd");
-const zoomLevelIndicator = document.getElementById("zoomLevelIndicator");
-
-// --- SCALE LOGIC CONFIGURATION ---
-const MAP_REAL_WIDTH_METERS = 2000;
-const ALLOWED_SCALES = [500, 250, 200, 100, 50, 25, 20, 10];
-
-const LAST_MAP_STORAGE_KEY = "hll-last-map";
-const mapOrder = Object.entries(maps).sort((a, b) => a[1].name.localeCompare(b[1].name));
-const storedMapKey = localStorage.getItem(LAST_MAP_STORAGE_KEY);
-let currentMapKey = storedMapKey && maps[storedMapKey] ? storedMapKey : mapOrder[0][0];
-
-function populateSelect() {
-  mapOrder.forEach(([key, { name }]) => {
-    const option = document.createElement("option");
-    option.value = key;
-    option.textContent = name;
-    mapSelect.appendChild(option);
-  });
-}
-
-function updateFactionButtons() {
-  if (!btnAxis || !btnAllies || !btnAllFactions) return;
-  [btnAxis, btnAllies, btnAllFactions].forEach(btn => btn.classList.remove("active"));
-
-  switch (currentFaction) {
-    case "axis":
-      btnAxis.classList.add("active");
-      break;
-    case "allies":
-      btnAllies.classList.add("active");
-      break;
-    default:
-      btnAllFactions.classList.add("active");
-  }
-}
-
-if (btnAxis && btnAllies && btnAllFactions) {
-  btnAxis.addEventListener("click", () => {
-    if (currentFaction === "axis") return;
-    currentFaction = "axis";
-    updateFactionButtons();
-    renderMap(mapSelect.value);
-  });
-
-  btnAllies.addEventListener("click", () => {
-    if (currentFaction === "allies") return;
-    currentFaction = "allies";
-    updateFactionButtons();
-    renderMap(mapSelect.value);
-  });
-
-  btnAllFactions.addEventListener("click", () => {
-    if (currentFaction === "all") return;
-    currentFaction = "all";
-    updateFactionButtons();
-    renderMap(mapSelect.value);
-  });
-}
-
-updateFactionButtons();
-
-// Get reference to the loader
-function renderMap(mapKey) {
-currentMapKey = mapKey;
-const map = maps[mapKey];
-if (!map) return;
-
-if (mapSelect && mapSelect.value !== mapKey) {
-mapSelect.value = mapKey;
-}
-localStorage.setItem(LAST_MAP_STORAGE_KEY, mapKey);
-
-// 1. SHOW LOADING SCREEN
-if (mapLoader) mapLoader.classList.add("visible");
-
-// 2. Clear previous markers & Reset State
-markersContainer.innerHTML = "";
-markersContainer.classList.remove("has-selection");
-visibleMarkersList = [];
-currentMarkerIndex = -1;
-
-// 3. DEFINE LOAD HANDLERS
-const onMapLoaded = () => {
-if (mapLoader) mapLoader.classList.remove("visible");
-updateCache();
-initMapLogic();
-};
-
-const onMapError = () => {
-console.warn("Map image failed to load or is missing.");
-if (mapLoader) mapLoader.classList.remove("visible");
-};
-
-mapImage.onload = null;
-mapImage.onerror = null;
-mapImage.onload = onMapLoaded;
-mapImage.onerror = onMapError;
-
-// Safety Timeout
-setTimeout(() => {
-if (mapLoader && mapLoader.classList.contains("visible")) {
-mapLoader.classList.remove("visible");
-}
-}, 3000);
-
-// 4. SET IMAGE SOURCES
-  mapImage.loading = "eager";
-  mapImage.decoding = "auto"; 
-  mapImage.fetchPriority = "high";
-
-if (map.webp) mapSourceWebp.srcset = map.webp;
-mapImage.src = map.webp;
-mapImage.alt = map.name;
-
-// 6. Prepare Points Data
-const mapData = garrisonsData[mapKey];
-let points = [];
-  
-if (mapData) {
-const axisPoints = (mapData.axis || []).map((p, i) => ({ ...p, label: `Axis Default ${i + 1}`, faction: "axis" }));
-const alliesPoints = (mapData.allies || []).map((p, i) => ({ ...p, label: `Allies Default ${i + 1}`, faction: "allies" }));
-
-if (currentFaction === "all") points = [...axisPoints, ...alliesPoints];
-else points = currentFaction === "axis" ? axisPoints : alliesPoints;
-}
-
-// 7. Render Markers
-points.forEach((point, index) => {
-const marker = document.createElement("div");
-marker.className = "marker";
-
-// --- BUTTON HELPER: Robust Mobile & Desktop Support ---
-const bindQuickAction = (btn, action) => {
-    // 1. MOBILE: Handle Touch
-    // Use 'touchend' for instant response.
-    // e.preventDefault() stops the browser from generating a 'click' event later, preventing double-firing.
-    btn.addEventListener("touchend", (e) => {
-        if (e.cancelable) e.preventDefault(); 
-        e.stopPropagation();
-        requestAnimationFrame(() => action());
-    }, { passive: false });
-
-    // 2. DESKTOP: Handle Click
-    // Standard click for mouse users.
-    btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        requestAnimationFrame(() => action());
-    });
-
-    // 3. UTILITY: Prevent Map Drag
-    // Stop the touch/click from bubbling up to the map container
-    btn.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: true });
-    btn.addEventListener("mousedown", (e) => e.stopPropagation());
-};
-
-// Icon
-const icon = document.createElement("img");
-icon.src = "images/ui/icn_garrison_shadow_green.png";
-icon.alt = point.label;
-marker.appendChild(icon);
-
-// Inner 15m radius circle
-const innerRadius = document.createElement("div");
-innerRadius.className = "inner-radius";
-marker.appendChild(innerRadius);
-
-// Label with Buttons
-const labelDiv = document.createElement("div");
-labelDiv.className = "marker-label";
-
-// PREV BUTTON
-const prevBtn = document.createElement("button");
-prevBtn.className = "nav-arrow prev";
-prevBtn.innerHTML = "&#10094;";
-bindQuickAction(prevBtn, () => {
-const prevIndex = index === 0 ? points.length - 1 : index - 1;
-selectGarrisonByIndex(prevIndex, false, true);
-});
-
-const textSpan = document.createElement("span");
-textSpan.className = "label-text";
-
-const flagSrc = getFactionFlag(mapKey, point.faction);
-if (flagSrc) {
-const flagImg = document.createElement("img");
-flagImg.src = flagSrc;
-flagImg.className = "label-flag";
-textSpan.appendChild(flagImg);
-}
-
-const labelCopy = document.createElement("span");
-labelCopy.className = "label-copy";
-labelCopy.textContent = point.label;
-textSpan.appendChild(labelCopy);
-
-// NEXT BUTTON
-const nextBtn = document.createElement("button");
-nextBtn.className = "nav-arrow next";
-nextBtn.innerHTML = "&#10095;";
-bindQuickAction(nextBtn, () => {
-const nextIndex = index === points.length - 1 ? 0 : index + 1;
-selectGarrisonByIndex(nextIndex, false, true);
-});
-
-labelDiv.appendChild(prevBtn);
-labelDiv.appendChild(textSpan);
-labelDiv.appendChild(nextBtn);
-marker.appendChild(labelDiv);
-
-// --- MARKER INTERACTION (Stutter-Free) ---
-    
-    // 1. Mobile: Handle Tap & Double Tap
-    // We keep the math here because 'dblclick' doesn't always fire reliably on touch devices
-    let lastTapTime = 0;
-    
-    marker.addEventListener("touchend", (e) => {
-      e.preventDefault(); // Stop ghost mouse clicks
-      e.stopPropagation();
-
-      const currentTime = new Date().getTime();
-      const tapLength = currentTime - lastTapTime;
-
-      // Always select immediately on tap (Instant visual feedback)
-      activateMarkerVisuals(index, marker);
-
-      // Detect Double Tap (Speed < 300ms)
-      if (tapLength < 300 && tapLength > 0) {
-        selectGarrisonByIndex(index, true, false); // Zoom in
-        lastTapTime = 0;
-      } else {
-        lastTapTime = currentTime;
-      }
-    });
-
-    // 2. Desktop: Instant Selection & Native Double Click
-    // Single Click: Selects Instantly (No delay)
-    marker.addEventListener("click", (evt) => {
-      evt.stopPropagation();
-      activateMarkerVisuals(index, marker);
-    });
-
-    // Double Click: Zooms (Native event, no timer needed)
-    marker.addEventListener("dblclick", (evt) => {
-      evt.stopPropagation();
-      activateMarkerVisuals(index, marker); 
-      selectGarrisonByIndex(index, true, false); 
-    });
-
-    markersContainer.appendChild(marker);
-
-visibleMarkersList.push({
-xPct: point.x,
-yPct: point.y,
-element: marker
-});
-});
-
-requestRender();
-}
-
-// Helper to update visuals without Logic (used in taps)
-function activateMarkerVisuals(index, markerElement) {
-currentMarkerIndex = index;
-markersContainer.classList.add("has-selection");
-visibleMarkersList.forEach(item => item.element.classList.remove("active"));
-markerElement.classList.add("active");
-}
-
-function buildGridOverlay() {
-  if (!gridOverlay) return;
-  gridOverlay.innerHTML = "";
-  const ns = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(ns, "svg");
-  svg.setAttribute("class", "grid-svg");
-  svg.setAttribute("viewBox", "0 0 100 100");
-  svg.setAttribute("preserveAspectRatio", "none");
-
-  const createLine = (x1, y1, x2, y2, isSubgrid) => {
-    const line = document.createElementNS(ns, "line");
-    line.setAttribute("x1", x1);
-    line.setAttribute("y1", y1);
-    line.setAttribute("x2", x2);
-    line.setAttribute("y2", y2);
-    line.setAttribute("class", isSubgrid ? "subgrid-line" : "grid-line");
-    return line;
-  };
-
-  for (let i = 1; i < 10; i++) {
-    svg.appendChild(createLine(i * 10, 0, i * 10, 100, false));
-    svg.appendChild(createLine(0, i * 10, 100, i * 10, false));
-  }
-
-  for (let i = 1; i < 30; i++) {
-    if (i % 3 === 0) continue;
-    const pos = i * (10 / 3);
-    svg.appendChild(createLine(pos, 0, pos, 100, true));
-    svg.appendChild(createLine(0, pos, 100, pos, true));
-  }
-
-  const labelContainer = document.createElement("div");
-  labelContainer.className = "grid-labels";
-  const letters = "ABCDEFGHIJ".split("");
-
-  for (let row = 0; row < 10; row++) {
-    for (let col = 0; col < 10; col++) {
-      const cell = document.createElement("div");
-      cell.className = "grid-label-cell";
-      
-      let labelText = "";
-      if (row === 0 && col === 0) labelText = "A1";
-      else if (row === 0) labelText = letters[col];
-      else if (col === 0) labelText = (row + 1).toString();
-
-      if (labelText) {
-        const span = document.createElement("span");
-        span.className = "grid-label-text";
-        span.textContent = labelText;
-        cell.appendChild(span);
-      }
-
-      labelContainer.appendChild(cell);
+// Function to open the Projects Hub Modal
+function openProjectsModal() {
+    const modal = document.getElementById('projectsModal');
+    if (modal) {
+        modal.classList.add('active');
     }
-  }
-
-  gridOverlay.appendChild(svg);
-  gridOverlay.appendChild(labelContainer);
 }
 
-// Theme toggle
-const themeToggle = document.getElementById("themeToggle");
-const root = document.documentElement;
-const storedTheme = localStorage.getItem("hll-theme");
-
-function applyTheme(theme) {
-  if (theme === "light") {
-    root.setAttribute("data-theme", "light");
-    themeToggle.textContent = "Switch to Dark mode";
-  } else {
-    root.removeAttribute("data-theme");
-    themeToggle.textContent = "Switch to Light mode";
-  }
-  localStorage.setItem("hll-theme", theme);
+// Function to close the Projects Hub Modal
+function closeProjectsModal() {
+    const modal = document.getElementById('projectsModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
 }
 
-const preferred = storedTheme || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
-applyTheme(preferred);
+// Add event listener for the close button inside the modal
+document.getElementById('closeProjectsBtn')?.addEventListener('click', closeProjectsModal);
 
-themeToggle.addEventListener("click", () => {
-  const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
-  applyTheme(next);
+// Optional: Close modal if clicking on the dark overlay
+document.getElementById('projectsModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'projectsModal') closeProjectsModal();
 });
 
-// --- SIDEBAR LOGIC ---
-const SIDEBAR_OPEN_CLASS = "sidebar-open";
-const SPA_CALCULATOR_URL = "https://l1tku.github.io/hll-spa-calculator/";
+// ==========================================
+// 2. HELPER FUNCTIONS
+// ==========================================
 
-function openSidebar() {
-  document.body.classList.add(SIDEBAR_OPEN_CLASS);
-  sidebar?.setAttribute("aria-hidden", "false");
-  sidebarToggle?.setAttribute("aria-expanded", "true");
-  sidebarBackdrop?.removeAttribute("hidden");
-}
-
-function closeSidebar() {
-  document.body.classList.remove(SIDEBAR_OPEN_CLASS);
-  sidebar?.setAttribute("aria-hidden", "true");
-  sidebarToggle?.setAttribute("aria-expanded", "false");
-  sidebarBackdrop?.setAttribute("hidden", "");
-}
-
-sidebarToggle?.addEventListener("click", () => {
-  const isOpen = document.body.classList.contains(SIDEBAR_OPEN_CLASS);
-  if (isOpen) {
-    closeSidebar();
-  } else {
-    openSidebar();
-  }
-});
-
-sidebarClose?.addEventListener("click", closeSidebar);
-sidebarBackdrop?.addEventListener("click", closeSidebar);
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape" && document.body.classList.contains(SIDEBAR_OPEN_CLASS)) {
-    closeSidebar();
-  }
-});
-
-spaCalculatorBtn?.addEventListener("click", () => {
-  window.open(SPA_CALCULATOR_URL, "_blank", "noopener");
-});
-
-// --- ZOOM & PAN & SCALE LOGIC (OPTIMIZED) ---
-
-// 1. State Variables
-let currentZoomLevel = 1; 
-const MIN_LEVEL = 1;
-let maxLevel = 10; // Changed from const MAX_LEVEL to let variable
-let baseZoom = 1.0; 
-
-// Pan Variables
-let panX = 0;
-let panY = 0;
-let isDragging = false;
-let suppressNextMapClick = false;
-let startMouseX = 0;
-let startMouseY = 0;
-let lastPanX = 0;
-let lastPanY = 0;
-
-// --- IMPROVED DRAG LOGIC ---
-// New variable to track if we actually moved
-let hasMoved = false;
-const DRAG_THRESHOLD = 5; // Pixels to move before counting as a drag
-
-// Rendering State
-let isRenderPending = false;
-let zoomTransitionTimeout = null;
-let mapClickListenerAttached = false;
-
-// Global cache vars to prevent DOM thrashing
-let _lastScaleWidth = -1;
-let _lastScaleTextEnd = "";
-let _lastScaleTextMid = "";
-let _last10mVisible = null; // null forces initial check
-
-// --- CALIBRATION SETTINGS ---
-const ANCHOR_OFFSET_X = 0;
-const ANCHOR_OFFSET_Y = -6;
-
-// 2. Caching Dimensions (Prevents Layout Thrashing)
-// We store these so we don't query the DOM during a drag event
-const cache = {
-  containerW: 0,
-  containerH: 0,
-  mapW: 0,
-  mapH: 0,
-  rectLeft: 0,
-  rectTop: 0
+// --- NEW: Global Helper to stop map panning ---
+const stopMapInteraction = (e) => {
+    e.stopPropagation(); 
+    // NOTE: Do NOT call preventDefault() here, or sliders/inputs won't work!
 };
 
-// Update cache on resize, map load, or init
-function updateCache() {
-  const containerRect = mapStage.parentElement.getBoundingClientRect();
-  cache.containerW = containerRect.width;
-  cache.containerH = containerRect.height;
-  cache.rectLeft = containerRect.left;
-  cache.rectTop = containerRect.top;
 
-  // We need the unscaled dimensions of the image
-  cache.mapW = mapImage.offsetWidth;
-  cache.mapH = mapImage.offsetHeight;
+function showLoading() {
+    const loading = document.getElementById('loadingOverlay');
+    if (loading) loading.style.display = 'flex';
+}
 
-  // --- DYNAMIC MAX ZOOM CALCULATION ---
-  // A standard desktop view is roughly 1200px wide.
-  // If the current screen is 400px (mobile), we need 3x more zoom 
-  // to reach the same level of detail as desktop.
-  const referenceWidth = 1200; 
-  if (cache.containerW > 0) {
-    const ratio = referenceWidth / cache.containerW;
-    // Base max is 10. On mobile, this might become 10 * 3 = 30.
-    // We cap it at 50x to prevent getting lost in pixels.
-    maxLevel = Math.max(10, Math.min(50, 10 * ratio));
+function updatePageTitle(mapName) {
+    // Dynamically updates the browser tab title using the original case 
+    document.title = `Default Garrisons Map - ${mapName}`;
+}
+
+function hideLoading() {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 200); 
   }
+}
+
+// --- PINCH ZOOM HELPERS ---
+function getPinchDistance(e) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+function getPinchCenter(e) {
+    return {
+        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+    };
+}
+
+// Easing function for smooth movement (Ease Out Quart)
+function easeOutQuart(t) {
+    return 1 - Math.pow(1 - t, 4);
+}
+
+let activePanAnimation = null; // Track animation to cancel if interrupted
+
+// NEW: Accepts targetZoom (passed as raw scale value, e.g., 1 to 10)
+function animateToLocation(gameX, gameY, targetZoom = null) {
+    const mapImage = document.getElementById("mapImage");
+    if (!mapImage) return;
+
+    if (activePanAnimation) cancelAnimationFrame(activePanAnimation);
+
+    // 1. Setup Start Values
+    const startX = state.pointX;
+    const startY = state.pointY;
+    const startScale = state.scale;
+
+    // 2. Determine End Scale
+    // If no zoom provided, stay at current. If provided, clamp to min/max.
+    let endScale = targetZoom !== null ? targetZoom : startScale;
+    endScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, endScale));
+
+    // 3. Calculate Target Position based on END SCALE
+    // We want the target to be in the center of the screen *after* the zoom finishes.
+    const w = mapImage.naturalWidth;
+    const h = mapImage.naturalHeight;
+    
+    // Convert Game Coords to Image Pixels
+    const pos = gameToImagePixels(gameX, gameY, w, h);
+    
+    const screenCX = window.innerWidth / 2;
+    const screenCY = window.innerHeight / 2;
+
+    // IMPORTANT: specific "fitScale" logic must be applied to get pixels
+    const effectiveEndZoom = endScale * state.fitScale;
+
+    const targetX = screenCX - (pos.x * effectiveEndZoom);
+    const targetY = screenCY - (pos.y * effectiveEndZoom);
+
+    // 4. Animation Config
+    const duration = 600; // Slightly slower for zooming (0.6s)
+    const startTime = performance.now();
+
+    toggleTransitions(false); // Kill CSS transitions
+
+    function loop(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = easeOutQuart(progress);
+
+        // 5. Interpolate Scale & Position
+        state.scale = startScale + ((endScale - startScale) * ease);
+        
+        // --- FIX: SYNC THE SCROLL VARIABLE HERE ---
+        currentZoomLevel = state.scale; 
+        // ------------------------------------------
+
+        state.pointX = startX + ((targetX - startX) * ease);
+        state.pointY = startY + ((targetY - startY) * ease);
+
+        // 6. Render Frame
+        render();
+
+        if (progress < 1) {
+            activePanAnimation = requestAnimationFrame(loop);
+        } else {
+            activePanAnimation = null;
+            // Optional: Save state after zoom finishes
+            saveState(); 
+        }
+    }
+
+    activePanAnimation = requestAnimationFrame(loop);
+}
+
+// Helper to get currently visible garrisons based on filters
+function getVisibleGarrisons() {
+    if (!currentStrongpoints) return [];
+    
+    const visible = [];
+    currentStrongpoints.forEach(point => {
+        if (point.type !== 'garrison_default') return;
+
+        // Apply same faction filter logic as renderMarkers
+        let shouldShow = true;
+        if (activeFaction !== 'all' && activeFaction !== null) {
+            const teamLower = point.team.toLowerCase();
+            if (activeFaction === 't1') {
+                shouldShow = (teamLower === 'us' || teamLower === 'allies' || teamLower === 'rus' || teamLower === 'sov' || teamLower === 'gb');
+            } else if (activeFaction === 't2') {
+                shouldShow = (teamLower === 'ger' || teamLower === 'axis');
+            }
+        }
+
+        if (shouldShow) {
+            visible.push(point);
+        }
+    });
+    return visible;
+}
+
+
+
+// Show loading immediately
+showLoading();
+
+function toggleSubGrid(currentZoom) {
+  // Lazy load cache
+  if (!cachedSubGrid) {
+      cachedSubGrid = document.querySelector('.keypad-grid');
+  }
+  
+  if (!cachedSubGrid) return;
+
+  // Simple state check to avoid DOM writes if not needed could be added here, 
+  // but opacity style change is generally cheap.
+  if (currentZoom >= 3.0) cachedSubGrid.style.opacity = "0.4"; 
+  else cachedSubGrid.style.opacity = "0";   
 }
 
 function getEffectiveZoom() {
-  return baseZoom * currentZoomLevel;
+  return state.scale * state.fitScale;
 }
 
-// 3. The Math (Calculates limits based on Cache, not DOM)
-function clampPosition() {
-  const effectiveZoom = getEffectiveZoom();
-  const currentMapW = cache.mapW * effectiveZoom;
-  const currentMapH = cache.mapH * effectiveZoom;
-
-  const diffW = cache.containerW - currentMapW;
-  const diffH = cache.containerH - currentMapH;
-
-  // If map is smaller than container, center it. 
-  // If larger, clamp edges.
-  if (diffW >= 0) panX = diffW / 2;
-  else panX = Math.min(0, Math.max(panX, diffW));
-
-  if (diffH >= 0) panY = diffH / 2;
-  else panY = Math.min(0, Math.max(panY, diffH));
-}
-
-// 4. The Renderer (Uses requestAnimationFrame)
-function requestRender() {
-  if (!isRenderPending) {
-    isRenderPending = true;
-    requestAnimationFrame(renderTransform);
-  }
-}
-
-function renderTransform() {
-  const effectiveZoom = getEffectiveZoom();
-  
-  // 1. Update Map Stage
-  mapStage.style.setProperty("--zoom", effectiveZoom);
-  mapStage.style.setProperty("--pan-x", `${panX.toFixed(2)}px`);
-  mapStage.style.setProperty("--pan-y", `${panY.toFixed(2)}px`);
-  
-  // 2. Calculate & Apply 50m Danger Radius
-  // Logic: The map represents MAP_REAL_WIDTH_METERS (2000m).
-  // The danger circle represents a 50m radius, which is a 50m diameter.
-  // So the diameter in pixels = (Current Map Width in Pixels) * (50 / 2000).
-  if (cache.mapW > 0) {
-    // 50m is the diameter of the 50m radius circle
-    const diameterInMeters = 50; 
-    // Calculate the ratio of the circle size to the full map size
-    const sizeRatio = diameterInMeters / MAP_REAL_WIDTH_METERS; // 50 / 2000 = 0.025
+function getGridRef(gameX, gameY) {
+    const dims = getMapDimensions();
     
-    // Calculate exact pixel size at current zoom
-    const dangerRadiusPx = (cache.mapW * effectiveZoom) * sizeRatio;
-    
-    markersContainer.style.setProperty('--danger-radius', `${dangerRadiusPx.toFixed(1)}px`);
-    
-    // Calculate 15m inner radius (15m diameter)
-    const innerDiameterInMeters = 15;
-    const innerSizeRatio = innerDiameterInMeters / MAP_REAL_WIDTH_METERS; // 15 / 2000 = 0.0075
-    const innerRadiusPx = (cache.mapW * effectiveZoom) * innerSizeRatio;
-    
-    markersContainer.style.setProperty('--inner-radius', `${innerRadiusPx.toFixed(1)}px`);
-  }
-  
-  // 3. PERFORMANCE FIX: 
-  // Only recalculate text scale if we are NOT actively scrolling.
-  // This prevents the 3s lag spike.
-  if (!document.body.classList.contains("is-interacting")) {
-      const inverse = (1 / effectiveZoom).toFixed(4);
-      mapStage.style.setProperty("--inverse-zoom", inverse);
-  }
+    // 1. DYNAMIC GRID SIZE
+    // Instead of hard 200m, we ask: "How big is a grid square on THIS map?"
+    // This ensures the math matches the visual lines (width / 10) exactly.
+    const gridW = dims.width / GAME_UNITS_PER_METER / 10;
+    const gridH = dims.height / GAME_UNITS_PER_METER / 10;
 
-  // 4. Update Markers (Standard logic)
-  if (visibleMarkersList.length > 0 && cache.mapW > 0) {
-    for (let i = 0; i < visibleMarkersList.length; i++) {
-      const m = visibleMarkersList[i];
-      const mapPxX = (m.xPct / 100) * cache.mapW;
-      const mapPxY = (m.yPct / 100) * cache.mapH;
-      const screenX = (mapPxX * effectiveZoom) + panX;
-      const screenY = (mapPxY * effectiveZoom) + panY;
-      
-      m.element.style.transform = `
-        translate3d(${screenX}px, ${screenY}px, 0) 
-        translate(-50%, -50%) 
-        translate(${ANCHOR_OFFSET_X}px, ${ANCHOR_OFFSET_Y}px)
-      `;
+    // 2. OFFSET CORRECTION
+    // Calculate meters from the explicit Top-Left of the map bounds.
+    // This fixes maps that aren't perfectly centered at 0,0.
+    const xMeters = (gameX - dims.left) / GAME_UNITS_PER_METER;
+    const yMeters = (dims.top - gameY) / GAME_UNITS_PER_METER;
+    
+    // Bounds Check
+    const totalW = dims.width / GAME_UNITS_PER_METER;
+    const totalH = dims.height / GAME_UNITS_PER_METER;
+
+    if (xMeters < 0 || xMeters > totalW || yMeters < 0 || yMeters > totalH) {
+        return "---";
     }
-  }
 
-  updateRealScale(effectiveZoom);
-  isRenderPending = false;
+    // Use the dynamic grid size for calculation
+    let colIndex = Math.floor(xMeters / gridW); 
+    let rowIndex = Math.floor(yMeters / gridH);
+    
+    const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    
+    // Safety Clamp
+    if (colIndex >= letters.length) colIndex = letters.length - 1;
+    if (rowIndex >= 10) rowIndex = 9;
+    if (colIndex < 0) colIndex = 0;
+    if (rowIndex < 0) rowIndex = 0;
+    
+    const colChar = letters[colIndex];
+    const rowChar = rowIndex + 1;
+    
+    return `${colChar}${rowChar}`;
 }
 
-function updateRealScale(effectiveZoom) {
-  // Use cached map width
-  const currentMapWidthPx = cache.mapW * effectiveZoom;
-  if (currentMapWidthPx <= 0) return;
-
-  const metersPerPixel = MAP_REAL_WIDTH_METERS / currentMapWidthPx;
-  
-  // Mobile-specific: Reduce max scale width on smaller screens
-  const isMobile = window.innerWidth <= 768;
-  const maxAllowedWidthPx = isMobile ? 150 : 250; 
-  
-  const maxCapacity = metersPerPixel * maxAllowedWidthPx;
-  
-  // Find the largest scale value that fits
-  let selectedScale = ALLOWED_SCALES.find(scale => scale <= maxCapacity);
-  if (selectedScale === undefined) selectedScale = ALLOWED_SCALES[ALLOWED_SCALES.length - 1];
-
-  const drawnWidth = selectedScale / metersPerPixel;
-  
-  // OPTIMIZATION: Only touch the DOM if values actually changed
-  if (Math.abs(drawnWidth - _lastScaleWidth) > 0.5) {
-    scaleWrapper.style.width = `${drawnWidth}px`;
-    _lastScaleWidth = drawnWidth;
-  }
-
-  const textEnd = `${selectedScale}m`;
-  if (textEnd !== _lastScaleTextEnd) {
-    scaleTextEnd.textContent = textEnd;
-    _lastScaleTextEnd = textEnd;
-  }
-
-  const textMid = `${selectedScale / 2}m`;
-  if (textMid !== _lastScaleTextMid) {
-    scaleTextMid.textContent = textMid;
-    _lastScaleTextMid = textMid;
-  }
-  
-  // 10m Indicator Logic
-  const shouldShow10m = (effectiveZoom === 10 && !isMobile);
-  
-  if (shouldShow10m !== _last10mVisible) {
-    // Only update style if visibility state changed
-    const displayVal = shouldShow10m ? 'block' : 'none';
+function getGridData(gameX, gameY) {
+    const dims = getMapDimensions();
     
-    if (scaleText10m) {
-      scaleText10m.style.display = displayVal;
-      if (shouldShow10m) scaleText10m.style.left = '20%'; 
+    // 1. DYNAMIC GRID SIZE
+    const gridW = dims.width / GAME_UNITS_PER_METER / 10;
+    const gridH = dims.height / GAME_UNITS_PER_METER / 10;
+
+    // 2. OFFSET CORRECTION
+    const xMeters = (gameX - dims.left) / GAME_UNITS_PER_METER;
+    const yMeters = (dims.top - gameY) / GAME_UNITS_PER_METER;
+    
+    const totalW = dims.width / GAME_UNITS_PER_METER;
+    const totalH = dims.height / GAME_UNITS_PER_METER;
+
+    if (xMeters < 0 || xMeters > totalW || yMeters < 0 || yMeters > totalH) {
+        return { text: "---", keypadIndex: -1 };
     }
+
+    // Main Grid
+    let colIndex = Math.floor(xMeters / gridW); 
+    let rowIndex = Math.floor(yMeters / gridH);
     
-    const tick10m = document.querySelector('.t-10m');
-    if (tick10m) {
-      tick10m.style.display = displayVal;
-      if (shouldShow10m) tick10m.style.left = '20%';
+    const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    
+    if (colIndex >= letters.length) colIndex = letters.length - 1;
+    if (rowIndex >= 10) rowIndex = 9;
+    if (colIndex < 0) colIndex = 0;
+    if (rowIndex < 0) rowIndex = 0;
+    
+    const gridText = `${letters[colIndex]}${rowIndex + 1}`;
+
+    // 3. SUB-GRID (Keypad 1-9)
+    // We calculate the offset *within* the current grid square
+    const subX = xMeters % gridW;
+    const subY = yMeters % gridH;
+    
+    // Divide the dynamic square size by 3 for the sub-cells
+    const kCol = Math.floor(subX / (gridW / 3)); 
+    const kRow = Math.floor(subY / (gridH / 3)); 
+    
+    // Flat Index (0-8)
+    // 0 1 2
+    // 3 4 5
+    // 6 7 8
+    // Clamp to ensure we don't get 3 (edge case precision issues)
+    const safeCol = Math.min(2, Math.max(0, kCol));
+    const safeRow = Math.min(2, Math.max(0, kRow));
+
+    const keypadIndex = (safeRow * 3) + safeCol;
+
+    return { text: gridText, keypadIndex: keypadIndex };
+}
+
+// --- NEW: HTML Generator for the Visual Grid ---
+function generateKeypadHTML(gridData) {
+    let cellsHTML = "";
+    for (let i = 0; i < 9; i++) {
+        const activeClass = (i === gridData.keypadIndex) ? "active" : "";
+        cellsHTML += `<div class="kp-cell ${activeClass}"></div>`;
     }
-    
-    _last10mVisible = shouldShow10m;
-  }
+
+    return `
+        <div class="grid-box-container">
+            <span class="grid-text">${gridData.text}</span>
+            <div class="visual-keypad">
+                ${cellsHTML}
+            </div>
+        </div>
+    `;
 }
 
-// 5. Input Handlers
-
-// ZOOM
-function triggerZoomTransition() {
-  if (!mapStage) return;
-  mapStage.classList.add("zoom-transition");
-  if (zoomTransitionTimeout) clearTimeout(zoomTransitionTimeout);
-  zoomTransitionTimeout = setTimeout(() => {
-    mapStage.classList.remove("zoom-transition");
-    zoomTransitionTimeout = null;
-  }, 260);
+// --- FORCE ANIMATIONS OFF (RESPONSIVE STYLE) ---
+function toggleTransitions(enable) {
+  // Always remove the class, never add it.
+  // This ensures instant snapping on both Desktop and Mobile.
+  mapStage.classList.remove("zoom-transition");
+  const labelLayer = document.getElementById("labelLayer");
+  if (labelLayer) labelLayer.classList.remove("zoom-transition");
+  mapStage.style.transition = "none";
 }
 
-// Helper: Performance Mode
-function startInteraction() {
-  document.body.classList.add("is-interacting");
-}
-function stopInteraction() {
-  document.body.classList.remove("is-interacting");
-  requestRender();
-}
-
-// UPDATE setZoomLevel to handle Floats
-function setZoomLevel(newLevel, mouseX = null, mouseY = null, options = {}) {
+function setZoomLevel(newLevel, mouseX = null, mouseY = null) {
   const prevZoom = getEffectiveZoom();
+  // Update the global state immediately
+  currentZoomLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newLevel));
+  state.scale = currentZoomLevel;
   
-  // UPDATED: Use 'maxLevel' variable instead of 'MAX_LEVEL' constant
-  currentZoomLevel = Math.max(MIN_LEVEL, Math.min(maxLevel, newLevel));
+  // REMOVED: The block that added 'zoom-transition' 
+  // This keeps the zoom instant/responsive.
   
   const newZoom = getEffectiveZoom();
-
-  // Logic for Grid Detail
-  if (currentZoomLevel >= 4) gridOverlay.classList.add('detailed-grid');
-  else gridOverlay.classList.remove('detailed-grid');
-
-  if (zoomLevelIndicator) zoomLevelIndicator.textContent = `${currentZoomLevel.toFixed(1)}x`;
-
-  const focusWorldPoint = options.focusWorldPoint;
-  if (focusWorldPoint) {
-       if (!cache.containerW) updateCache();
-       const tX = focusWorldPoint.targetScreenX ?? (cache.containerW / 2);
-       const tY = focusWorldPoint.targetScreenY ?? (cache.containerH / 2);
-       panX = tX - (focusWorldPoint.worldX * newZoom);
-       panY = tY - (focusWorldPoint.worldY * newZoom);
-  } else if (mouseX !== null) {
-       const worldX = (mouseX - panX) / prevZoom;
-       const worldY = (mouseY - panY) / prevZoom;
-       panX = mouseX - (worldX * newZoom);
-       panY = mouseY - (worldY * newZoom);
+  
+  if (mouseX !== null && mouseY !== null) {
+    // Get the current world position under the mouse
+    const worldX = (mouseX - state.pointX) / prevZoom;
+    const worldY = (mouseY - state.pointY) / prevZoom;
+    
+    // Calculate what the new pan position should be
+    state.pointX = mouseX - worldX * newZoom;
+    state.pointY = mouseY - worldY * newZoom;
   }
   
   clampPosition();
-  requestRender();
+  toggleSubGrid(currentZoomLevel);
+  render();
+  
+  // Auto-save zoom changes (debounced)
+  clearTimeout(window.saveZoomTimeout);
+  window.saveZoomTimeout = setTimeout(saveState, 500);
 }
 
-function focusOnMapPoint(xPercent, yPercent, targetLevel = 6, animate = true) {
-  if (!cache.mapW || !cache.mapH) updateCache();
-  if (!cache.mapW || !cache.mapH) return;
+function clampPosition() {
+  const rect = mapContainer.getBoundingClientRect();
+  const mapImage = document.getElementById("mapImage");
+  const drawScale = state.scale * state.fitScale;
+  const imgW = mapImage.naturalWidth * drawScale;
+  const imgH = mapImage.naturalHeight * drawScale;
 
-  const worldX = (xPercent / 100) * cache.mapW;
-  const worldY = (yPercent / 100) * cache.mapH;
+  const OVERSCROLL_FACTOR = 0.8; 
+  const marginX = rect.width * OVERSCROLL_FACTOR;
+  const marginY = rect.height * OVERSCROLL_FACTOR;
 
-  // Only play the sliding animation if 'animate' is true
-  if (animate) {
-    triggerZoomTransition();
-  } else {
-    // If not animating, ensure we remove the class instantly to prevent lag
-    if (mapStage) mapStage.classList.remove("zoom-transition");
+  const limitTop = marginY;
+  const limitBottom = rect.height - imgH - marginY;
+  const limitLeft = marginX;
+  const limitRight = rect.width - imgW - marginX;
+
+  if (state.pointX > limitLeft) state.pointX = limitLeft;
+  if (state.pointX < limitRight) state.pointX = limitRight;
+  if (state.pointY > limitTop) state.pointY = limitTop;
+  if (state.pointY < limitBottom) state.pointY = limitBottom;
+}
+
+function createStickyLabels() {
+  const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+  let labelLayer = document.getElementById("labelLayer");
+  
+  const isHidden = localStorage.getItem("hll-grid-hidden") === "true";
+
+  if (!labelLayer) {
+    labelLayer = document.createElement("div");
+    labelLayer.id = "labelLayer";
+    labelLayer.className = "label-layer";
+    
+    // NEW: Apply hidden class immediately
+    if (isHidden) labelLayer.classList.add("grid-hidden");
+    
+    mapContainer.appendChild(labelLayer);
+  }
+  
+  labelLayer.innerHTML = "";
+  
+  // Reset Cache
+  stickyLabelsCache.cols = [];
+  stickyLabelsCache.rows = [];
+
+  // Create Columns (Letters)
+  for (let i = 0; i < 10; i++) {
+    const el = document.createElement("div");
+    el.className = "hll-grid-label";
+    el.innerText = (i === 0) ? "A1" : letters[i];
+    labelLayer.appendChild(el);
+    stickyLabelsCache.cols.push(el); // Save to cache
   }
 
-  setZoomLevel(targetLevel, null, null, { 
-    focusWorldPoint: { 
-      worldX, 
-      worldY, 
-      targetScreenX: cache.containerW / 2, 
-      targetScreenY: cache.containerH / 2 
-    } 
+  // Create Rows (Numbers)
+  for (let i = 1; i < 10; i++) {
+    const el = document.createElement("div");
+    el.className = "hll-grid-label";
+    el.innerText = i + 1;
+    labelLayer.appendChild(el);
+    stickyLabelsCache.rows.push(el); // Save to cache
+  }
+}
+
+// === FIX #2: Sticky Labels using 2D Transform ===
+function updateStickyLabels(currentDrawScale) {
+  const mapImage = cached.mapImage; 
+  if (!mapImage) return;
+
+  const w = mapImage.naturalWidth;
+  const h = mapImage.naturalHeight;
+  const stepX = (w / 10) * currentDrawScale; 
+  const stepY = (h / 10) * currentDrawScale; 
+
+  const isMobile = window.innerWidth <= 768;
+  const padding = isMobile ? 15 : 30; 
+  
+  const stickyTopY = Math.max(state.pointY, 0);
+  const stickyLeftX = Math.max(state.pointX, 0);
+
+  let fontScale = 0.7 + ((state.scale - 1) * 0.15);
+  if (fontScale > 1.0) fontScale = 1.0;
+
+  // FIX: Detect if we should use floats (Firefox/HighDPI) to prevent label vibration
+  const isHighDPI = window.devicePixelRatio > 1;
+  const useFloats = isHighDPI || isFirefox;
+
+  for (let i = 0; i < stickyLabelsCache.cols.length; i++) {
+    const el = stickyLabelsCache.cols[i];
+    const colScreenX = state.pointX + (i * stepX);
+    const finalX = colScreenX + padding;
+    
+    let finalY;
+    if (i === 0) finalY = state.pointY + padding; 
+    else finalY = stickyTopY + padding;      
+    
+    // Apply rounding only if NOT Firefox/HighDPI
+    const xVal = useFloats ? finalX : Math.round(finalX);
+    const yVal = useFloats ? finalY : Math.round(finalY);
+
+    el.style.transform = `translate(${xVal}px, ${yVal}px) scale(${fontScale})`;
+  }
+
+  for (let i = 0; i < stickyLabelsCache.rows.length; i++) {
+    const el = stickyLabelsCache.rows[i];
+    const gridIndex = i + 1; 
+    const finalX = stickyLeftX + padding;
+    const rowScreenY = state.pointY + (gridIndex * stepY);
+    const finalY = rowScreenY + padding;
+    
+    // Apply rounding only if NOT Firefox/HighDPI
+    const xVal = useFloats ? finalX : Math.round(finalX);
+    const yVal = useFloats ? finalY : Math.round(finalY);
+    
+    el.style.transform = `translate(${xVal}px, ${yVal}px) scale(${fontScale})`;
+  }
+}
+
+function buildGrid() {
+  let gridLayer = document.getElementById("gridLayer");
+  
+  // Check preference immediately
+  const isHidden = localStorage.getItem("hll-grid-hidden") === "true";
+
+  if (!gridLayer) {
+    gridLayer = document.createElement("div");
+    gridLayer.id = "gridLayer";
+    gridLayer.className = "grid-layer";
+    
+    // NEW: Apply hidden class immediately upon creation if saved setting says so
+    if (isHidden) gridLayer.classList.add("grid-hidden");
+
+    document.getElementById("mapStage").appendChild(gridLayer);
+  }
+  
+  gridLayer.innerHTML = ""; 
+  const mapImage = document.getElementById("mapImage");
+  const w = mapImage.naturalWidth;
+  const h = mapImage.naturalHeight;
+  if (w === 0) return; 
+  
+  gridLayer.style.width = `${w}px`;
+  gridLayer.style.height = `${h}px`;
+
+  const stepX = w / 10;
+  const stepY = h / 10;
+
+  const keypadLayer = document.createElement("div");
+  keypadLayer.className = "keypad-grid";
+  keypadLayer.style.backgroundSize = `${stepX/3}px ${stepY/3}px`;
+  gridLayer.appendChild(keypadLayer);
+
+  // --- VERTICAL LINES ---
+  for (let i = 0; i <= 10; i++) { 
+    const vLine = document.createElement("div");
+    vLine.className = "hll-grid-line vertical";
+    vLine.style.left = `${Math.round(i * stepX)}px`;
+    
+    // FIX: Remove -50% centering for inner lines to prevent Firefox sub-pixel blur
+    if (i === 0) vLine.style.transform = "translateX(0)"; 
+    else if (i === 10) vLine.style.transform = "translateX(-100%)"; 
+    else vLine.style.transform = "translateX(0)"; // Changed from -50% to 0
+    
+    gridLayer.appendChild(vLine);
+  }
+
+  // --- HORIZONTAL LINES ---
+  for (let i = 0; i <= 10; i++) { 
+    const hLine = document.createElement("div");
+    hLine.className = "hll-grid-line horizontal";
+    hLine.style.top = `${Math.round(i * stepY)}px`;
+    
+    // FIX: Remove -50% centering for inner lines
+    if (i === 0) hLine.style.transform = "translateY(0)"; 
+    else if (i === 10) hLine.style.transform = "translateY(-100%)"; 
+    else hLine.style.transform = "translateY(0)"; // Changed from -50% to 0
+    
+    gridLayer.appendChild(hLine);
+  }
+}
+
+// --- COORDINATE CONVERSION HELPERS ---
+function getMapDimensions() {
+  const config = MAP_DATABASE[activeMapKey];
+  
+  // 1. If map has explicit FModel bounds, use them
+  if (config.bounds) {
+    return {
+      width: config.bounds.maxX - config.bounds.minX,
+      height: config.bounds.maxY - config.bounds.minY,
+      left: config.bounds.minX,
+      top: config.bounds.maxY 
+    };
+  }
+
+  // 2. Fallback for other maps (Explicit Meter Values)
+  const wMeters = config.widthMeters || MAP_WIDTH_METERS; 
+  const hMeters = config.heightMeters || MAP_WIDTH_METERS; 
+
+  const sdkW = wMeters * GAME_UNITS_PER_METER;
+  const sdkH = hMeters * GAME_UNITS_PER_METER;
+
+  return {
+    width: sdkW,
+    height: sdkH,
+    left: -sdkW / 2,
+    top: sdkH / 2
+  };
+}
+
+function gameToImagePixels(gameX, gameY, imgW, imgH) {
+  const dims = getMapDimensions();
+
+  // X is Standard (Left to Right)
+  const normX = (gameX - dims.left) / dims.width;
+  
+  // Y Inversion:
+  // In Game: +Y is usually North (Up).
+  // In Image: 0 is North (Top).
+  // So we subtract GameY from the Top Boundary.
+  // Example: If Top is 100800 and Point is 50000 -> (100800 - 50000) / H = Top Half.
+  const normY = (dims.top - gameY) / dims.height;
+
+  return { x: normX * imgW, y: normY * imgH };
+}
+
+function imagePixelsToGame(imgX, imgY, imgW, imgH) {
+  const dims = getMapDimensions();
+  const normX = imgX / imgW;
+  const normY = imgY / imgH;
+  const x = (normX * dims.width) + dims.left;
+  const y = dims.top - (normY * dims.height);
+  return { x: x, y: y };
+}
+
+function renderMarkers() {
+  const markersLayer = cached.markersLayer;
+  if (!markersLayer) return;
+  markersLayer.innerHTML = ""; 
+  labelCache = [];
+  // === MEMORY LEAK FIX: Remove old control UIs + their listeners ===
+  markersLayer.querySelectorAll('.garrison-control-ui').forEach(ui => {
+      ui.remove(); // also removes attached event listeners
+  });
+  const fragment = document.createDocumentFragment();
+  const mapImage = cached.mapImage;
+  if (!mapImage) return;
+
+  const w = mapImage.naturalWidth;
+  const h = mapImage.naturalHeight;
+  const config = MAP_DATABASE[activeMapKey];
+  if (!config || !currentStrongpoints) return;
+
+  // RENDER LOOP
+  currentStrongpoints.forEach(point => {
+    const isGarrison = point.type === 'garrison_default';
+    
+    // --- FACTION FILTER LOGIC ---
+    let shouldShow = true;
+    if (isGarrison && activeFaction !== 'all' && activeFaction !== null) {
+        const teamLower = point.team.toLowerCase();
+        if (activeFaction === 't1') {
+            shouldShow = (teamLower === 'us' || teamLower === 'allies' || teamLower === 'rus' || teamLower === 'sov' || teamLower === 'gb');
+        } else if (activeFaction === 't2') {
+            shouldShow = (teamLower === 'ger' || teamLower === 'axis');
+        }
+    }
+
+    if (!shouldShow) return;
+    
+    const el = document.createElement("div");
+    el.className = `marker ${point.team} ${point.type}`;
+    
+    const pos = gameToImagePixels(point.gameX, point.gameY, w, h);
+    
+    // --- STRONGPOINT RENDERING ---
+    if (point.type === 'strongpoint') {
+      const dims = getMapDimensions();
+      const pxPerMeter = (w / dims.width) * GAME_UNITS_PER_METER;
+      const radiusPx = (point.radius / GAME_UNITS_PER_METER) * pxPerMeter;
+      const size = radiusPx * 2;
+      el.style.width = `${size}px`; 
+      el.style.height = `${size}px`;
+      el.style.left = `${Math.round(pos.x)}px`; 
+      el.style.top = `${Math.round(pos.y)}px`; 
+      el.style.marginLeft = `-${size/2}px`; 
+      el.style.marginTop = `-${size/2}px`;
+
+      const visual = document.createElement("div");
+      visual.className = "marker-visual";
+      el.appendChild(visual);
+      
+      if (point.label) {
+        const labelSpan = document.createElement("span");
+        labelSpan.className = "marker-label";
+        labelSpan.innerText = point.label;
+        el.appendChild(labelSpan);
+        labelCache.push(labelSpan);
+      }
+    }
+    
+    // --- GARRISON RENDERING ---
+    if (isGarrison) { 
+      el.style.left = `${Math.round(pos.x)}px`; 
+      el.style.top = `${Math.round(pos.y)}px`;
+      
+      if (selectedGarrisonId === point.id) el.classList.add('selected');
+
+      const mainIcon = document.createElement("div");
+      mainIcon.className = "garrison-main-icon";
+      mainIcon.style.backgroundImage = 'url("images/ui/default_garrison_512.webp")';
+      el.appendChild(mainIcon);
+
+      // --- CLICK HANDLER (Manual Double-Click Logic) ---
+      el.addEventListener('click', (e) => {
+          if (isDragging) return; 
+          e.stopPropagation();
+
+          const now = Date.now();
+          const isSameTarget = (lastClickId === point.id);
+          const isFastEnough = (now - lastClickTime < 300); // 300ms threshold
+
+          // CHECK: Is this a Double Click?
+          if (isSameTarget && isFastEnough) {
+              // --- DOUBLE CLICK ACTION ---
+              
+              // 1. Force Selection (Ensure it stays ON even if the first click toggled it off)
+              selectedGarrisonId = point.id;
+
+              // 2. Zoom Logic (Desktop Only)
+              if (window.innerWidth > 768) {
+                  // Zoom Closer to 7.0x (Adjust this number for closer/further)
+                  animateToLocation(point.gameX, point.gameY, 7.0);
+              } else {
+                  // Mobile: Just Pan
+                  animateToLocation(point.gameX, point.gameY, null);
+              }
+
+              // 3. Render final state
+              renderMarkers();
+
+          } else {
+              // --- SINGLE CLICK ACTION ---
+              // Toggle selection normally
+              selectedGarrisonId = (selectedGarrisonId === point.id) ? null : point.id;
+              renderMarkers();
+          }
+
+          // Save state for the next click
+          lastClickTime = now;
+          lastClickId = point.id;
+
+          if (navigator.vibrate) navigator.vibrate(15);
+      });
+
+      // --- TACTICAL CONTROL BAR ---
+      if (selectedGarrisonId === point.id) {
+          const controlUI = document.createElement("div");
+          controlUI.className = "garrison-control-ui";
+          
+          const visibleGarrisons = getVisibleGarrisons();
+          const currentIndex = visibleGarrisons.findIndex(p => p.id === point.id);
+          
+          const prevIndex = (currentIndex - 1 + visibleGarrisons.length) % visibleGarrisons.length;
+          const nextIndex = (currentIndex + 1) % visibleGarrisons.length;
+          
+          const prevPoint = visibleGarrisons[prevIndex];
+          const nextPoint = visibleGarrisons[nextIndex];
+
+          const flagSrc = getFlagImage(point.team);
+
+          // NEW: Get full data and generate HTML
+          const gridData = getGridData(point.gameX, point.gameY);
+          const gridHTML = generateKeypadHTML(gridData);
+
+          controlUI.innerHTML = `
+              <div class="garrison-grid-tab">
+                  ${gridHTML}
+              </div>
+
+              <div class="gar-btn arrow-left"></div>
+              
+              <div class="gar-label-text">
+                 <img src="${flagSrc}" class="faction-flag" style="width:26px; height:auto; margin-right:8px;">
+                 <span>${point.label}</span>
+                 </div>
+
+              <div class="gar-btn zoom-btn">
+                 <svg viewBox="0 0 24 24">
+                     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                     <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/> 
+                 </svg>
+              </div>
+
+              <div class="gar-btn arrow-right"></div>
+          `;
+
+          // --- FIXED SWITCH LOGIC ---
+          const switchGar = (e, targetPoint) => {
+             e.stopPropagation(); // Stop map click
+             
+             // 1. Update Selection
+             selectedGarrisonId = targetPoint.id;
+             
+             // 2. Pan to the new target (keep current zoom)
+             animateToLocation(targetPoint.gameX, targetPoint.gameY, null);
+
+             // 3. Re-render UI
+             renderMarkers(); 
+             if (navigator.vibrate) navigator.vibrate(10);
+          };
+
+          const btnPrev = controlUI.querySelector('.arrow-left');
+          const btnNext = controlUI.querySelector('.arrow-right');
+          const btnZoom = controlUI.querySelector('.zoom-btn');
+
+          btnPrev.addEventListener('click', (e) => switchGar(e, prevPoint));
+          btnNext.addEventListener('click', (e) => switchGar(e, nextPoint));
+          
+          // Zoom button click handler
+          btnZoom.addEventListener('click', (e) => {
+              e.stopPropagation();
+              
+              // ANIMATE ZOOM: Target level 7.0 (Adjust closer/further as needed)
+              animateToLocation(point.gameX, point.gameY, 7.0); 
+              
+              if (navigator.vibrate) navigator.vibrate(10);
+          });
+
+          el.appendChild(controlUI);
+      }
+    }
+
+    fragment.appendChild(el);
+  });
+
+  markersLayer.appendChild(fragment);
+}
+
+
+
+
+
+
+// === FIX: SYNCHRONOUS RENDER (Prevents Chrome Checkerboards) ===
+function render() {
+  clampPosition();
+  const drawScale = state.scale * state.fitScale;
+  const markersLayer = cached.markersLayer;
+  
+  // 1. CSS Variables
+  const mapContainer = cached.mapContainer;
+  mapContainer.style.setProperty('--current-scale', drawScale); 
+  const mapStage = cached.mapStage;
+  mapStage.style.setProperty('--effective-zoom', drawScale);
+  
+  // --- ADD THIS BLOCK ---
+  // Calculate the inverse scale to keep UI elements constant size
+  const uiCounterScale = 1 / drawScale; 
+  // Pass it to CSS
+  cached.mapContainer.style.setProperty('--ui-counter-scale', uiCounterScale);
+  // ----------------------
+  
+  // --- FIREFOX SPECIFIC LAYER PROMOTION ---
+  if (isFirefox) {
+      if (state.scale > 1.01) {
+          if (mapStage.style.willChange !== 'transform') mapStage.style.willChange = 'transform';
+          if (markersLayer && markersLayer.style.willChange !== 'transform') markersLayer.style.willChange = 'transform';
+      } else {
+          mapStage.style.willChange = 'auto';
+          if (markersLayer) markersLayer.style.willChange = 'auto';
+      }
+  }
+
+  // --- RESPONSIVE DYNAMIC ICON SCALING ---
+  const isMobileDevice = window.innerWidth <= 768;
+  let baseSize, minSize, iconExponent;
+
+  if (isMobileDevice) {
+      // MOBILE (Max Zoom 20x)
+      baseSize = 240; 
+      minSize = 24;      // Allow it to get quite small
+      
+      // CHANGE: Increased from 0.65 to 0.75
+      // This forces the icon to shrink faster as you zoom in
+      iconExponent = 0.75; 
+  } else {
+      // DESKTOP (Max Zoom 10x)
+      baseSize = 150;
+      
+      // CHANGE 1: Lower the limit so it CAN get smaller (was 28)
+      minSize = 20;      
+      
+      // CHANGE 2: Increase exponent from 0.7 to 0.85
+      // This makes it shrink much faster as you zoom in
+      iconExponent = 0.85; 
+  }
+
+  // Math: Size = Base / (Zoom ^ Exponent)
+  const rawSize = baseSize / Math.pow(state.scale, iconExponent);
+  const dynSize = Math.max(minSize, Math.min(baseSize, rawSize));
+
+  // Push to CSS variable used by .garrison-main-icon
+  mapContainer.style.setProperty('--dynamic-icon-size', `${dynSize}px`);
+  
+  // --- DYNAMIC STROKE SCALING (Circles/Lines) ---
+  const isMob = window.innerWidth <= 768;
+  const strokeBase = isMob ? 10 : 8; 
+  const strokeExp = isMob ? 0.5 : 0.6;
+  const dynStroke = strokeBase / Math.pow(state.scale, strokeExp);
+  const finalStroke = Math.max(1.5, Math.min(10, dynStroke));
+  mapContainer.style.setProperty('--dynamic-stroke', `${finalStroke}px`);
+
+  const dynCircleStroke = (strokeBase * 0.75) / Math.pow(state.scale, strokeExp);
+  const finalCircleStroke = Math.max(1.0, Math.min(8, dynCircleStroke));
+  mapContainer.style.setProperty('--dynamic-circle-stroke', `${finalCircleStroke}px`);
+  
+  // 2. Move Map (Conditional Precision)
+  const isHighDPI = window.devicePixelRatio > 1;
+  const useFloats = isHighDPI || (isFirefox && state.scale > 1.05);
+
+  const finalX = useFloats ? state.pointX : Math.round(state.pointX);
+  const finalY = useFloats ? state.pointY : Math.round(state.pointY);
+  
+  const transformString = `translate(${finalX}px, ${finalY}px) scale(${drawScale})`;
+  
+  // A. Apply to Map Image
+  mapStage.style.transform = transformString;
+  
+  // B. Apply to Markers Layer
+  if (markersLayer) {
+      markersLayer.style.transform = transformString;
+  }
+  
+  // 3. Update Text & Grid
+  updateRealScale(drawScale);
+  const zoomIndicator = cached.zoomIndicator;
+  if (zoomIndicator) zoomIndicator.innerText = `${state.scale.toFixed(1)}x`;
+  
+  // --- FIREFOX OPTIMIZATION: BATCH LABEL UPDATE ---
+  // Keeps grid labels readable
+  const mobileScaleMultiplier = isMobileDevice ? 2.5 : 1.0; 
+  const TRANSITION_START_ZOOM = 1.0;
+  const TRANSITION_END_ZOOM = 5.0;
+
+  let progress = (state.scale - TRANSITION_START_ZOOM) / (TRANSITION_END_ZOOM - TRANSITION_START_ZOOM);
+  progress = Math.max(0, Math.min(1, progress)); 
+
+  const topVal = progress * 50; 
+  const transY = -100 + (progress * 50);
+  const gap = -20 + (progress * 20);
+  const arrowOp = Math.max(0, 1 - (progress * 1.6));
+
+  const exponent = isMobileDevice ? 0.85 : 0.6; 
+  const smoothInverse = 1.0 / Math.pow(state.scale, exponent);
+  const finalScale = smoothInverse * mobileScaleMultiplier;
+
+  if (markersLayer) {
+      markersLayer.style.setProperty('--label-arrow-op', arrowOp);
+      markersLayer.style.setProperty('--label-top', `${topVal}%`);
+      markersLayer.style.setProperty('--label-transform', `translate(-50%, calc(${transY}% + ${gap}px)) scale(${finalScale})`);
+  }
+
+  // Update Grid Thickness
+  const majorThickness = Math.max(1.0, 2.0 / drawScale); 
+  const gridLayer = document.getElementById("gridLayer");
+  if (gridLayer) {
+      gridLayer.style.setProperty('--major-width', `${majorThickness}px`);
+      
+      const subGrid = gridLayer.querySelector('.keypad-grid');
+      if (subGrid) {
+          subGrid.style.opacity = state.scale >= 3.0 ? "0.4" : "0";
+          const minorThickness = Math.max(1.0, 1.0 / drawScale);
+          gridLayer.style.setProperty('--minor-width', `${minorThickness}px`);
+      }
+  }
+  
+  updateStickyLabels(drawScale);
+  if (window.updateZoomSliderUI) window.updateZoomSliderUI();
+}
+
+// ... (rest of the code remains the same)
+
+let _lastScaleTextEnd = "";
+let _lastScaleTextMid = "";
+
+function updateRealScale(effectiveZoom) {
+    const mapImg = cached.mapImage;
+    if (!mapImg || mapImg.naturalWidth === 0) return;
+
+    // 1. GET GRID DIMENSIONS (2000m SDK logic)
+    const TOTAL_PLAYABLE_METERS = 2000;
+
+    // 2. CALCULATE PIXELS PER METER
+    const currentMapPixelWidth = mapImg.naturalWidth * effectiveZoom;
+    const pixelsPerMeter = currentMapPixelWidth / TOTAL_PLAYABLE_METERS;
+
+    // 3. Select BAR SIZE BASED ON ZOOM
+    const isMobile = window.innerWidth <= 768;
+    let barMeters;
+
+    if (isMobile) {
+        barMeters = 600; 
+        if (state.scale > 1.5)  barMeters = 400;
+        if (state.scale > 2.5)  barMeters = 200;
+        if (state.scale > 5.0)  barMeters = 100;
+        if (state.scale > 10.0) barMeters = 50;
+        if (state.scale > 18.0) barMeters = 20;
+    } else {
+        barMeters = 400;
+        if (state.scale > 1.5) barMeters = 200;
+        if (state.scale > 3.0) barMeters = 100;
+        if (state.scale > 6.0) barMeters = 50;
+        if (state.scale > 9.0) barMeters = 20;
+    }
+
+    // 4. APPLY TO UI (Using Cache)
+    const barPixelsRounded = Math.round(barMeters * pixelsPerMeter);
+    
+    // Use Cached Elements
+    const scaleWrapper = cached.scaleWrapper;
+    const elMid = cached.scaleTextMid;
+    const elEnd = cached.scaleTextEnd;
+
+    if (scaleWrapper) scaleWrapper.style.width = `${barPixelsRounded}px`;
+    
+    // Optimization: Only write text if it changed
+    const midText = `${barMeters / 2}m`;
+    const endText = `${barMeters}m`;
+    
+    if (elMid && elMid.innerText !== midText) elMid.innerText = midText;
+    if (elEnd && elEnd.innerText !== endText) elEnd.innerText = endText;
+}
+
+function updateDimensions() {
+  const mapImage = document.getElementById("mapImage");
+  
+  // FIX: Check naturalWidth to prevent "Stuck Zoom" bug on browser restore
+  if (!mapImage.complete || mapImage.naturalWidth === 0) return;
+  
+  const rect = mapContainer.getBoundingClientRect();
+  
+  state.fitScale = Math.min(rect.width / mapImage.naturalWidth, rect.height / mapImage.naturalHeight);
+  
+  const isMobile = window.innerWidth <= 768; 
+
+  if (isMobile) {
+      MAX_ZOOM = 20; 
+  } else {
+      MAX_ZOOM = 10; 
+  }
+
+  if (state.scale < MIN_ZOOM) state.scale = MIN_ZOOM;
+  if (state.scale > MAX_ZOOM) state.scale = MAX_ZOOM;
+}
+
+function centerMap() {
+  const mapImage = document.getElementById("mapImage");
+  state.scale = MIN_ZOOM;
+  const rect = mapContainer.getBoundingClientRect();
+  state.pointX = (rect.width - (mapImage.naturalWidth * state.fitScale)) / 2;
+  state.pointY = (rect.height - (mapImage.naturalHeight * state.fitScale)) / 2;
+  
+  toggleSubGrid(state.scale);
+  render();
+}
+
+function initMap() {
+    // --- 1. DOM RESTRUCTURING (Fix Z-Index Stacking) ---
+    const markersLayer = cached.markersLayer;
+    const mapContainer = cached.mapContainer;
+    const mapImage = cached.mapImage;
+
+    if (markersLayer && mapContainer && mapImage) {
+        // Move markers layer if needed
+        if (markersLayer.parentElement !== mapContainer) {
+            mapContainer.appendChild(markersLayer);
+        }
+        
+        // --- FIX: Sizing for Clipping ---
+        // Force the layer to match the image size exactly.
+        // This ensures 'overflow: hidden' cuts off the circle at the map edge.
+        if (mapImage.naturalWidth > 0 && mapImage.naturalHeight > 0) {
+            markersLayer.style.width = `${mapImage.naturalWidth}px`;
+            markersLayer.style.height = `${mapImage.naturalHeight}px`;
+        }
+        
+        // Visual Order & Transform Origin
+        markersLayer.style.zIndex = "100"; 
+        markersLayer.style.transformOrigin = "0 0"; 
+    }
+    // ---------------------------------------------------
+
+    const controlsDrawer = document.getElementById("controlsDrawer");
+    if (controlsDrawer) {
+        if (window.savedPanelHidden) {
+            controlsDrawer.classList.add("closed");
+        } else {
+            controlsDrawer.classList.remove("hidden-by-default");
+        }
+    }
+
+    updateDimensions();
+    centerMap();
+    buildGrid();
+    renderMarkers();
+    currentZoomLevel = state.scale;
+
+    mapContainer.style.cursor = ""; 
+
+    render();
+
+    mapContainer.addEventListener("contextmenu", (e) => {
+        e.preventDefault(); 
+        return false;
+    });
+}
+
+// ==========================================
+// VISUAL MAP SelectOR (MODAL LOGIC)
+// ==========================================
+
+function initMapSelector() {
+  const btn = document.getElementById("openMapBtn");
+  const searchInput = document.getElementById("mapSearchInput");
+  const clearBtn = document.getElementById("clearSearchBtn");
+
+  if (btn) btn.addEventListener("click", openMapSelector);
+  
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      renderMapGrid(searchTerm);
+    });
+  }
+
+  // --- ADD CLEAR BUTTON LOGIC ---
+  if (clearBtn && searchInput) {
+    const clearAction = (e) => {
+      e.preventDefault();
+      searchInput.value = "";
+      searchInput.focus();
+      renderMapGrid(""); // Reset grid to show all maps
+    };
+
+    clearBtn.addEventListener("click", clearAction);
+    clearBtn.addEventListener("touchstart", clearAction, { passive: false });
+  }
+  
+  // Close buttons
+  const modal = document.getElementById("mapModal");
+  if (modal) {
+      modal.addEventListener("click", (e) => {
+          if (e.target === modal) closeMapSelector();
+      });
+  }
+  
+  const closeBtn = document.getElementById("closeModalBtn");
+  if(closeBtn) {
+      closeBtn.addEventListener("click", (e) => {
+          e.preventDefault(); 
+          closeMapSelector();
+      });
+      closeBtn.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          closeMapSelector();
+      }, { passive: false });
+  }
+}
+
+// ==========================================
+// IMPROVED MAP GRID RENDERING WITH DATASET
+// ==========================================
+let isGridFull = false;
+
+function renderMapGrid(filter = "") {
+    const grid = document.getElementById("mapGrid");
+    if (!grid) return;
+    const cleanFilter = filter.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+
+    // --- QUICK HIGHLIGHT ONLY (When no filter and grid already full) ---
+    if (cleanFilter === "" && isGridFull && grid.hasChildNodes()) {
+        grid.querySelectorAll('.map-card').forEach((card) => {
+            const cardKey = card.dataset.mapKey || "";
+            card.classList.toggle('active', cardKey === activeMapKey);
+        });
+        return;
+    }
+
+    // --- FULL REBUILD ---
+    grid.innerHTML = "";
+    const sortedKeys = Object.keys(MAP_DATABASE).sort((a, b) =>
+        MAP_DATABASE[a].name.localeCompare(MAP_DATABASE[b].name)
+    );
+
+    sortedKeys.forEach(key => {
+        const mapData = MAP_DATABASE[key];
+        const cleanName = mapData.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+       
+        if (cleanFilter !== "" && !cleanName.includes(cleanFilter)) return;
+       
+        const card = document.createElement("div");
+        card.className = "map-card";
+        card.dataset.mapKey = key; // <-- RELIABLE KEY STORAGE
+        if (key === activeMapKey) card.classList.add('active');
+       
+        card.onclick = () => SelectMapFromGrid(key);
+       
+        const img = document.createElement("img");
+        img.className = "map-card-img";
+        img.alt = mapData.name;
+        
+        // Use a simpler loading approach to prevent "stuck" hidden images
+        const imgPath = mapData.thumbnail || mapData.image;
+        img.src = imgPath; 
+        
+        // If image fails, show a fallback background color
+        img.onerror = () => {
+            img.style.display = 'none';
+            card.style.background = '#222';
+        };
+       
+        const label = document.createElement("div");
+        label.className = "map-card-name";
+        label.innerText = mapData.name;
+       
+        card.appendChild(img);
+        card.appendChild(label);
+        grid.appendChild(card);
+    });
+    
+    isGridFull = (cleanFilter === "");
+}
+
+// ==========================================
+// OPEN MAP SelectOR - ALWAYS REFRESH HIGHLIGHT
+// ==========================================
+function openMapSelector() {
+  const searchInput = document.getElementById("mapSearchInput");
+  
+  // Always clear any lingering search and refresh the grid
+  if (searchInput) {
+    searchInput.value = "";
+  }
+  
+  // THIS IS THE KEY FIX: Always refresh the grid when opening
+  // → Ensures the green highlight is always correct for the current activeMapKey
+  renderMapGrid("");
+  
+  document.getElementById("mapModal").classList.add("active");
+}
+
+// ==========================================
+// CLOSE MAP SelectOR
+// ==========================================
+function closeMapSelector() {
+    const modal = document.getElementById("mapModal");
+    const searchInput = document.getElementById("mapSearchInput");
+    
+    if (modal) {
+        modal.classList.remove("active");
+    }
+    
+    // Optional: Reset search when closing
+    if (searchInput) {
+        searchInput.value = "";
+        renderMapGrid(""); 
+    }
+}
+
+// ==========================================
+// KEY FIXES APPLIED
+// ==========================================
+// 1. Map save state now works correctly on refresh
+//    → activeMapKey is set immediately on Selection and saved before switchMap()
+// 2. Map Selection panel green highlight now appears correctly
+//    → renderMapGrid("") is called after activeMapKey is updated
+// 3. Flicker/text flicker when switching maps is eliminated
+//    → Current map name, faction UI, gun UI, and strongpoints are updated immediately
+//    → Fade-out/fade-in is smoother with proper transition handling
+//    → Loading overlay stays until fully ready
+
+function SelectMapFromGrid(key) {
+    closeMapSelector();
+
+    // 1. Reset Global Targeting, Selection, and Faction State
+    activeTarget = null;
+    selectedGarrisonId = null; // Close the label
+    
+    // CHANGE: Force "All Factions" mode so all markers are visible by default
+    activeFaction = 'all'; 
+
+    // 2. Get Config
+    const config = MAP_DATABASE[key];
+    if (!config) return;
+
+    // --- SORTING FIX: Sort the garrisons BEFORE switching ---
+    applyMapSorting(config);
+    // -------------------------------------------------------
+
+    activeMapKey = key;
+    currentStrongpoints = config.strongpoints || [];
+
+    updatePageTitle(config.name);
+
+    const currentMapLbl = document.getElementById("currentMapName");
+    if (currentMapLbl) currentMapLbl.innerText = config.name;
+
+    updateFactionUI(config);
+
+    // Save new map selection immediately
+    saveState();
+
+    // Highlight selected card in the grid
+    renderMapGrid("");
+
+    // 6. Trigger Map Transition
+    switchMap(key);
+}
+
+function switchMap(mapKey) {
+    if (!MAP_DATABASE[mapKey]) return;
+
+    const mapStage = document.getElementById("mapStage");
+    const imgElement = document.getElementById('mapImage');
+    const markersLayer = document.getElementById("markers");
+
+    // 1. Fade out old map instantly
+    if (mapStage) {
+        mapStage.style.transition = "opacity 0.2s ease-out";
+        mapStage.style.opacity = "0";
+    }
+
+    // Clear old markers immediately
+    if (markersLayer) markersLayer.innerHTML = "";
+
+    // Show loading overlay
+    showLoading();
+
+    const config = MAP_DATABASE[mapKey];
+
+    // 2. Load new image - FIX: Clear any previous onload first to prevent double-fire
+    imgElement.onload = null;
+    
+    // FIX: Set onload handler BEFORE setting src to handle both cached and new images
+    const handleImageLoad = function() {
+        // Ensure correct state (in case of race conditions)
+        activeMapKey = mapKey;
+        currentStrongpoints = config.strongpoints || [];
+
+        // Re-build grid and markers for new map dimensions
+        buildGrid();
+        initMap(); // Re-centers, re-builds sticky labels, etc.
+
+        // Final render
+        renderMarkers();
+        render();
+
+        // Fade in new map
+        if (mapStage) {
+            mapStage.style.opacity = "1";
+            // Restore smooth transitions
+            setTimeout(() => {
+                // Only animate opacity. Keep transform INSTANT to prevent memory spikes.
+                mapStage.style.transition = "opacity 0.3s ease-in-out"; 
+            }, 50);
+        }
+
+        // Hide loading
+        hideLoading();
+
+        // Clean up handler - FIX: Set to null to prevent memory leak
+        imgElement.onload = null;
+    };
+    
+    imgElement.onload = handleImageLoad;
+    
+    // FIX: Handle already-cached images (onload fires synchronously)
+    if (imgElement.complete && imgElement.src === config.image) {
+        // Image already loaded with correct source, manually trigger handler
+        handleImageLoad();
+    } else {
+        // Trigger load (for new or different images)
+        imgElement.src = config.image;
+    }
+}
+
+// ==========================================
+// FLAG IMAGE HELPER
+// ==========================================
+// ==========================================
+// FLAG IMAGE HELPER (ROBUST VERSION)
+// ==========================================
+function getFlagImage(teamName) {
+  if (!teamName) return "images/flags/us_60.webp"; 
+  
+  const lower = teamName.toLowerCase();
+  
+  // GB / British / Allies (Maps like El Alamein/Driel)
+  if (lower === "gb" || lower.includes("british") || lower.includes("8th") || lower.includes("allies")) {
+      return "images/flags/gb_60.webp";
+  }
+
+  // Soviet / Russian
+  if (lower === "rus" || lower === "sov" || lower.includes("soviet") || lower.includes("rus")) {
+      return "images/flags/rus_60.webp";
+  }
+
+  // German / Axis
+  if (lower === "ger" || lower.includes("germany") || lower.includes("axis") || lower.includes("afrika")) {
+      return "images/flags/ger_60.webp";
+  }
+  
+  // Default to US for everything else (US, United States, Allies)
+  return "images/flags/us_60.webp";
+}
+
+// ==========================================
+// FACTION UI UPDATES
+// ==========================================
+function updateFactionUI(config) {
+  const t1Label = config?.teams?.t1 || "ALLIES";
+  const t2Label = config?.teams?.t2 || "AXIS";
+
+  const t1Flag = getFlagImage(t1Label);
+  const t2Flag = getFlagImage(t2Label);
+
+  // Update dropdown data-values to be generic t1/t2
+  const item1 = document.querySelector('.dropdown-item:nth-child(2)'); // Second item (T1, after "all")
+  const item2 = document.querySelector('.dropdown-item:nth-child(3)'); // Third item (T2)
+  
+  if (item1) {
+    item1.setAttribute('data-value', 't1'); 
+    item1.querySelector('.item-text').innerText = t1Label;
+    item1.querySelector('.item-flag').src = t1Flag;
+  }
+  if (item2) {
+    item2.setAttribute('data-value', 't2');
+    item2.querySelector('.item-text').innerText = t2Label;
+    item2.querySelector('.item-flag').src = t2Flag;
+  }
+
+  const mainLabel = document.getElementById("factionLabel");
+  const mainFlag = document.getElementById("currentFactionFlag");
+
+  if (mainLabel && mainFlag) {
+    if (activeFaction === null) {
+        mainLabel.innerText = "SELECT TEAM";
+        mainLabel.style.color = "#ffc107";
+        mainFlag.style.display = "none";
+    } else {
+        mainLabel.style.color = "#ffffff";
+        mainFlag.style.display = "inline-block";
+        
+        if (activeFaction === 't1') {
+            mainLabel.innerText = t1Label;
+            mainFlag.src = t1Flag;
+        } else if (activeFaction === 't2') {
+            mainLabel.innerText = t2Label;
+            mainFlag.src = t2Flag;
+        } else {
+            mainLabel.innerText = "ALL FACTIONS";
+            mainFlag.src = "images/flags/all_60.webp";
+        }
+    }
+  }
+}
+
+// ==========================================
+// GUN UI UPDATES (FIXED: No Animation on Switch)
+// ==========================================
+
+function setupDropdown(containerId, buttonId, labelId, onSelect) {
+  const container = document.getElementById(containerId);
+  const btn = document.getElementById(buttonId);
+  
+  if (!container || !btn) return;
+
+  const menu = container.querySelector('.dropdown-menu');
+  const items = container.querySelectorAll('.dropdown-item');
+
+  // Toggle Menu on Button Click
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation(); 
+    const isCurrentlyOpen = !menu.classList.contains('hidden');
+    
+    // Reset all
+    document.querySelectorAll('.dropdown-menu').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.btn-map-Select').forEach(el => el.classList.remove('active'));
+
+    if (!isCurrentlyOpen) {
+      menu.classList.remove('hidden');
+      btn.classList.add('active');
+    }
+  });
+
+  // Handle Item Click
+  items.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const value = item.getAttribute('data-value');
+      
+      // Close Menu
+      menu.classList.add('hidden');
+      btn.classList.remove('active');
+      
+      // Trigger the Selection logic (this calls the function in initGarrisonControls)
+      onSelect(value);
+    });
   });
 }
 
-// --- DESKTOP MOUSE INTERACTION (Simple & Reliable) ---
-const mapContainer = mapStage.parentElement;
+function initGarrisonControls() {
+  // 1. Setup Faction Dropdown (FIXED: No Animation)
+  setupDropdown('factionDropdown', 'factionBtn', 'factionLabel', (value) => {
+    // Even if value is same, we might need to "wake up" from null state
+    if (activeFaction !== value) {
+      
+      toggleTransitions(false);
 
-mapContainer.addEventListener("mousedown", (e) => {
-  if (e.button !== 0) return; // Only Left Click
+      activeFaction = value;
+      // Note: We do NOT reset activeGunIndex here if it was already set, 
+      // but usually if you switch teams you might want to reset guns. 
+      // For now, let's keep gun Selection if valid, or let it stick.
+      // Ideally, switching teams SHOULD reset the gun index to -1 as well 
+      // because Gun 1 (US) is not Gun 1 (GER).
+      
+      // Disable trajectory slider
+      trajSliderEnabled = false;
+      const trajToggleBtn = document.getElementById('trajToggleBtn');
+      const trajContainer = document.getElementById('trajSliderContainer');
+      if (trajToggleBtn) trajToggleBtn.classList.remove('active');
+      if (trajContainer) trajContainer.classList.add('hidden');
+      
+      // Refresh UI (This will revert color to white via updateFactionUI)
+      updateFactionUI(MAP_DATABASE[activeMapKey]);
+      
+      renderMarkers(); 
+      render();
+      saveState();
+    }
+  });
+
+  // 2. Setup Gun Dropdown (Toggle Only)
+  const gunBtn = document.getElementById('gunBtn');
+  const gunMenu = document.querySelector('#gunDropdown .dropdown-menu');
+  
+  if (gunBtn && gunMenu) {
+      gunBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const wasHidden = gunMenu.classList.contains('hidden');
+          
+          document.querySelectorAll('.dropdown-menu').forEach(el => el.classList.add('hidden'));
+          document.querySelectorAll('.btn-map-Select').forEach(el => el.classList.remove('active'));
+
+          if (wasHidden) {
+              gunMenu.classList.remove('hidden');
+              gunBtn.classList.add('active');
+          }
+      });
+  }
+
+
+  // 3. Global Click Listener
+  window.addEventListener('click', () => {
+    document.querySelectorAll('.dropdown-menu').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.btn-map-Select').forEach(el => el.classList.remove('active'));
+  });
+
+}
+
+
+// ==========================================
+// SAVE STATE FUNCTIONALITY
+// ==========================================
+
+function saveState() {
+  const controlsDrawer = document.getElementById("controlsDrawer");
+  
+  // CLEAN SAVE: Only saves Map, Faction, Gun, and Toggle Buttons.
+  // NO Pan/Zoom, NO Manual Calculator settings.
+  const stateToSave = {
+    activeMapKey: activeMapKey,
+    activeFaction: activeFaction,
+    panelHidden: controlsDrawer ? controlsDrawer.classList.contains("closed") : false,
+    timestamp: Date.now()
+  };
+  
+  try {
+    localStorage.setItem('hllGarrisonsMapState', JSON.stringify(stateToSave));
+  } catch (error) {
+    // Silently handle save errors
+  }
+}
+
+function loadState() {
+  try {
+    const savedState = localStorage.getItem('hllGarrisonsMapState');
+    
+    // IF NO SAVE FOUND: Default both to unSelected
+    if (!savedState) {
+        activeFaction = null; // Default to no faction
+        return null;
+    }
+    
+    const loaded = JSON.parse(savedState);
+    
+    if (!MAP_DATABASE[loaded.activeMapKey]) return null;
+    
+    activeMapKey = loaded.activeMapKey;
+    
+    // FIX: Respect saved faction, or default to null if missing/new user
+    activeFaction = loaded.activeFaction || null;
+    
+    window.savedPanelHidden = loaded.panelHidden || false;
+    
+    return true; 
+  } catch (error) {
+    activeFaction = null;
+    return null;
+  }
+}
+
+function clearSavedState() {
+  try {
+    localStorage.removeItem('hllGarrisonsMapState');
+  } catch (error) {
+    // Silently handle clear errors
+  }
+}
+
+
+// ==========================================
+// 5. EVENT LISTENERS
+// ==========================================
+
+// State to track if a drag occurred
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+const DRAG_THRESHOLD = 5; // Pixels to move before counting as a "Pan"
+
+// --- 1. REMOVED DOUBLE CLICK ZOOM (To fix latency) ---
+// Double click logic has been deleted to allow instant shooting.
+
+// --- 2. CLICK (MAP INTERACTION) ---
+mapContainer.addEventListener("click", (e) => {
+  // 1. If we were dragging (panning), DO NOT CLICK.
+  if (isDragging) return; 
+
+  // 2. Check for mobile crosshair interaction (Safe check for mobile HUD)
+  const crosshair = document.getElementById("mobileCrosshair");
+  if (crosshair && crosshair.offsetParent !== null) {
+      return; 
+  }
+
+  // 3. Logic: If we click the map background, deselect the current garrison.
+  // We use the target check to see if we clicked the map stage or image itself.
+  if (e.target.id === "mapStage" || e.target.id === "mapImage" || e.target.id === "gridLayer") {
+      if (selectedGarrisonId !== null) {
+          selectedGarrisonId = null;
+          renderMarkers();
+      }
+  }
+});
+
+// --- 3. HIGH-SPEED RESPONSIVE WHEEL ZOOM ---
+let isWheelThrottled = false;
+
+mapContainer.addEventListener("wheel", (e) => {
   e.preventDefault();
-  isDragging = false;
-  hasMoved = false;
-  startMouseX = e.clientX;
-  startMouseY = e.clientY;
-  lastPanX = panX;
-  lastPanY = panY;
-  mapContainer.classList.add("dragging");
+  
+  // --- FIX: Stop auto-zoom if user scrolls manually ---
+  if (activePanAnimation) {
+      cancelAnimationFrame(activePanAnimation);
+      activePanAnimation = null;
+  }
+  // ---------------------------------------------------
+  
+  // Ensure transitions are strictly OFF
+  mapStage.classList.remove("zoom-transition");
+  document.getElementById("labelLayer")?.classList.remove("zoom-transition");
+  mapStage.style.transition = "none";
+
+  if (!isWheelThrottled) {
+    isWheelThrottled = true;
+    
+    requestAnimationFrame(() => {
+      const direction = e.deltaY > 0 ? -1 : 1;
+      
+      // Kept your faster scroll speed
+      const SCROLL_SPEED = 1.0; 
+      
+      let newZoom = currentZoomLevel + (direction * SCROLL_SPEED);
+      newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
+
+      const rect = mapContainer.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      if (Math.abs(newZoom - currentZoomLevel) > 0.01) {
+        setZoomLevel(newZoom, mouseX, mouseY);
+      }
+      
+      isWheelThrottled = false;
+    });
+  }
+
+  // REMOVED: The "Soft Landing" setTimeout block.
+  // We no longer want to re-enable animations after scrolling stops.
+}, { passive: false });
+
+// --- 4. PANNING LOGIC (DESKTOP) ---
+mapContainer.addEventListener("mousedown", (e) => {
+  e.preventDefault();
+  
+  // --- FIX: Stop auto-zoom if user grabs the map ---
+  if (activePanAnimation) {
+      cancelAnimationFrame(activePanAnimation);
+      activePanAnimation = null;
+  }
+  // ------------------------------------------------
+  
+  // FIX: Kill transitions on BOTH map and labels immediately
+  toggleTransitions(false); 
+  
+  state.panning = true;
+  isDragging = false; 
+  
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+
+  state.startX = e.clientX - state.pointX;
+  state.startY = e.clientY - state.pointY;
+  
+  // REMOVED: mapContainer.style.cursor = "grabbing"; 
+  // We don't change the cursor yet!
 });
 
 window.addEventListener("mousemove", (e) => {
-  if (!mapContainer.classList.contains("dragging")) return;
+  if (!state.panning) return;
   e.preventDefault();
 
-  const deltaX = e.clientX - startMouseX;
-  const deltaY = e.clientY - startMouseY;
-
-  if (!hasMoved && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
-    hasMoved = true;
-    isDragging = true;
-    // Optimization: Hide grid lines while dragging
-    startInteraction();
+  const moveDist = Math.hypot(e.clientX - dragStartX, e.clientY - dragStartY);
+  
+  // FIX: Only start the logic if we crossed the threshold
+  if (!isDragging && moveDist > DRAG_THRESHOLD) {
+      isDragging = true;
+      mapContainer.style.cursor = "grabbing";
   }
 
+  // FIX: Only pan the map if we are officially dragging
   if (isDragging) {
-    panX = lastPanX + deltaX;
-    panY = lastPanY + deltaY;
-    clampPosition();
-    requestRender();
+      handleMove(e.clientX, e.clientY);
   }
 });
 
 window.addEventListener("mouseup", () => {
-  if (mapContainer.classList.contains("dragging")) {
-    mapContainer.classList.remove("dragging");
-    
-    // Stop the "Interaction Mode" (Show grid lines again)
-    stopInteraction();
-
-    if (hasMoved) {
-      suppressNextMapClick = true;
-      setTimeout(() => { suppressNextMapClick = false; }, 50);
-    }
-    isDragging = false;
-    hasMoved = false;
-  }
+  state.panning = false;
+  mapContainer.style.cursor = ""; // Returns to the crosshair/dot cursor
 });
 
-// --- MOBILE TOUCH INTERACTION (Pan & Pinch-to-Zoom) ---
-let initialPinchDistance = null;
-let lastZoomCenter = null;
+// --- 5. PANNING LOGIC (MOBILE) ---
+// Note: Double Tap is handled natively by "dblclick" event on most mobile browsers now
+// provided touch-action is set to none (which it is in your CSS).
 
+let initialPinchDistance = null;
+let lastZoomScale = 1;
+
+// --- 5. PANNING LOGIC (MOBILE) ---
 mapContainer.addEventListener("touchstart", (e) => {
-  // 1 Finger: Pan Start
+  // --- FIX: Stop auto-zoom if user touches screen ---
+  if (activePanAnimation) {
+      cancelAnimationFrame(activePanAnimation);
+      activePanAnimation = null;
+  }
+  // -------------------------------------------------
+  
+  // FIX: Kill transitions immediately so drag is 1:1 instant
+  toggleTransitions(false);
+
   if (e.touches.length === 1) {
-      isDragging = false;
-      hasMoved = false;
-      startMouseX = e.touches[0].clientX;
-      startMouseY = e.touches[0].clientY;
-      lastPanX = panX;
-      lastPanY = panY;
-      initialPinchDistance = null;
-  } 
-  // 2 Fingers: Pinch Start
-  else if (e.touches.length === 2) {
-      initialPinchDistance = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-      );
-      // Calculate center for zoom anchor
-      lastZoomCenter = {
-          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
-      };
+    state.panning = true;
+    isDragging = false;
+    
+    dragStartX = e.touches[0].clientX;
+    dragStartY = e.touches[0].clientY;
+
+    state.startX = e.touches[0].clientX - state.pointX;
+    state.startY = e.touches[0].clientY - state.pointY;
+  } else if (e.touches.length === 2) {
+    state.panning = false; 
+    initialPinchDistance = getPinchDistance(e);
+    lastZoomScale = state.scale;
   }
 }, { passive: false });
 
 mapContainer.addEventListener("touchmove", (e) => {
-  // PREVENT BROWSER SCROLLING (Crucial)
-  e.preventDefault(); 
+  if (e.cancelable) e.preventDefault(); 
 
-  // CASE 1: Pan (1 Finger)
-  if (e.touches.length === 1) {
-      const deltaX = e.touches[0].clientX - startMouseX;
-      const deltaY = e.touches[0].clientY - startMouseY;
+  if (e.touches.length === 1 && state.panning) {
+    // Check Threshold
+    const moveDist = Math.hypot(e.touches[0].clientX - dragStartX, e.touches[0].clientY - dragStartY);
+    
+    if (!isDragging && moveDist > DRAG_THRESHOLD) {
+        isDragging = true;
+    }
 
-      if (!hasMoved && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
-          hasMoved = true;
-          isDragging = true;
-          startInteraction();
-      }
-
-      if (isDragging) {
-          panX = lastPanX + deltaX;
-          panY = lastPanY + deltaY;
-          
-          // Debounce the heavy render
-          requestAnimationFrame(() => {
-              clampPosition();
-              renderTransform();
-          });
-      }
-  }
-  // CASE 2: Pinch Zoom (2 Fingers)
-  else if (e.touches.length === 2 && initialPinchDistance !== null) {
-      const currentDistance = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-      );
-
-      if (initialPinchDistance > 0) {
-          const diff = currentDistance - initialPinchDistance;
-          
-          // Sensitivity (Lower = slower zoom)
-          const zoomSpeed = 0.02; 
-          
-          if (Math.abs(diff) > 2) {
-              // Determine Zoom Direction
-              const newZoom = currentZoomLevel + (diff * zoomSpeed);
-              
-              // Hide grid lines
-              startInteraction();
-              
-              // Get map container offset for accurate centering
-              const rect = mapContainer.getBoundingClientRect();
-              const zoomX = lastZoomCenter.x - rect.left;
-              const zoomY = lastZoomCenter.y - rect.top;
-
-              setZoomLevel(newZoom, zoomX, zoomY);
-              
-              // Reset distance so zoom is incremental (smooth)
-              initialPinchDistance = currentDistance;
-          }
-      }
+    // FIX: Only move if confirmed dragging
+    if (isDragging) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  } 
+  else if (e.touches.length === 2 && initialPinchDistance) {
+    // Pinch Zoom Logic
+    isDragging = true; 
+    const currentDistance = getPinchDistance(e);
+    const zoomFactor = currentDistance / initialPinchDistance;
+    
+    // Calculate new zoom based on the scale at the start of the pinch
+    let newZoom = lastZoomScale * zoomFactor;
+    newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
+    
+    const center = getPinchCenter(e);
+    const rect = mapContainer.getBoundingClientRect();
+    const mouseX = center.x - rect.left;
+    const mouseY = center.y - rect.top;
+    
+    if (!isRendering) {
+      isRendering = true;
+      requestAnimationFrame(() => {
+        // Update both the state and the tracking variable
+        currentZoomLevel = newZoom; 
+        setZoomLevel(newZoom, mouseX, mouseY);
+        isRendering = false;
+      });
+    }
   }
 }, { passive: false });
-
-// --- REPLACE THE "touchend" LISTENER WITH THIS ---
-
-let lastMapTap = 0; // Track double-taps on the background
 
 mapContainer.addEventListener("touchend", (e) => {
-  // 1. Handle Double Tap on Background (Zoom In)
-  // Only trigger if we are lifting the last finger (touches === 0)
-  // AND we haven't been dragging/panning (!hasMoved)
-  // AND we weren't pinching (!initialPinchDistance)
-  if (e.touches.length === 0 && !hasMoved && initialPinchDistance === null) {
-      const currentTime = new Date().getTime();
-      const tapLength = currentTime - lastMapTap;
-
-      if (tapLength < 300 && tapLength > 0) {
-          // Double Tap Detected!
-          e.preventDefault(); // Stop browser zoom
-
-          // Calculate where the user tapped relative to the map container
-          const rect = mapContainer.getBoundingClientRect();
-          const touch = e.changedTouches[0];
-          const tapX = touch.clientX - rect.left;
-          const tapY = touch.clientY - rect.top;
-
-          // Zoom logic: Zoom in 2.5x, up to the Max Level
-          // UPDATED: Use maxLevel variable
-          const targetZoom = Math.min(maxLevel, currentZoomLevel * 2.5);
-          
-          setZoomLevel(targetZoom, tapX, tapY);
-          
-          lastMapTap = 0; // Reset
-      } else {
-          lastMapTap = currentTime; // Record single tap time
-      }
+  if (e.touches.length < 2) {
+    initialPinchDistance = null;
   }
-
-  // 2. Reset Interaction State (Existing Logic)
   if (e.touches.length === 0) {
-      stopInteraction();
-      
-      if (hasMoved) {
-          suppressNextMapClick = true;
-          setTimeout(() => { suppressNextMapClick = false; }, 50);
-      }
-      isDragging = false;
-      hasMoved = false;
-      // Reset pinch distance so next touch starts fresh
-      // (We reset it here to ensure the check above works correctly)
-      initialPinchDistance = null; 
-  }
-  
-  // Reset pan start if dropping from 2 fingers to 1
-  if (e.touches.length === 1) {
-      startMouseX = e.touches[0].clientX;
-      startMouseY = e.touches[0].clientY;
-      lastPanX = panX;
-      lastPanY = panY;
+    state.panning = false;
   }
 });
 
-// Desktop Wheel Zoom
-mapContainer.addEventListener("wheel", (e) => {
-  e.preventDefault();
-  mapStage.classList.remove("zoom-transition");
-  startInteraction();
+// Shared Move Handler
+function handleMove(clientX, clientY) {
+  state.pointX = clientX - state.startX;
+  state.pointY = clientY - state.startY;
   
-  const direction = e.deltaY > 0 ? -1 : 1;
-  const newZoom = currentZoomLevel + (direction * 0.5); 
-  
-  const mouseX = e.clientX - cache.rectLeft;
-  const mouseY = e.clientY - cache.rectTop;
-  
-  setZoomLevel(newZoom, mouseX, mouseY);
-  
-  // Auto-stop interaction after scroll stops
-  setTimeout(stopInteraction, 150);
-}, { passive: false });
-
-// RESIZE OBSERVER (Better than window.resize)
-const resizeObserver = new ResizeObserver(() => {
-  updateCache();
-  clampPosition();
-  requestRender();
-});
-resizeObserver.observe(mapStage.parentElement);
-
-
-// 6. Initialization
-function initMapLogic() {
-  if (mapImage.complete && mapImage.naturalWidth > 0) {
-    updateCache();
-    // Center map initially
-    setZoomLevel(1); 
-    // Manual center if desired:
-    const effectiveZoom = getEffectiveZoom();
-    panX = (cache.containerW - (cache.mapW * effectiveZoom)) / 2;
-    panY = (cache.containerH - (cache.mapH * effectiveZoom)) / 2;
-    
-    clampPosition();
-    requestRender();
-  } else {
-    mapImage.onload = () => {
-      updateCache();
-      initMapLogic();
-    };
-  }
-}
-
-// Hook into existing selection logic
-mapSelect.addEventListener("change", (e) => {
-  renderMap(e.target.value);
-  // Give the browser a moment to paint the new image frame before calculating dims
-  requestAnimationFrame(() => {
-     updateCache();
-     initMapLogic();
-  });
-});
-
-// --- EXECUTE ---
-populateSelect();
-if (mapSelect) {
-  mapSelect.value = currentMapKey;
-}
-buildGridOverlay();
-// Initial Load
-renderMap(currentMapKey);
-// Wait for image to load before initializing logic
-mapImage.addEventListener('load', () => {
-    updateCache();
-    initMapLogic();
-}, { once: true });
-
-// Prevent context menu and save image on map
-document.addEventListener('contextmenu', (e) => {
-  if (e.target.closest('.map-image, .map-stage, .map-wrap')) {
-    e.preventDefault();
-    return false;
-  }
-});
-
-// Prevent long-press save image on mobile (more targeted listener)
-if (mapImage) {
-  mapImage.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-  }, { passive: false });
-}
-
-document.addEventListener('selectstart', (e) => {
-  if (e.target && typeof e.target.closest === 'function' && e.target.closest('.map-image, .map-stage, .map-wrap')) {
-    e.preventDefault();
-    return false;
-  }
-});
-
-// Enable simple map click handler (used only to clear selections)
-if (mapStage) {
-  mapStage.addEventListener('click', handleMapClick, true);
-}
-
-// --- REPLACE YOUR selectGarrisonByIndex FUNCTION WITH THIS ---
-/**
- * Selects a garrison, highlights it, and zooms in.
- */
-function selectGarrisonByIndex(index, shouldAnimate = true, maintainZoom = false) {
-  if (visibleMarkersList.length === 0) return;
-  if (index < 0 || index >= visibleMarkersList.length) return;
-
-  // CRITICAL FIX: Recalculate screen size before moving. 
-  // This prevents the map from "stopping" if the mobile address bar changed height.
-  updateCache(); 
-
-  // 1. Update State
-  currentMarkerIndex = index;
-  markersContainer.classList.add("has-selection");
-  const target = visibleMarkersList[index];
-
-  // 2. Update Visuals
-  visibleMarkersList.forEach(item => item.element.classList.remove("active"));
-  target.element.classList.add("active");
-
-  // 3. Zoom Logic
-  let zoomLevel;
-  if (maintainZoom) {
-    zoomLevel = currentZoomLevel; 
-  } else {
-    zoomLevel = Math.max(currentZoomLevel, 6); 
+  if (!isRendering) {
+    isRendering = true;
+    requestAnimationFrame(() => {
+      render();
+      isRendering = false;
+    });
   }
   
-  focusOnMapPoint(target.xPct, target.yPct, zoomLevel, shouldAnimate);
+  // Auto-save pan changes (debounced)
+  clearTimeout(window.savePanTimeout);
+  window.savePanTimeout = setTimeout(saveState, 1000);
 }
 
-/**
- * Clears any active garrison selection.
- */
-function clearGarrisonSelection() {
-  currentMarkerIndex = -1;
-  markersContainer.classList.remove("has-selection");
-  visibleMarkersList.forEach(item => item.element.classList.remove("active"));
-}
+// Fix for "Sticky Hover" on mobile
+// (Mobile phones sometimes keep the :hover state after a tap)
+document.addEventListener("touchstart", function(){}, true);
 
-/**
- * Handles Arrow Key Navigation
- */
+// --- 6. ESCAPE KEY TO CLEAR TARGET ---
 document.addEventListener("keydown", (e) => {
-  // Only navigate if we have markers
   if (e.key === "Escape") {
-    clearGarrisonSelection();
-    return;
-  }
-  if (visibleMarkersList.length === 0) return;
+    // Only act if there is currently a target Selected
+    if (activeTarget) {
+      
+      // --- FIX START: Kill Animations ---
+      toggleTransitions(false);
+      // ----------------------------------
 
-  if (e.key === "ArrowRight") {
-    // Go forward, wrap to start
-    let nextIndex = currentMarkerIndex + 1;
-    if (nextIndex >= visibleMarkersList.length) nextIndex = 0;
-    selectGarrisonByIndex(nextIndex, false); // Snap
-  } 
-  else if (e.key === "ArrowLeft") {
-    // Go backward, wrap to end
-    let prevIndex = currentMarkerIndex - 1;
-    if (prevIndex < 0) prevIndex = visibleMarkersList.length - 1;
-    selectGarrisonByIndex(prevIndex, false); // Snap
+      activeTarget = null; // Clear target data
+      
+      // Update visual states
+      renderMarkers();     // Resets gun rotation (stops pointing at target)
+      render();            // Refreshes the map
+
+      // REMOVED: setTimeout hack to re-enable animations
+      // -----------------------------------
+    }
   }
 });
 
+// ZOOM SLIDER CONTROLS
+// ==========================================
 
-// Simple map click handler just to clear selections
-function handleMapClick(e) {
-  if (suppressNextMapClick || isDragging) return;
-  if (e.target.closest && e.target.closest('.marker')) return;
-  clearGarrisonSelection();
-}
+function initZoomControls() {
+  const track = document.getElementById("zoomSliderTrack");
+  const handle = document.getElementById("zoomSliderHandle");
+  const fill = document.getElementById("zoomSliderFill");
+  const btnIn = document.getElementById("btnZoomIn");
+  const btnOut = document.getElementById("btnZoomOut");
+  const mapStage = document.getElementById("mapStage");
 
-// --- MOBILE CONTROLS TOGGLE ---
-const controlsToggle = document.getElementById("controlsToggle");
-const controlsPanel = document.getElementById("controlsPanel"); // Ensure ID is added to HTML div
+  if (!track || !handle) return;
 
-if (controlsToggle && controlsPanel) {
-  controlsToggle.addEventListener("click", (e) => {
-    // Prevent click from bubbling to map
+  // --- 1. SYNC UI FROM STATE ---
+  window.updateZoomSliderUI = function() {
+    const range = MAX_ZOOM - MIN_ZOOM;
+    const progress = (state.scale - MIN_ZOOM) / range;
+    const percentage = Math.max(0, Math.min(1, progress)) * 100;
+
+    handle.style.bottom = `${percentage}%`;
+    fill.style.height = `${percentage}%`;
+  };
+
+  // --- 2. HANDLE DRAG LOGIC ---
+  let isDraggingSlider = false;
+
+  function updateZoomFromEvent(e) {
+    const rect = track.getBoundingClientRect();
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    // Calculate percentage from bottom of track
+    let val = (rect.bottom - clientY) / rect.height;
+    val = Math.max(0, Math.min(1, val));
+    
+    const newZoom = MIN_ZOOM + (val * (MAX_ZOOM - MIN_ZOOM));
+    
+    // Zoom into visual center of container
+    const containerRect = mapContainer.getBoundingClientRect();
+    setZoomLevel(newZoom, containerRect.width / 2, containerRect.height / 2);
+  }
+
+  // --- EVENTS ---
+  const startDrag = (e) => {
+    isDraggingSlider = true;
+    
+    // FORCE KILL ALL TRANSITIONS
+    mapStage.style.transition = "none"; 
+    mapStage.classList.remove("zoom-transition");
+    
+    updateZoomFromEvent(e);
+    // Vibrate on interaction start
+    if (navigator.vibrate) navigator.vibrate(10);
+  };
+
+  const doDrag = (e) => {
+    if (!isDraggingSlider) return;
+    if (e.cancelable) e.preventDefault();
     e.stopPropagation();
-    // Toggle the class that slides the panel down/up
-    controlsPanel.classList.toggle("minimized");
-  });
+    
+    requestAnimationFrame(() => updateZoomFromEvent(e));
+  };
+
+  const endDrag = () => {
+    isDraggingSlider = false;
+    // REMOVED: mapStage.classList.add("zoom-transition");
+  };
+
+  // Track Listeners
+  track.addEventListener("mousedown", startDrag);
+  track.addEventListener("touchstart", startDrag, { passive: false });
+
+  window.addEventListener("mousemove", (e) => { if(isDraggingSlider) updateZoomFromEvent(e); });
+  window.addEventListener("touchmove", doDrag, { passive: false });
+
+  window.addEventListener("mouseup", endDrag);
+  window.addEventListener("touchend", endDrag);
+
+// --- 3. BUTTONS (INSTANT SNAP) ---
+  const handleBtn = (e, direction) => {
+      // 1. Stop browser defaults (Zooming/Scrolling)
+      if (e.cancelable) e.preventDefault();
+      e.stopPropagation();
+
+      const btn = e.currentTarget;
+      
+      // Debounce: If already pressed, ignore
+      if (btn.classList.contains('pressed')) return;
+
+      // 2. VIBRATION FIX (Chrome Mobile)
+      // Increased to 25ms so it is distinctly felt on Android
+      if (navigator.vibrate) navigator.vibrate(25);
+
+      // 3. Visual Feedback
+      btn.classList.add("pressed");
+      setTimeout(() => btn.classList.remove("pressed"), 150);
+
+      // 4. FORCE KILL TRANSITIONS HERE TOO
+      mapStage.style.transition = "none";
+      mapStage.classList.remove("zoom-transition");
+
+      // 5. Zoom Logic
+      // CHANGE: Mobile uses 2.0 step for speed, Desktop uses 1.0 for precision
+      const step = (window.innerWidth <= 768) ? 2.0 : 1.0; 
+      
+      let target = state.scale + (direction * step);
+      target = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, target));
+
+      const rect = mapContainer.getBoundingClientRect();
+
+      // Instant set (Safe for Mobile)
+      setZoomLevel(target, rect.width / 2, rect.height / 2);
+  };
+  btnIn.addEventListener("touchstart", (e) => handleBtn(e, 1), { passive: false });
+  btnOut.addEventListener("touchstart", (e) => handleBtn(e, -1), { passive: false });
+  btnIn.addEventListener("click", (e) => handleBtn(e, 1));
+  btnOut.addEventListener("click", (e) => handleBtn(e, -1));
 }
 
-// remove legacy optional coordinate capture hook
+// Initialize
+initZoomControls();
 
-// --- RADIUS TOGGLE LOGIC (Mobile Robust + Persistent) ---
-const radiusToggleBtn = document.getElementById("radiusToggleBtn");
-const miniSwitch = radiusToggleBtn ? radiusToggleBtn.querySelector(".mini-switch") : null;
-const RADIUS_STORAGE_KEY = "hll-radius-enabled"; 
+// ==========================================
+// STRONGPOINTS TOGGLE LOGIC
+// ==========================================
 
-if (radiusToggleBtn && markersContainer && miniSwitch) {
+function initStrongpointsToggle() {
+    const btn = document.getElementById("btnToggleStrongpoints");
+    const markersLayer = document.getElementById("markers");
 
-  // 1. Define the Action
-  const setRadiusState = (isActive) => {
-    if (isActive) {
-      miniSwitch.classList.add("is-active");
-      markersContainer.classList.remove("rings-hidden");
-    } else {
-      miniSwitch.classList.remove("is-active");
-      markersContainer.classList.add("rings-hidden");
+    if (!btn || !markersLayer) return;
+
+    // Load saved preference (Default to 'true' if not set)
+    const isHidden = localStorage.getItem("hll-strongpoints-hidden") === "true";
+    
+    // Apply initial state
+    if (isHidden) {
+        markersLayer.classList.add("strongpoints-hidden");
+        btn.classList.add("disabled");
     }
-    localStorage.setItem(RADIUS_STORAGE_KEY, isActive);
-  };
 
-  // 2. Load State (Run immediately on load)
-  const storedState = localStorage.getItem(RADIUS_STORAGE_KEY);
-  // If no save found, default to true. Otherwise compare string "true"
-  const initialState = storedState === null ? true : (storedState === "true");
-  setRadiusState(initialState);
+    // Toggle Handler
+    const toggleStrongpoints = (e) => {
+        // Prevent default double-tap zooms or map drags
+        e.preventDefault();
+        e.stopPropagation();
 
-  // 3. Interaction Handler (With Double-Fire Protection)
-  let lastToggleTime = 0;
+        const isNowHidden = markersLayer.classList.toggle("strongpoints-hidden");
+        btn.classList.toggle("disabled", isNowHidden);
+        
+        // Save state so it remembers your choice on reload
+        localStorage.setItem("hll-strongpoints-hidden", isNowHidden);
 
-  const handleToggle = () => {
-    // Prevent double-firing (touch + ghost click)
-    const now = Date.now();
-    if (now - lastToggleTime < 300) return;
-    lastToggleTime = now;
+        // Optional: Vibrate on mobile for feedback
+        if (navigator.vibrate) navigator.vibrate(10);
+    };
 
-    // Toggle based on current visual state
-    const isCurrentlyActive = miniSwitch.classList.contains("is-active");
-    setRadiusState(!isCurrentlyActive);
-  };
-
-  // Touch: Handle tap instantly
-  radiusToggleBtn.addEventListener("touchend", (e) => {
-    e.preventDefault(); 
-    e.stopPropagation(); 
-    handleToggle();
-  }, { passive: false });
-
-  // Stop map drag on button touch
-  radiusToggleBtn.addEventListener("touchstart", (e) => {
-    e.stopPropagation();
-  }, { passive: false });
-
-  // Desktop Click
-  radiusToggleBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    handleToggle();
-  });
+    // Bind Events (Support both Touch and Click)
+    btn.addEventListener("click", toggleStrongpoints);
+    btn.addEventListener("touchstart", (e) => {
+        // Prevent ghost clicks on mobile
+        if (e.cancelable) e.preventDefault();
+        toggleStrongpoints(e);
+    }, { passive: false });
 }
 
+// ==========================================
+// GRID TOGGLE LOGIC
+// ==========================================
+
+function initGridToggle() {
+    const btn = document.getElementById("btnToggleGrid");
+    // We do NOT fetch gridLayer here, because it might not exist yet on hard refresh.
+
+    if (!btn) return;
+
+    // 1. Load saved preference
+    const isHidden = localStorage.getItem("hll-grid-hidden") === "true";
+
+    // 2. Apply initial UI state to the BUTTON only
+    if (isHidden) {
+        btn.classList.add("disabled");
+    }
+
+    // 3. Toggle Handler
+    const toggleGrid = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Fetch layers dynamically on click (they definitely exist now)
+        const gridLayer = document.getElementById("gridLayer");
+        const labelLayer = document.getElementById("labelLayer");
+
+        if (!gridLayer) return;
+
+        // Toggle visibility for the grid lines
+        const isNowHidden = gridLayer.classList.toggle("grid-hidden");
+        
+        // Toggle visibility for the sticky labels
+        if (labelLayer) {
+            labelLayer.classList.toggle("grid-hidden", isNowHidden);
+        }
+        
+        // Update Button State
+        btn.classList.toggle("disabled", isNowHidden);
+
+        // Save state
+        localStorage.setItem("hll-grid-hidden", isNowHidden);
+
+        if (navigator.vibrate) navigator.vibrate(10);
+    };
+
+    // 4. Bind Events
+    btn.addEventListener("click", toggleGrid);
+    btn.addEventListener("touchstart", (e) => {
+        if (e.cancelable) e.preventDefault();
+        toggleGrid(e);
+    }, { passive: false });
+}
+
+// Apply panel hidden state immediately when DOM is ready (early as possible)
+document.addEventListener('DOMContentLoaded', function() {
+  const controlsDrawer = document.getElementById("controlsDrawer");
+  const toggleBtn = document.getElementById("drawerToggleBtn");
+  
+  if (controlsDrawer) {
+    if (window.savedPanelHidden) {
+      // Apply hidden state immediately
+      controlsDrawer.classList.add("closed");
+      // NEW: If starting closed, assume user knows the UI or arrows aren't needed
+      document.body.classList.add("guides-dismissed");
+    }
+  }
+  
+  // Set initial aria-expanded state
+  if (toggleBtn && controlsDrawer) {
+    const isClosed = controlsDrawer.classList.contains("closed");
+    toggleBtn.setAttribute("aria-expanded", isClosed ? "false" : "true");
+  }
+  
+  const drawer = document.getElementById("controlsDrawer");
+
+if (toggleBtn && drawer) {
+      toggleBtn.addEventListener("click", () => {
+          drawer.classList.toggle("closed");
+
+          // --- NEW: PERMANENTLY HIDE ARROWS ON CLOSE ---
+          // Once closed (even once), we never show arrows again this session
+          if (drawer.classList.contains("closed")) {
+              document.body.classList.add("guides-dismissed");
+          }
+          // ---------------------------------------------
+          
+          // Update aria-expanded attribute for accessibility
+          const isClosed = drawer.classList.contains("closed");
+          toggleBtn.setAttribute("aria-expanded", isClosed ? "false" : "true");
+          
+          // --- THE FIX: Update global state immediately ---
+          // This ensures that if you switch maps later, initMap() knows 
+          // the panel is currently OPEN and won't force it closed.
+          window.savedPanelHidden = isClosed;
+          
+          // Safety: Close dropdowns if we minimize
+          if (drawer.classList.contains("closed")) {
+               document.querySelectorAll('.dropdown-menu').forEach(el => el.classList.add('hidden'));
+               document.querySelectorAll('.btn-map-Select').forEach(el => el.classList.remove('active'));
+          }
+           
+          // Save panel state
+          saveState();
+      });
+  }
+  
+  // Inject version number into UI elements
+  const versionEl = document.getElementById('appVersion');
+  if (versionEl) {
+    versionEl.textContent = APP_VERSION;
+  }
+  
+  const versionPanelEl = document.getElementById('appVersionPanel');
+  if (versionPanelEl) {
+    versionPanelEl.textContent = APP_VERSION;
+  }
+  
+  // Initialize strongpoints toggle
+  initStrongpointsToggle();
+
+  // NEW: Initialize grid toggle
+  initGridToggle();
+  
+});
+
+// ==========================================
+// MAP GARRISON SORTING & RENAMING (STABLE)
+// ==========================================
+
+function applyMapSorting(mapData) {
+    if (!mapData.strongpoints) return;
+
+    // Default to 'y' (Vertical) if sorting is missing
+    const sortAxis = mapData.garrisonSort ? mapData.garrisonSort.toLowerCase() : 'y';
+
+    // 1. Group Garrisons by Team
+    const teams = {};
+    const otherPoints = [];
+
+    mapData.strongpoints.forEach(p => {
+        if (p.type === 'garrison_default') {
+            // Normalize team name to lowercase to ensure clean grouping
+            const t = p.team.toLowerCase();
+            if (!teams[t]) teams[t] = [];
+            teams[t].push(p);
+        } else {
+            otherPoints.push(p);
+        }
+    });
+
+    // 2. Sort and Rename items WITHIN each team
+    Object.keys(teams).forEach(team => {
+        teams[team].sort((a, b) => {
+            if (sortAxis === 'x') {
+                // Horizontal: Left -> Right
+                return a.gameX - b.gameX;
+            } else {
+                // Vertical: Top -> Bottom (Desc Y)
+                return b.gameY - a.gameY; 
+            }
+        });
+
+        // Rename 1, 2, 3...
+        teams[team].forEach((point, index) => {
+            point.label = `Default Garrison ${index + 1}`;
+        });
+    });
+
+    // 3. STABLE TEAM ORDER (Fixes the Arrow Navigation)
+    // We sort the team keys alphabetically (e.g., 'axis', 'ger' before 'us', 'ussr')
+    // This ensures [Ger 1, Ger 2, Ger 3] is followed by [US 1, US 2, US 3]
+    const sortedTeamKeys = Object.keys(teams).sort(); 
+    
+    const sortedGarrisons = sortedTeamKeys.flatMap(key => teams[key]);
+
+    // 4. Update the Master List
+    mapData.strongpoints = [...sortedGarrisons, ...otherPoints];
+}
+
+// ==========================================
+// FINAL INITIALIZATION
+// ==========================================
+
+// Build initial UI
+createStickyLabels();
+initMapSelector();
+renderMapGrid("");
+
+// Load saved data (single call)
+loadState();
+
+// Fallback / UI setup that was in the first block
+if (!MAP_DATABASE[activeMapKey]) {
+    activeMapKey = "CAR";
+}
+// Apply sorting to ensure garrisons are ordered correctly
+applyMapSorting(MAP_DATABASE[activeMapKey]);
+currentStrongpoints = MAP_DATABASE[activeMapKey].strongpoints || [];
+document.getElementById("currentMapName").innerText = MAP_DATABASE[activeMapKey].name;
+updatePageTitle(MAP_DATABASE[activeMapKey].name);
+updateFactionUI(MAP_DATABASE[activeMapKey]);
+initGarrisonControls();
+
+// Handle first-time visit (No save found)
+if (localStorage.getItem('hllGarrisonsMapState') === null) {
+    openMapSelector();
+}
+
+// Load the map image last
+const imgEl = document.getElementById("mapImage");
+imgEl.src = MAP_DATABASE[activeMapKey].image;
+
+const onInitLoadWithRetry = function() {
+    // FIX: Loop until image has physical dimensions (Fixes "Stuck Zoom" on Reload)
+    if (imgEl.naturalWidth === 0) {
+        setTimeout(onInitLoadWithRetry, 50);
+        return;
+    }
+
+    initMap(); 
+    render();
+    hideLoading();
+};
+
+if (imgEl.complete) {
+    onInitLoadWithRetry();
+} else {
+    imgEl.onload = onInitLoadWithRetry;
+}
+
+// Ensure ResizeObserver doesn't trigger bad math if image isn't ready
+new ResizeObserver(() => { 
+    if (imgEl.naturalWidth > 0) {
+        updateDimensions(); 
+        render(); 
+    }
+}).observe(mapContainer);
+
+// --- PROJECTS MODAL LOGIC ---
+
+const btnOtherProjects = document.getElementById("btnOtherProjects");
+const projectsModal = document.getElementById("projectsModal");
+const closeProjectsBtn = document.getElementById("closeProjectsBtn");
+
+if (btnOtherProjects && projectsModal) {
+    // Open Modal
+    btnOtherProjects.addEventListener("click", (e) => {
+        e.preventDefault();
+        projectsModal.classList.add("active");
+        btnOtherProjects.blur(); // Blur opening button immediately
+    });
+
+    // Close Logic
+    const closeHub = () => {
+        projectsModal.classList.remove("active");
+        // Force browser to forget focus when closing (prevents sticking grey/yellow)
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+    };
+
+    if (closeProjectsBtn) closeProjectsBtn.onclick = closeHub;
+
+    // Close if clicking the dark background
+    projectsModal.onclick = (e) => {
+        if (e.target === projectsModal) closeHub();
+    };
+    
+    // NEW: Target all buttons inside the hub to clear focus (Mobile Sticky Fix)
+    const hubButtons = projectsModal.querySelectorAll('.footer-btn');
+    hubButtons.forEach(btn => {
+        // 1. Prevent focus from sticking on initial touch/click
+        btn.addEventListener('mousedown', () => {
+            setTimeout(() => btn.blur(), 0);
+        });
+
+        // 2. Ensure blur happens after action triggers
+        btn.addEventListener('click', () => {
+            setTimeout(() => {
+                btn.blur();
+                // Double safety: if user came back and it's still focused
+                if (document.activeElement === btn) btn.blur();
+            }, 100);
+        });
+    });
+}
+
+// Global reset when you switch back to the Garrisons tab
+window.onfocus = function() {
+    document.querySelectorAll('button').forEach(b => b.blur());
+};
+
+// --- FORCE RESET ON TAB RETURN (Mobile Fix) ---
+window.addEventListener('pageshow', (event) => {
+    // If the page was restored from cache (bfcache) or just shown
+    if (event.persisted || document.visibilityState === 'visible') {
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+        document.querySelectorAll('.footer-btn').forEach(btn => btn.blur());
+    }
+});
+
+// KEYBOARD NAVIGATION FOR GARRISONS
+document.addEventListener('keydown', (e) => {
+    // 1. Only act if a garrison is currently selected
+    if (selectedGarrisonId === null) return;
+
+    // 2. Only act on Left or Right Arrow
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+
+    // 3. Get list of valid garrisons
+    const visibleGarrisons = getVisibleGarrisons();
+    if (visibleGarrisons.length === 0) return;
+
+    // 4. Find current index
+    const currentIndex = visibleGarrisons.findIndex(p => p.id === selectedGarrisonId);
+    if (currentIndex === -1) return; // Should not happen, but safe check
+
+    let newIndex;
+
+    if (e.key === 'ArrowLeft') {
+        // Go back (loop to end if at start)
+        newIndex = (currentIndex - 1 + visibleGarrisons.length) % visibleGarrisons.length;
+    } else {
+        // Go forward (loop to start if at end)
+        newIndex = (currentIndex + 1) % visibleGarrisons.length;
+    }
+
+    const targetPoint = visibleGarrisons[newIndex];
+
+    // 5. Update Selection and Pan
+    selectedGarrisonId = targetPoint.id;
+    // Pass null to keep current zoom level while panning
+    animateToLocation(targetPoint.gameX, targetPoint.gameY, null); 
+    renderMarkers();
+});

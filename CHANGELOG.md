@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.4] - 2026-03-28
+### Major Visual Rework & Game Update
+- **Complete Visual Overhaul**: Major redesign and polish of the **entire garrison control UI** for a cleaner, more tactical, and professional look across the whole project.
+- **Improved Garrison Control Bar**: Full, balanced layout with clearly visible left/right navigation arrows, faction flag, garrison name (smart ellipsis truncation for long names like "DEFAULT GARRISON 2"), zoom button, and right arrow.
+- **Hell Let Loose 19.1 Support**: Updated MAP_DATABASE, all strongpoints, default garrisons, coordinates, and map data for full compatibility with the latest game patch 19.1.
+
+### Fixed
+- Garrison control bar overlaps, missing buttons, and horizontal width issues.
+- Button visibility and contrast (arrows and zoom button now stand out perfectly).
+- Mobile compactness and responsiveness of the new UI.
+- Various alignment and pixel-perfect positioning tweaks (desktop + mobile).
+
+### Improved
+- Overall UI/UX consistency, readability, and touch-friendliness.
+- Visual feedback (hover/active states) on garrison controls.
+
+## [1.0.3] - 2026-03-28
+### Added
+
 ## [1.0.2] - 2025-12-30
 ### Added
 - **Proximity Warnings**: Added visual 15m (Locked) and 50m (Warning) radius rings to garrison markers.
