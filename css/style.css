@@ -1047,19 +1047,17 @@ body {
 .l-end { left: 100%; }
 
 /* ==========================================================================
-   MOBILE OPTIMIZATION: COMPACT GARRISON LABEL
+   MOBILE OPTIMIZATION: COMPACT GARRISON LABEL + HIGHER POSITION
    ========================================================================== */
-/* ==========================================
-   MOBILE - compact & pixel-perfect
-   ========================================== */
 @media (max-width: 768px) {
     .garrison-control-ui {
         height: 32px !important;
-        margin-bottom: calc( (var(--dynamic-icon-size) / 2) + (12px * var(--ui-counter-scale, 1)) ) !important;
+        /* INCREASED from 12px → 28px to push the whole bar higher up */
+        margin-bottom: calc( (var(--dynamic-icon-size) / 2) + (28px * var(--ui-counter-scale, 1)) ) !important;
     }
     
     .garrison-grid-tab {
-        top: -21px;          /* Smaller overlap on mobile */
+        top: -21px;           /* kept the same (still overlaps nicely) */
         height: 21px;
         width: 68px;
     }

@@ -9,6 +9,26 @@ if (typeof MAP_DATABASE === 'undefined') {
 }
 
 const APP_VERSION = "v1.0.3"; // UPDATES EVERYWHERE
+const GAME_VERSION = "UPDATE 19.1"; // GAME VERSION
+
+// Version display updater - maps element IDs to version values
+const versionMap = {
+  'appVersion': APP_VERSION,
+  'appVersionPanel': APP_VERSION,
+  'gameVersion': GAME_VERSION
+};
+
+// Loop through and update only the ones that exist on the current page
+function updateVersionDisplays() {
+  Object.keys(versionMap).forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.textContent = versionMap[id];
+    }
+  });
+}
+
+// Call on initialization
 
 // Detect Firefox to enable specific optimizations (sub-pixel rendering)
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
@@ -2478,3 +2498,6 @@ document.addEventListener('keydown', (e) => {
     animateToLocation(targetPoint.gameX, targetPoint.gameY, null); 
     renderMarkers();
 });
+
+// Initialize version displays on page load
+updateVersionDisplays();
