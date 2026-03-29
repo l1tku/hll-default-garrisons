@@ -1,27 +1,11 @@
 const CACHE_NAME = 'hll-garrisons-cache-v2';
-const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './css/style.css',
-  './js/script.js',
-  './js/maps.js',
-  './fonts/Gotham.otf',
-  './images/flags/us.webp',
-  './images/flags/ger.webp',
-  './images/flags/rus.webp',
-  './images/flags/gb.webp'
-];
 
-// Install: Cache core assets
+// Install: Force activate immediately
 self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
+  self.skipWaiting();
 });
 
-// Activate: Clean up old caches
+// Activate: Clean up old caches and take control
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keyList) => {
@@ -30,34 +14,25 @@ self.addEventListener('activate', (e) => {
           return caches.delete(key);
         }
       }));
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
-// Fetch: Cache First -> Network Fallback -> Cache New Files (Stale-While-Revalidate)
+// Fetch: Network First -> Cache Fallback
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    caches.match(e.request).then((cachedResponse) => {
-      // 1. Serve cached file if found
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
-      // 2. If not in cache, fetch from network
-      return fetch(e.request).then((networkResponse) => {
-        // Check if we received a valid response
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-
-        // 3. Clone the response and save it to cache for next time
+    fetch(e.request).then((networkResponse) => {
+      // Valid network response - update cache and return
+      if (networkResponse && networkResponse.status === 200) {
         const responseToCache = networkResponse.clone();
         caches.open(CACHE_NAME).then((cache) => {
           cache.put(e.request, responseToCache);
         });
-
-        return networkResponse;
-      });
+      }
+      return networkResponse;
+    }).catch(() => {
+      // Network failed - try cache
+      return caches.match(e.request);
     })
   );
 });
