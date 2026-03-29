@@ -763,6 +763,28 @@ function renderMarkers() {
       const mainIcon = document.createElement("div");
       mainIcon.className = "garrison-main-icon";
       mainIcon.style.backgroundImage = 'url("images/ui/default_garrison_512.webp")';
+      
+      // === RADIUS RINGS (15m Locked + 50m Warning) ===
+      // Calculate pixels per meter for true 1:1 scale (same method as strongpoints)
+      const dims = getMapDimensions();
+      const pxPerMeter = (w / dims.width) * GAME_UNITS_PER_METER;
+      
+      // Ring diameter equals the radius distance in meters
+      // 15m radius ring = 15m diameter, 50m radius ring = 50m diameter
+      const ring15mPx = Math.round(15 * pxPerMeter);
+      const ring50mPx = Math.round(50 * pxPerMeter);
+      
+      const ring15m = document.createElement("div");
+      ring15m.className = "radius-ring";
+      ring15m.style.cssText = `width:${ring15mPx}px;height:${ring15mPx}px;background:rgba(255,68,68,0.4);border:1px solid rgba(255,68,68,0.8);border-radius:50%;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:-1;`;
+      el.appendChild(ring15m);
+      
+      const ring50m = document.createElement("div");
+      ring50m.className = "radius-ring";
+      ring50m.style.cssText = `width:${ring50mPx}px;height:${ring50mPx}px;background:rgba(255,193,7,0.3);border:1px solid rgba(255,193,7,0.7);border-radius:50%;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:-2;`;
+      el.appendChild(ring50m);
+      
+      // Add main icon on top (after rings so it's above)
       el.appendChild(mainIcon);
 
       // --- CLICK HANDLER (Manual Double-Click Logic) ---
@@ -2214,6 +2236,46 @@ function initGridToggle() {
     }, { passive: false });
 }
 
+// ==========================================
+// RADIUS TOGGLE LOGIC (15m Locked + 50m Warning)
+// ==========================================
+function initRadiiToggle() {
+    const btn = document.getElementById("btnToggleRadii");
+    const markersLayer = document.getElementById("markers");
+    const legend = document.querySelector(".garrison-legend");
+    if (!btn || !markersLayer) return;
+
+    // Load saved state (default = ON)
+    const isHidden = localStorage.getItem("hll-radii-hidden") === "true";
+
+    if (isHidden) {
+        markersLayer.classList.add("radii-hidden");
+        btn.classList.add("disabled");
+        if (legend) legend.style.display = "none";
+    }
+
+    const toggleRadii = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const isNowHidden = markersLayer.classList.toggle("radii-hidden");
+        btn.classList.toggle("disabled", isNowHidden);
+        
+        // Toggle legend visibility too
+        if (legend) legend.style.display = isNowHidden ? "none" : "flex";
+
+        localStorage.setItem("hll-radii-hidden", isNowHidden);
+
+        if (navigator.vibrate) navigator.vibrate(10);
+    };
+
+    btn.addEventListener("click", toggleRadii);
+    btn.addEventListener("touchstart", (e) => {
+        if (e.cancelable) e.preventDefault();
+        toggleRadii(e);
+    }, { passive: false });
+}
+
 // Apply panel hidden state immediately when DOM is ready (early as possible)
 document.addEventListener('DOMContentLoaded', function() {
   const controlsDrawer = document.getElementById("controlsDrawer");
@@ -2283,6 +2345,7 @@ if (toggleBtn && drawer) {
 
   // NEW: Initialize grid toggle
   initGridToggle();
+  initRadiiToggle();   // ← Add this line
   
 });
 

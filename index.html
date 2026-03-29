@@ -15,7 +15,7 @@
   <link rel="icon" type="image/webp" href="images/favicon.webp">
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="apple-touch-icon" href="images/icon-180.png">
-  <link rel="stylesheet" href="css/style.css?v=3.33">
+  <link rel="stylesheet" href="css/style.css?v=3.34">
   
   <script>
     if ('serviceWorker' in navigator) {
@@ -143,6 +143,19 @@
     </div>
   </div>
 
+  <div class="garrison-legend">
+    <div class="legend-item">
+      <img src="images/ui/icn_garrison_shadow_locked.webp" alt="">
+      <span class="legend-color red"></span>
+      <span>15m Locked</span>
+    </div>
+    <div class="legend-item">
+      <img src="images/ui/icn_garrison_shadow_warning.webp" alt="">
+      <span class="legend-color yellow"></span>
+      <span>50m Warning</span>
+    </div>
+  </div>
+
   <div class="zoom-slider-container">
     <div class="zoom-slider-track" id="zoomSliderTrack">
       <div class="zoom-slider-fill" id="zoomSliderFill"></div>
@@ -167,6 +180,14 @@
           <line x1="15" y1="3" x2="15" y2="21"></line>
           <line x1="3" y1="9" x2="21" y2="9"></line>
           <line x1="3" y1="15" x2="21" y2="15"></line>
+        </svg>
+      </span>
+
+      <span id="btnToggleRadii" data-tooltip="Toggle Radius Rings (15m / 50m)" role="button" tabindex="0" aria-label="Toggle Radius Rings">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="6"/>
+          <circle cx="12" cy="12" r="3"/>
         </svg>
       </span>
     </div>
@@ -214,6 +235,6 @@
   </div>
 
 <script src="js/maps.js"></script> 
-<script src="js/script.js?v=3.33"></script>
+<script src="js/script.js?v=3.34"></script>
 </body>
 </html>

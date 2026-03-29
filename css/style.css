@@ -109,11 +109,6 @@ body {
   /* FIX 1: Performance Isolation */
   /* Tells browser this container is isolated, preventing layout thrashing */
   contain: layout paint style; 
-
-  /* --- CUSTOM CURSOR --- */
-  /* 16 16 sets the "hotspot" (click point) to the center of a 32x32 image. */
-  /* Change 'png' to 'webp' if your file is .webp */
-  /* cursor: url('../images/ui/garrison_lining_dot_2.png') 16 16, auto; */
 }
 
 /* Ensure the cursor changes to a grabbing hand when you click/drag */
@@ -2699,4 +2694,95 @@ button.btn-map-select:hover { border-left-color: #ffffff; }
 #btnToggleStrongpoints svg {
     pointer-events: none; /* Let clicks pass to the span */
     display: block;
+}
+
+/* ==========================================
+   NEW: RADIUS TOGGLE BUTTON
+   ========================================== */
+#btnToggleRadii svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+}
+
+#btnToggleRadii.disabled svg {
+    opacity: 0.5;
+    stroke: rgba(255,255,255,0.4);
+}
+
+/* Hide radius rings when toggled off */
+.markers-layer.radii-hidden .radius-ring {
+    display: none !important;
+}
+
+/* ==========================================
+   GARRISON LEGEND (Top-right of map)
+   ========================================== */
+.garrison-legend {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 16px;
+    border-radius: 4px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.legend-item img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: block;
+    align-self: center;
+}
+
+.legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.legend-color.red {
+    background: #ff4444;
+}
+
+.legend-color.yellow {
+    background: #ffc107;
+}
+
+/* Mobile: Move legend to avoid UI overlap */
+@media (max-width: 768px) {
+    .garrison-legend {
+        top: 20px;
+        right: 20px;
+        padding: 8px 14px;
+        gap: 8px;
+    }
+    
+    .legend-item {
+        font-size: 12px;
+    }
+    
+    .legend-item img {
+        width: 22px;
+        height: 22px;
+    }
 }
