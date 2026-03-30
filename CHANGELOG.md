@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.4] - 2026-03-28
+## [1.0.3] - 2026-03-28
 ### Major Visual Rework & Game Update
 - **Complete Visual Overhaul**: Major redesign and polish of the **entire garrison control UI** for a cleaner, more tactical, and professional look across the whole project.
 - **Improved Garrison Control Bar**: Full, balanced layout with clearly visible left/right navigation arrows, faction flag, garrison name (smart ellipsis truncation for long names like "DEFAULT GARRISON 2"), zoom button, and right arrow.
@@ -17,9 +17,6 @@ All notable changes to this project will be documented in this file.
 ### Improved
 - Overall UI/UX consistency, readability, and touch-friendliness.
 - Visual feedback (hover/active states) on garrison controls.
-
-## [1.0.3] - 2026-03-28
-### Added
 
 ## [1.0.2] - 2025-12-30
 ### Added
