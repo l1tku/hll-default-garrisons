@@ -1,6 +1,6 @@
 {
-  "name": "HLL Artillery Calculator",
-  "short_name": "HLL Arty",
+  "name": "HLL Default Garrisons Map",
+  "short_name": "HLL Garrisons",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1d1f27",
