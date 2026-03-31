@@ -48,13 +48,13 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.4] - 2026-03-31
 ### Fixed
-- Garrison zoom coordinate calculation (fixed drift in animateToLocation)
-- Zoom out logic now properly falls back when manual zoom interfered
-- Zoom state auto-reset when manually zoomed away from max
-- Saved pre-zoom validation to prevent stuck states
+- Garrison zoom coordinate calculation (captures fitScale at animation start, uses mapContainer for center)
+- Zoom out logic now validates saved pre-zoom to prevent accidental zoom-in
+- Zoom state auto-resets when manual zoom moves away from MAX_ZOOM
+- Saved pre-zoom validation with 3.0x fallback for edge cases
 
 ### Improved
-- Haptic feedback increased (10ms → 50ms) on garrison controls, toggles, zoom buttons
+- Stronger haptic feedback (50ms) on garrison zoom, arrows, strongpoints, grid, and radius toggles
 
 ## [1.0.3] - 2026-03-28
 ### Major Visual Rework & Game Update

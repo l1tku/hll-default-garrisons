@@ -975,6 +975,285 @@ function renderMarkers() {
   markersLayer.appendChild(fragment);
 }
 
+
+
+
+
+
+// === FIX: SYNCHRONOUS RENDER (Prevents Chrome Checkerboards) ===
+function render() {
+  clampPosition();
+  const drawScale = state.scale * state.fitScale;
+  const markersLayer = cached.markersLayer;
+  
+  // 1. CSS Variables
+  const mapContainer = cached.mapContainer;
+  mapContainer.style.setProperty('--current-scale', drawScale); 
+  const mapStage = cached.mapStage;
+  mapStage.style.setProperty('--effective-zoom', drawScale);
+  
+  // --- ADD THIS BLOCK ---
+  // Calculate the inverse scale to keep UI elements constant size
+  const uiCounterScale = 1 / drawScale; 
+  // Pass it to CSS
+  cached.mapContainer.style.setProperty('--ui-counter-scale', uiCounterScale);
+  // ----------------------
+  
+  // --- FIREFOX SPECIFIC LAYER PROMOTION ---
+  if (isFirefox) {
+      if (state.scale > 1.01) {
+          if (mapStage.style.willChange !== 'transform') mapStage.style.willChange = 'transform';
+          if (markersLayer && markersLayer.style.willChange !== 'transform') markersLayer.style.willChange = 'transform';
+      } else {
+          mapStage.style.willChange = 'auto';
+          if (markersLayer) markersLayer.style.willChange = 'auto';
+      }
+  }
+
+  // --- RESPONSIVE DYNAMIC ICON SCALING ---
+  const isMobileDevice = window.innerWidth <= 768;
+  let baseSize, minSize, iconExponent;
+
+  if (isMobileDevice) {
+      // MOBILE (Max Zoom 20x)
+      baseSize = 240; 
+      minSize = 24;      // Allow it to get quite small
+      
+      // CHANGE: Increased from 0.65 to 0.75
+      // This forces the icon to shrink faster as you zoom in
+      iconExponent = 0.75; 
+  } else {
+      // DESKTOP (Max Zoom 10x)
+      baseSize = 150;
+      
+      // CHANGE 1: Lower the limit so it CAN get smaller (was 28)
+      minSize = 20;      
+      
+      // CHANGE 2: Increase exponent from 0.7 to 0.85
+      // This makes it shrink much faster as you zoom in
+      iconExponent = 0.85; 
+  }
+
+  // Math: Size = Base / (Zoom ^ Exponent)
+  const rawSize = baseSize / Math.pow(state.scale, iconExponent);
+  const dynSize = Math.max(minSize, Math.min(baseSize, rawSize));
+
+  // Push to CSS variable used by .garrison-main-icon
+  mapContainer.style.setProperty('--dynamic-icon-size', `${dynSize}px`);
+  
+  // --- DYNAMIC STROKE SCALING (Circles/Lines) ---
+  const isMob = window.innerWidth <= 768;
+  const strokeBase = isMob ? 10 : 8; 
+  const strokeExp = isMob ? 0.5 : 0.6;
+  const dynStroke = strokeBase / Math.pow(state.scale, strokeExp);
+  const finalStroke = Math.max(1.5, Math.min(10, dynStroke));
+  mapContainer.style.setProperty('--dynamic-stroke', `${finalStroke}px`);
+
+  const dynCircleStroke = (strokeBase * 0.75) / Math.pow(state.scale, strokeExp);
+  const finalCircleStroke = Math.max(1.0, Math.min(8, dynCircleStroke));
+  mapContainer.style.setProperty('--dynamic-circle-stroke', `${finalCircleStroke}px`);
+  
+  // 2. Move Map (Conditional Precision)
+  const isHighDPI = window.devicePixelRatio > 1;
+  const useFloats = isHighDPI || (isFirefox && state.scale > 1.05);
+
+  const finalX = useFloats ? state.pointX : Math.round(state.pointX);
+  const finalY = useFloats ? state.pointY : Math.round(state.pointY);
+  
+  const transformString = `translate(${finalX}px, ${finalY}px) scale(${drawScale})`;
+  
+  // A. Apply to Map Image
+  mapStage.style.transform = transformString;
+  
+  // B. Apply to Markers Layer
+  if (markersLayer) {
+      markersLayer.style.transform = transformString;
+  }
+  
+  // 3. Update Text & Grid
+  updateRealScale(drawScale);
+  const zoomIndicator = cached.zoomIndicator;
+  if (zoomIndicator) zoomIndicator.innerText = `${state.scale.toFixed(1)}x`;
+  
+  // --- FIREFOX OPTIMIZATION: BATCH LABEL UPDATE ---
+  // Keeps grid labels readable
+  const mobileScaleMultiplier = isMobileDevice ? 2.5 : 1.0; 
+  const TRANSITION_START_ZOOM = 1.0;
+  const TRANSITION_END_ZOOM = 5.0;
+
+  let progress = (state.scale - TRANSITION_START_ZOOM) / (TRANSITION_END_ZOOM - TRANSITION_START_ZOOM);
+  progress = Math.max(0, Math.min(1, progress)); 
+
+  const topVal = progress * 50; 
+  const transY = -100 + (progress * 50);
+  const gap = -20 + (progress * 20);
+  const arrowOp = Math.max(0, 1 - (progress * 1.6));
+
+  const exponent = isMobileDevice ? 0.85 : 0.6; 
+  const smoothInverse = 1.0 / Math.pow(state.scale, exponent);
+  const finalScale = smoothInverse * mobileScaleMultiplier;
+
+  if (markersLayer) {
+      markersLayer.style.setProperty('--label-arrow-op', arrowOp);
+      markersLayer.style.setProperty('--label-top', `${topVal}%`);
+      markersLayer.style.setProperty('--label-transform', `translate(-50%, calc(${transY}% + ${gap}px)) scale(${finalScale})`);
+  }
+
+  // Update Grid Thickness
+  const majorThickness = Math.max(1.0, 2.0 / drawScale); 
+  const gridLayer = document.getElementById("gridLayer");
+  if (gridLayer) {
+      gridLayer.style.setProperty('--major-width', `${majorThickness}px`);
+      
+      const subGrid = gridLayer.querySelector('.keypad-grid');
+      if (subGrid) {
+          subGrid.style.opacity = state.scale >= 3.0 ? "0.4" : "0";
+          const minorThickness = Math.max(1.0, 1.0 / drawScale);
+          gridLayer.style.setProperty('--minor-width', `${minorThickness}px`);
+      }
+  }
+  
+  updateStickyLabels(drawScale);
+  if (window.updateZoomSliderUI) window.updateZoomSliderUI();
+}
+
+// ... (rest of the code remains the same)
+
+let _lastScaleTextEnd = "";
+let _lastScaleTextMid = "";
+
+function updateRealScale(effectiveZoom) {
+    const mapImg = cached.mapImage;
+    if (!mapImg || mapImg.naturalWidth === 0) return;
+
+    // 1. GET GRID DIMENSIONS (2000m SDK logic)
+    const TOTAL_PLAYABLE_METERS = 2000;
+
+    // 2. CALCULATE PIXELS PER METER
+    const currentMapPixelWidth = mapImg.naturalWidth * effectiveZoom;
+    const pixelsPerMeter = currentMapPixelWidth / TOTAL_PLAYABLE_METERS;
+
+    // 3. Select BAR SIZE BASED ON ZOOM
+    const isMobile = window.innerWidth <= 768;
+    let barMeters;
+
+    if (isMobile) {
+        barMeters = 600; 
+        if (state.scale > 1.5)  barMeters = 400;
+        if (state.scale > 2.5)  barMeters = 200;
+        if (state.scale > 5.0)  barMeters = 100;
+        if (state.scale > 10.0) barMeters = 50;
+        if (state.scale > 18.0) barMeters = 20;
+    } else {
+        barMeters = 400;
+        if (state.scale > 1.5) barMeters = 200;
+        if (state.scale > 3.0) barMeters = 100;
+        if (state.scale > 6.0) barMeters = 50;
+        if (state.scale > 9.0) barMeters = 20;
+    }
+
+    // 4. APPLY TO UI (Using Cache)
+    const barPixelsRounded = Math.round(barMeters * pixelsPerMeter);
+    
+    // Use Cached Elements
+    const scaleWrapper = cached.scaleWrapper;
+    const elMid = cached.scaleTextMid;
+    const elEnd = cached.scaleTextEnd;
+
+    if (scaleWrapper) scaleWrapper.style.width = `${barPixelsRounded}px`;
+    
+    // Optimization: Only write text if it changed
+    const midText = `${barMeters / 2}m`;
+    const endText = `${barMeters}m`;
+    
+    if (elMid && elMid.innerText !== midText) elMid.innerText = midText;
+    if (elEnd && elEnd.innerText !== endText) elEnd.innerText = endText;
+}
+
+function updateDimensions() {
+  const mapImage = document.getElementById("mapImage");
+  
+  // FIX: Check naturalWidth to prevent "Stuck Zoom" bug on browser restore
+  if (!mapImage.complete || mapImage.naturalWidth === 0) return;
+  
+  const rect = mapContainer.getBoundingClientRect();
+  
+  state.fitScale = Math.min(rect.width / mapImage.naturalWidth, rect.height / mapImage.naturalHeight);
+  
+  const isMobile = window.innerWidth <= 768; 
+
+  if (isMobile) {
+      MAX_ZOOM = 20; 
+  } else {
+      MAX_ZOOM = 10; 
+  }
+
+  if (state.scale < MIN_ZOOM) state.scale = MIN_ZOOM;
+  if (state.scale > MAX_ZOOM) state.scale = MAX_ZOOM;
+}
+
+function centerMap() {
+  const mapImage = document.getElementById("mapImage");
+  state.scale = MIN_ZOOM;
+  const rect = mapContainer.getBoundingClientRect();
+  state.pointX = (rect.width - (mapImage.naturalWidth * state.fitScale)) / 2;
+  state.pointY = (rect.height - (mapImage.naturalHeight * state.fitScale)) / 2;
+  
+  toggleSubGrid(state.scale);
+  render();
+}
+
+function initMap() {
+    // --- 1. DOM RESTRUCTURING (Fix Z-Index Stacking) ---
+    const markersLayer = cached.markersLayer;
+    const mapContainer = cached.mapContainer;
+    const mapImage = cached.mapImage;
+
+    if (markersLayer && mapContainer && mapImage) {
+        // Move markers layer if needed
+        if (markersLayer.parentElement !== mapContainer) {
+            mapContainer.appendChild(markersLayer);
+        }
+        
+        // --- FIX: Sizing for Clipping ---
+        // Force the layer to match the image size exactly.
+        // This ensures 'overflow: hidden' cuts off the circle at the map edge.
+        if (mapImage.naturalWidth > 0 && mapImage.naturalHeight > 0) {
+            markersLayer.style.width = `${mapImage.naturalWidth}px`;
+            markersLayer.style.height = `${mapImage.naturalHeight}px`;
+        }
+        
+        // Visual Order & Transform Origin
+        markersLayer.style.zIndex = "100"; 
+        markersLayer.style.transformOrigin = "0 0"; 
+    }
+    // ---------------------------------------------------
+
+    const controlsDrawer = document.getElementById("controlsDrawer");
+    if (controlsDrawer) {
+        if (window.savedPanelHidden) {
+            controlsDrawer.classList.add("closed");
+        } else {
+            controlsDrawer.classList.remove("hidden-by-default");
+        }
+    }
+
+    updateDimensions();
+    centerMap();
+    buildGrid();
+    renderMarkers();
+    currentZoomLevel = state.scale;
+
+    mapContainer.style.cursor = ""; 
+
+    render();
+
+    mapContainer.addEventListener("contextmenu", (e) => {
+        e.preventDefault(); 
+        return false;
+    });
+}
+
 // ==========================================
 // VISUAL MAP SelectOR (MODAL LOGIC)
 // ==========================================
@@ -1881,7 +2160,7 @@ initZoomControls();
 function initStrongpointsToggle() {
     const btn = document.getElementById("btnToggleStrongpoints");
     const markersLayer = document.getElementById("markers");
-    const legend = document.querySelector(".garrison-legend");
+
     if (!btn || !markersLayer) return;
 
     // Load saved preference (Default to 'true' if not set)
@@ -1891,7 +2170,6 @@ function initStrongpointsToggle() {
     if (isHidden) {
         markersLayer.classList.add("strongpoints-hidden");
         btn.classList.add("disabled");
-        if (legend) legend.style.display = "none";
     }
 
     // Toggle Handler
@@ -1903,11 +2181,10 @@ function initStrongpointsToggle() {
         const isNowHidden = markersLayer.classList.toggle("strongpoints-hidden");
         btn.classList.toggle("disabled", isNowHidden);
         
-        // Toggle legend visibility too
-        if (legend) legend.style.display = isNowHidden ? "none" : "flex";
-
+        // Save state so it remembers your choice on reload
         localStorage.setItem("hll-strongpoints-hidden", isNowHidden);
 
+        // Optional: Vibrate on mobile for feedback (Strong)
         if (navigator.vibrate) navigator.vibrate(50);
     };
 
@@ -1985,8 +2262,7 @@ function initRadiiToggle() {
 
     // Load saved state (default = ON)
     const isHidden = localStorage.getItem("hll-radii-hidden") === "true";
-    
-    // Apply initial state
+
     if (isHidden) {
         markersLayer.classList.add("radii-hidden");
         btn.classList.add("disabled");
@@ -1994,7 +2270,6 @@ function initRadiiToggle() {
     }
 
     const toggleRadii = (e) => {
-        // Prevent default double-tap zooms or map drags
         e.preventDefault();
         e.stopPropagation();
 
