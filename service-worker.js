@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hll-garrisons-cache-v2';
+const CACHE_NAME = 'hll-garrisons-cache-v3';
 
 // Install: Force activate immediately
 self.addEventListener('install', (e) => {
