@@ -21,8 +21,6 @@ Access the Default Garrisons Map instantly in your browser:
 - **Scale Indicator:** Real-time distance readout with dynamic bar (0-400m+).
 - **Map Search:** Filterable map selector with instant search.
 
-**Updated for Hell Let Loose Update 19.1**
-
 ## Disclaimer & Copyright
 
 This project is a community-made tool and is **not** affiliated with, endorsed by, or sponsored by Team17, Cover 6 Studios, or Black Matter.
