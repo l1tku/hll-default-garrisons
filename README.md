@@ -6,7 +6,7 @@ A lightweight intel tool for **Hell Let Loose** offensive matches. It ships with
 ## Live Demo
 
 Access the Default Garrisons Map instantly in your browser:  
-<a href="https://l1tku.github.io/hll-default-garrisons/" target="_blank" rel="noopener noreferrer">https://l1tku.github.io/hll-default-garrisons/</a>
+**https://l1tku.github.io/hll-default-garrisons/**
 
 ## Features
 
