@@ -3,13 +3,34 @@
 
 A lightweight intel tool for **Hell Let Loose** offensive matches. It ships with an interactive garrison map that highlights every defender default spawn point on offensive maps so squad leads can plan their opening moves without guesswork.
 
-## Live Demo
+## Installation & Local Usage
+### Option 1: Live Web Access (Recommended)
+No installation required. Simply visit the [Live Demo Link](https://l1tku.github.io/hll-default-garrisons/) from any desktop or mobile browser.
 
-Access the Default Garrisons Map instantly in your browser:  
-**https://l1tku.github.io/hll-default-garrisons/**  
+### Option 2: Local Development
+1. **Clone** or download this repository.
+2. Open `index.html` in any modern web browser.
+
+## Usage
+1. **Select Map**: Choose your map from the selector
+2. **Navigate Garrisons**: Use left/right arrows to cycle through garrisons
+3. **Filter Faction**: Toggle between All, Axis, or Allies to declutter the view
+4. **View Intel**: Check proximity rings (15m locked, 50m warning) around each garrison
+5. **Read Grid**: View grid reference (e.g., A1-5) for tactical planning
+
+## Map Controls
+### Desktop
+- **Left Click**: Select garrison.
+- **Click & Drag**: Pan the map.
+- **Mouse Wheel**: Zoom in/out.
+- **Hover**: View garrison details and grid reference.
+
+### Mobile
+- **One Finger Drag**: Pan the map.
+- **Tap Garrison**: Select and view details.
+- **Pinch**: Zoom in/out.
 
 ## Features
-
 - **Interactive Map:** Pan, zoom, and inspect maps with scale readouts.
 - **Preloaded Intel:** Exact default garrison markers for every offensive map layout.
 - **Proximity Warnings:** Visual 15m (Locked) and 50m (Warning) radius rings show garrison influence areas.
@@ -27,7 +48,7 @@ Access the Default Garrisons Map instantly in your browser:
 
 This project is a community-made tool and is **not** affiliated with, endorsed by, or sponsored by Team17, Cover 6 Studios, or Black Matter.
 
-**Hell Let Loose** content and materials are trademarks and copyrights of their respective owners.  
+**Hell Let Loose** content and materials are trademarks and copyrights of their respective owners.
 * **Game Assets:** All game images (maps, garrison icons) are the property of the Hell Let Loose developers and publishers. They are used here for non-commercial, educational, and informational purposes.
 
 ## License
@@ -35,11 +56,6 @@ This project is a community-made tool and is **not** affiliated with, endorsed b
 The source code (HTML, CSS, JavaScript) of this project is licensed under the **MIT License**.
 
 > **Note:** The game assets (images located in the `/images` folder) are **excluded** from this license and remain the intellectual property of their respective owners.
-
-## Development Notes
-
-- Source styles live in `css/style.css`; client logic is in `js/script.js`.
-- Map imagery is in `images/maps`, while UI assets live under `images/ui`.
 
 ---
 
