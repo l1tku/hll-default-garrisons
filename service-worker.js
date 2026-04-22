@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hll-garrisons-cache-v3';
+const CACHE_NAME = 'hll-garrisons-cache-v4';
 
 // Install: Force activate immediately
 self.addEventListener('install', (e) => {
@@ -32,7 +32,9 @@ self.addEventListener('fetch', (e) => {
       return networkResponse;
     }).catch(() => {
       // Network failed - try cache
-      return caches.match(e.request);
+      return caches.match(e.request).then((cachedResponse) => {
+        return cachedResponse || new Response('Not found', { status: 404 });
+      });
     })
   );
 });

@@ -22,17 +22,9 @@
       // Only register if we are online (HTTP/HTTPS) to avoid errors when testing locally
       if (window.location.protocol.indexOf('http') === 0) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js?v=3')
+          navigator.serviceWorker.register('./service-worker.js?v=4')
             .then((reg) => console.log('Service Worker registered.', reg))
             .catch((err) => console.log('Service Worker registration failed.', err));
-        });
-        
-        // Auto-reload when new service worker takes control
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (refreshing) return;
-          refreshing = true;
-          window.location.reload();
         });
       }
     }
