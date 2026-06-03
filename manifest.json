@@ -1,7 +1,11 @@
 {
   "name": "HLL Default Garrisons Map",
   "short_name": "HLL Garrisons",
-  "start_url": "./index.html",
+  "description": "Interactive Hell Let Loose garrison planning map with default garrison overlays.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "lang": "en",
   "display": "standalone",
   "background_color": "#1d1f27",
   "theme_color": "#ffc107",
@@ -10,12 +14,14 @@
     {
       "src": "images/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "images/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
