@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.5] - 2026-06-03
+### Updated
+- Added Juno Beach default garrison positions for both Canada and Germany offensive layouts.
+- Updated supported Hell Let Loose game version to Update 20.
+- Added clickable header version links: app version now opens the GitHub repository and `UPDATE 20` opens the official Hell Let Loose blog post.
+- Added a changelog button and in-app changelog modal to the map selection header.
+
 ## [1.0.4] - 2026-03-31
 ### Fixed
 - Garrison zoom coordinate calculation (captures fitScale at animation start, uses mapContainer for center)

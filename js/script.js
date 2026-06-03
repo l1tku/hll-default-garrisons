@@ -8,14 +8,15 @@ if (typeof MAP_DATABASE === 'undefined') {
   alert('Error: Map data failed to load. Please refresh the page.');
 }
 
-const APP_VERSION = "v1.0.4"; // UPDATES EVERYWHERE
-const GAME_VERSION = "UPDATE 19.1"; // GAME VERSION
+const APP_VERSION = "v1.0.5"; // UPDATES EVERYWHERE
+const GAME_VERSION = "UPDATE 20"; // GAME VERSION
 
 // Version display updater - maps element IDs to version values
 const versionMap = {
   'appVersion': APP_VERSION,
   'appVersionPanel': APP_VERSION,
-  'gameVersion': GAME_VERSION
+  'gameVersion': GAME_VERSION,
+  'gameVersionPanel': GAME_VERSION
 };
 
 // Loop through and update only the ones that exist on the current page
@@ -269,7 +270,7 @@ function getVisibleGarrisons() {
         if (activeFaction !== 'all' && activeFaction !== null) {
             const teamLower = point.team.toLowerCase();
             if (activeFaction === 't1') {
-                shouldShow = (teamLower === 'us' || teamLower === 'allies' || teamLower === 'rus' || teamLower === 'sov' || teamLower === 'gb');
+                shouldShow = (teamLower === 'us' || teamLower === 'allies' || teamLower === 'rus' || teamLower === 'sov' || teamLower === 'gb' || teamLower === 'can');
             } else if (activeFaction === 't2') {
                 shouldShow = (teamLower === 'ger' || teamLower === 'axis');
             }
@@ -727,7 +728,7 @@ function renderMarkers() {
     if (isGarrison && activeFaction !== 'all' && activeFaction !== null) {
         const teamLower = point.team.toLowerCase();
         if (activeFaction === 't1') {
-            shouldShow = (teamLower === 'us' || teamLower === 'allies' || teamLower === 'rus' || teamLower === 'sov' || teamLower === 'gb');
+            shouldShow = (teamLower === 'us' || teamLower === 'allies' || teamLower === 'rus' || teamLower === 'sov' || teamLower === 'gb' || teamLower === 'can');
         } else if (activeFaction === 't2') {
             shouldShow = (teamLower === 'ger' || teamLower === 'axis');
         }
@@ -1533,6 +1534,11 @@ function getFlagImage(teamName) {
   if (!teamName) return "images/flags/us_60.webp"; 
   
   const lower = teamName.toLowerCase();
+
+  // Canada / Canadian
+  if (lower === "can" || lower.includes("canada") || lower.includes("canadian")) {
+      return "images/flags/can.webp";
+  }
   
   // GB / British / Allies (Maps like El Alamein/Driel)
   if (lower === "gb" || lower.includes("british") || lower.includes("8th") || lower.includes("allies")) {
@@ -2354,6 +2360,16 @@ if (toggleBtn && drawer) {
   if (versionPanelEl) {
     versionPanelEl.textContent = APP_VERSION;
   }
+
+  const gameVersionEl = document.getElementById('gameVersion');
+  if (gameVersionEl) {
+    gameVersionEl.textContent = GAME_VERSION;
+  }
+
+  const gameVersionPanelEl = document.getElementById('gameVersionPanel');
+  if (gameVersionPanelEl) {
+    gameVersionPanelEl.textContent = GAME_VERSION;
+  }
   
   // Initialize strongpoints toggle
   initStrongpointsToggle();
@@ -2523,6 +2539,74 @@ if (btnOtherProjects && projectsModal) {
                 if (document.activeElement === btn) btn.blur();
             }, 100);
         });
+    });
+}
+
+// --- CHANGELOG MODAL LOGIC ---
+
+const changelogBtn = document.getElementById("changelogBtn");
+const changelogBtnPanel = document.getElementById("changelogBtnPanel");
+const changelogModal = document.getElementById("changelogModal");
+const closeChangelogBtn = document.getElementById("closeChangelogBtn");
+const changelogContent = document.getElementById("changelogContent");
+
+function openChangelog() {
+    if (!changelogModal) return;
+    changelogModal.classList.add("active");
+    loadChangelog();
+}
+
+function closeChangelog() {
+    if (!changelogModal) return;
+    changelogModal.classList.remove("active");
+}
+
+async function loadChangelog() {
+    if (!changelogContent) return;
+
+    try {
+        const response = await fetch("CHANGELOG.md");
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+        }
+        const text = await response.text();
+        changelogContent.innerHTML = parseMarkdown(text);
+    } catch (error) {
+        console.error("Failed to load changelog:", error);
+        changelogContent.textContent =
+            "Failed to load changelog. Make sure you are running this on a web server (not file://).";
+    }
+}
+
+function parseMarkdown(text) {
+    let html = text;
+    html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
+    html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>");
+    html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>");
+    html = html.replace(/^- (.+)$/gm, "<li>$1</li>");
+    html = html.replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>");
+    html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    html = html.replace(/\n\n/g, "<br><br>");
+    return html;
+}
+
+if (changelogBtn) {
+    changelogBtn.addEventListener("click", openChangelog);
+}
+
+if (changelogBtnPanel) {
+    changelogBtnPanel.addEventListener("click", openChangelog);
+}
+
+if (closeChangelogBtn) {
+    closeChangelogBtn.addEventListener("click", closeChangelog);
+}
+
+if (changelogModal) {
+    changelogModal.addEventListener("click", (e) => {
+        if (e.target === changelogModal) {
+            closeChangelog();
+        }
     });
 }
 

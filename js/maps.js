@@ -4,7 +4,7 @@
 const MAP_DATABASE = {
   CAR: {
     name: "Carentan",
-    image: "images/maps/map_Carentan.webp",
+    image: "images/maps/map_carentan.webp",
     thumbnail: "images/maps/thumbnail/CAR.webp",
     teams: { t1: "UNITED STATES", t2: "GERMANY" },
     
@@ -158,7 +158,7 @@ const MAP_DATABASE = {
   },
   EBR: { 
     name: "Elsenborn Ridge", 
-    image: "images/maps/TacMap_EBR_L_1944.webp", 
+    image: "images/maps/map_elsenborn.webp", 
     thumbnail: "images/maps/thumbnail/EBR.webp", 
     teams: { t1: "UNITED STATES", t2: "GERMANY" },
 
@@ -463,7 +463,7 @@ KUR: {
   },
   MOR: { 
     name: "Mortain", 
-    image: "images/maps/TacMap_MOR_L_1944.webp", 
+    image: "images/maps/map_mortain.webp", 
     thumbnail: "images/maps/thumbnail/MOR.webp", 
     teams: { t1: "UNITED STATES", t2: "GERMANY" },
     
@@ -818,7 +818,7 @@ SMM: {
   },
   SMO: { 
     name: "Smolensk", 
-    image: "images/maps/TacMap_SMO_L_1943.webp", 
+    image: "images/maps/map_smolensk.webp", 
     thumbnail: "images/maps/thumbnail/SMO.webp", 
     teams: { t1: "SOVIET UNION", t2: "GERMANY" },
     
@@ -942,7 +942,7 @@ STA: {
   },
   TOB: {
     name: "Tobruk",
-    image: "images/maps/TacMap_TOB_L_1942.webp",
+    image: "images/maps/map_tobruk.webp",
     thumbnail: "images/maps/thumbnail/TOB.webp",
     teams: { t1: "BRITISH 8TH ARMY", t2: "GERMANY" },
 
@@ -1041,5 +1041,47 @@ UTA: {
       { label: "Default Garrison 2", id: "GER_G_OFF_2", gameX: 42130.00, gameY: -39360.00, radius: 500, team: "ger", type: "garrison_default" }, 
       { label: "Default Garrison 3", id: "GER_G_OFF_3", gameX: 53246.00, gameY: 44069.00, radius: 500, team: "ger", type: "garrison_default" }
     ] 
+  },
+  JUN: {
+    name: "Juno Beach",
+    image: "images/maps/map_juno_beach.webp", 
+    thumbnail: "images/maps/thumbnail/JUN.webp", 
+    teams: { t1: "CANADA", t2: "GERMANY" },
+    widthMeters: 2000,
+    heightMeters: 2000,
+    garrisonSort: "x",
+    strongpoints: [
+      // --- CANADIAN SECTORS ---
+      { label: "GRAYE-SUR-MER OUTSKIRTS", id: "B18", gameX: -39670.0, gameY: -69078.0, radius: 5500.0, team: "can", type: "strongpoint" },
+      { label: "RADAR STATION", id: "B19", gameX: -2611.0, gameY: -67760.0, radius: 6000.0, team: "can", type: "strongpoint" },
+      { label: "CHEM DE LA LAMPE", id: "B20", gameX: 39765.0, gameY: -70210.0, radius: 8000.0, team: "can", type: "strongpoint" },
+      { label: "WEAPONS FACTORY", id: "B15", gameX: -39610.0, gameY: -41685.0, radius: 8000.0, team: "can", type: "strongpoint" },
+      { label: "LE SENTIER SEULLES", id: "B16", gameX: -10.0, gameY: -41685.0, radius: 8000.0, team: "can", type: "strongpoint" },
+      { label: "ROAD TO BENY-SUR-MER", id: "B17", gameX: 39765.0, gameY: -41685.0, radius: 8000.0, team: "can", type: "strongpoint" },
+
+      // --- NEUTRAL SECTORS ---
+      { label: "GRAYE-SUR-MER", id: "B12", gameX: -39610.0, gameY: -4660.0, radius: 8000.0, team: "neu", type: "strongpoint" },
+      { label: "LA SEULLES RIVER", id: "B13", gameX: -10.0, gameY: -4660.0, radius: 8000.0, team: "neu", type: "strongpoint" },
+      { label: "MARKET SQUARE", id: "B14", gameX: 39765.0, gameY: -4660.0, radius: 8000.0, team: "neu", type: "strongpoint" },
+
+      // --- AXIS SECTORS ---
+      { label: "REGINA LANDING", id: "B6", gameX: -39610.0, gameY: 71720.0, radius: 7000.0, team: "ger", type: "strongpoint" },
+      { label: "BUNKER R612", id: "B7", gameX: -10.0, gameY: 71606.0, radius: 7000.0, team: "ger", type: "strongpoint" },
+      { label: "WN29", id: "B8", gameX: 39765.0, gameY: 71312.0, radius: 7000.0, team: "ger", type: "strongpoint" },
+      { label: "LA PLATINE", id: "B9", gameX: -39610.0, gameY: 40340.0, radius: 8000.0, team: "ger", type: "strongpoint" },
+      { label: "LA MARINA", id: "B10", gameX: -10.0, gameY: 40340.0, radius: 8000.0, team: "ger", type: "strongpoint" },
+      { label: "HEROULT HOUSE", id: "B11", gameX: 50583.223, gameY: 44190.965, radius: 8000.0, team: "ger", type: "strongpoint" },
+
+      // --- GARRISON POSITIONS ---
+      // CANADIANS (Allied defender spawns from JUN_L_1944_GP_OffensiveGER)
+      { label: "Default Garrison 1", id: "CAN_G_OFF_1", gameX: -41237.91, gameY: -56069.7, radius: 500, team: "can", type: "garrison_default" },
+      { label: "Default Garrison 2", id: "CAN_G_OFF_2", gameX: -8041.016, gameY: -51917.0, radius: 500, team: "can", type: "garrison_default" },
+      { label: "Default Garrison 3", id: "CAN_G_OFF_3", gameX: 46010.0, gameY: -53558.0, radius: 500, team: "can", type: "garrison_default" },
+
+      // GERMANS (Axis defender spawns from JUN_L_1944_GP_OffensiveUS)
+      { label: "Default Garrison 1", id: "GER_G_OFF_1", gameX: -51433.113, gameY: 55825.547, radius: 500, team: "ger", type: "garrison_default" },
+      { label: "Default Garrison 2", id: "GER_G_OFF_2", gameX: -2774.9075, gameY: 48189.887, radius: 500, team: "ger", type: "garrison_default" },
+      { label: "Default Garrison 3", id: "GER_G_OFF_3", gameX: 52557.78, gameY: 49683.1, radius: 500, team: "ger", type: "garrison_default" }
+    ]
   },
 };

@@ -1,5 +1,5 @@
 # HLL Interactive Map for Default Garrisons
-**v1.0.4 — Updated for Hell Let Loose Update 19.1**
+**v1.0.5 — Updated for Hell Let Loose Update 20**
 
 A lightweight intel tool for **Hell Let Loose** offensive matches. It ships with an interactive garrison map that highlights every defender default spawn point on offensive maps so squad leads can plan their opening moves without guesswork.
 
@@ -42,7 +42,7 @@ No installation required. Simply visit the [Live Demo Link](https://l1tku.github
 - **Scale Indicator:** Real-time distance readout with dynamic bar (0-400m+).
 - **Map Search:** Filterable map selector with instant search.
 
-**Updated for Hell Let Loose Update 19.1**
+**Updated for Hell Let Loose Update 20**
 
 ## Disclaimer & Copyright
 
@@ -62,6 +62,11 @@ The source code (HTML, CSS, JavaScript) of this project is licensed under the **
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [1.0.5] - 2026-06-03
+### Updated
+- Added Juno Beach default garrison positions for both Canada and Germany offensive layouts.
+- Updated supported Hell Let Loose game version to Update 20.
 
 ## [1.0.4] - 2026-03-31
 ### Fixed
