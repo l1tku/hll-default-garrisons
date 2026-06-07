@@ -148,9 +148,7 @@ function showLoading() {
 }
 
 function updatePageTitle(mapName) {
-    // Avoid repeating the app name in installed PWA windows while keeping browser tabs descriptive.
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    document.title = isStandalone ? mapName : `${mapName} - HLL Default Garrisons`;
+    document.title = `HLL Default Garrisons - ${mapName}`;
 }
 
 function hideLoading() {

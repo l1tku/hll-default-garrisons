@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>HLL DEFAULT GARRISONS</title>
+  <title>HLL Default Garrisons</title>
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffc107">
@@ -11,19 +11,19 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="HLL DEFAULT GARRISONS">
+  <meta name="apple-mobile-web-app-title" content="HLL Default Garrisons">
 
   <link rel="icon" type="image/webp" href="images/favicon.webp">
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="apple-touch-icon" href="images/icon-180.png">
-  <link rel="stylesheet" href="css/style.css?v=3.35">
+  <link rel="stylesheet" href="css/style.css?v=3.36">
   
   <script>
     if ('serviceWorker' in navigator) {
       // Only register if we are online (HTTP/HTTPS) to avoid errors when testing locally
       if (window.location.protocol.indexOf('http') === 0) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js?v=7')
+          navigator.serviceWorker.register('./service-worker.js?v=8')
             .then((reg) => console.log('Service Worker registered.', reg))
             .catch((err) => console.log('Service Worker registration failed.', err));
         });
@@ -263,6 +263,6 @@
   </div>
 
 <script src="js/maps.js"></script> 
-<script src="js/script.js?v=3.35"></script>
+<script src="js/script.js?v=3.36"></script>
 </body>
 </html>

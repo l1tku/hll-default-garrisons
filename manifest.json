@@ -1,6 +1,6 @@
 {
-  "name": "HLL DEFAULT GARRISONS",
-  "short_name": "HLL DEFAULT GARRISONS",
+  "name": "HLL Default Garrisons",
+  "short_name": "HLL Default Garrisons",
   "description": "Interactive Hell Let Loose garrison planning map with default garrison overlays.",
   "id": "./",
   "start_url": "./",
