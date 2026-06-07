@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.6] - 2026-06-07
+### Updated
+- Aligned PWA naming, browser titles, and installed-app metadata.
+- Updated the service worker for safer caching and offline support.
+- Polished the header links, labels, and subtitle styling.
+
 ## [1.0.5] - 2026-06-03
 ### Updated
 - Added Juno Beach default garrison positions for both Canada and Germany offensive layouts.

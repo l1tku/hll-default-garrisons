@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Default Garrisons Map</title>
+  <title>HLL DEFAULT GARRISONS</title>
   
   <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffc107">
   
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="HLL Garrisons">
+  <meta name="apple-mobile-web-app-title" content="HLL DEFAULT GARRISONS">
 
   <link rel="icon" type="image/webp" href="images/favicon.webp">
   <link rel="icon" type="image/png" href="images/favicon.png">
@@ -22,7 +23,7 @@
       // Only register if we are online (HTTP/HTTPS) to avoid errors when testing locally
       if (window.location.protocol.indexOf('http') === 0) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js?v=5')
+          navigator.serviceWorker.register('./service-worker.js?v=7')
             .then((reg) => console.log('Service Worker registered.', reg))
             .catch((err) => console.log('Service Worker registration failed.', err));
         });
@@ -42,7 +43,7 @@
         <img 
           id="mapImage" 
           class="map-image"
-          src="images/maps/map_Carentan.webp" 
+          src="images/maps/map_carentan.webp" 
           alt="Carentan Map"
         >
         <div id="markers" class="markers-layer"></div>
@@ -113,7 +114,7 @@
   <div id="mapModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-brand-header">
-        <div class="main-title">DEFAULT GARRISONS MAP</div>
+        <div class="main-title">HLL DEFAULT GARRISONS</div>
         <div class="main-subtitle-credits">
           <button class="changelog-btn" id="changelogBtn" aria-label="View Changelog" data-tooltip="Changelog">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
@@ -128,7 +129,7 @@
           <span class="spacer">&bull;</span>
           <a href="https://www.hellletloose.com/blog/update-20-changelog" target="_blank" rel="noopener noreferrer" id="gameVersion"></a>
           <span class="spacer">&bull;</span>
-          <span>BY LITKU</span>
+          <a href="https://github.com/l1tku" target="_blank" rel="noopener noreferrer" id="authorLink">BY LITKU</a>
         </div>
         <button class="close-btn" id="closeModalBtn" aria-label="Close Map Selection">×</button>
       </div>
@@ -218,7 +219,7 @@
       <div class="projects-list">
         <button class="footer-btn" onclick="window.open('https://l1tku.github.io/hll-arty-map-calculator/', '_blank')">
           <img src="images/favicon_artillery.png" class="footer-project-icon" alt=""> 
-          <span>ARTILLERY MAP CALCULATOR</span>
+          <span>HLL ARTY MAP CALCULATOR</span>
           <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
             <polyline points="15 3 21 3 21 9"></polyline>
@@ -228,7 +229,7 @@
 
         <button class="footer-btn" onclick="window.open('https://l1tku.github.io/hll-spa-calculator/', '_blank')">
           <img src="images/favicon_spa.png" class="footer-project-icon" alt=""> 
-          <span>SPA ARTILLERY CALCULATOR</span>
+          <span>HLL SPA CALCULATOR</span>
           <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
             <polyline points="15 3 21 3 21 9"></polyline>

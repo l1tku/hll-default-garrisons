@@ -8,7 +8,7 @@ if (typeof MAP_DATABASE === 'undefined') {
   alert('Error: Map data failed to load. Please refresh the page.');
 }
 
-const APP_VERSION = "v1.0.5"; // UPDATES EVERYWHERE
+const APP_VERSION = "v1.0.6"; // UPDATES EVERYWHERE
 const GAME_VERSION = "UPDATE 20"; // GAME VERSION
 
 // Version display updater - maps element IDs to version values
@@ -148,8 +148,9 @@ function showLoading() {
 }
 
 function updatePageTitle(mapName) {
-    // Dynamically updates the browser tab title using the original case 
-    document.title = `Default Garrisons Map - ${mapName}`;
+    // Avoid repeating the app name in installed PWA windows while keeping browser tabs descriptive.
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    document.title = isStandalone ? mapName : `${mapName} - HLL Default Garrisons`;
 }
 
 function hideLoading() {

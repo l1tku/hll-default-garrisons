@@ -1966,6 +1966,11 @@ button.btn-map-select:hover { border-left-color: #ffffff; }
   line-height: 10px !important;
   height: 14px !important;
   min-height: 14px !important;
+  text-shadow: none !important;
+}
+
+.main-subtitle-credits * {
+  text-shadow: none !important;
 }
 
 #appVersion,
@@ -1975,7 +1980,11 @@ button.btn-map-select:hover { border-left-color: #ffffff; }
 #gameVersion,
 #gameVersion:visited,
 #gameVersion:hover,
-#gameVersion:active {
+#gameVersion:active,
+#authorLink,
+#authorLink:visited,
+#authorLink:hover,
+#authorLink:active {
   text-decoration: none !important;
   color: rgba(255, 255, 255, 0.5) !important;
   pointer-events: auto;
@@ -1983,7 +1992,8 @@ button.btn-map-select:hover { border-left-color: #ffffff; }
 }
 
 #appVersion:hover,
-#gameVersion:hover {
+#gameVersion:hover,
+#authorLink:hover {
   opacity: 0.7;
 }
 
