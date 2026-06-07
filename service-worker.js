@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'hll-default-garrisons-cache';
-const CACHE_VERSION = 'v8';
+const CACHE_VERSION = 'v9';
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 const APP_SHELL_URLS = [
   './',

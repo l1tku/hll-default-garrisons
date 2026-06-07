@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>HLL Default Garrisons</title>
   
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json?v=9">
   <meta name="theme-color" content="#ffc107">
   
   <meta name="mobile-web-app-capable" content="yes">
@@ -23,7 +23,9 @@
       // Only register if we are online (HTTP/HTTPS) to avoid errors when testing locally
       if (window.location.protocol.indexOf('http') === 0) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js?v=8')
+          navigator.serviceWorker.register('./service-worker.js?v=9', {
+            scope: new URL('./', window.location.href).pathname
+          })
             .then((reg) => console.log('Service Worker registered.', reg))
             .catch((err) => console.log('Service Worker registration failed.', err));
         });
