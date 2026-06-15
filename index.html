@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>HLL Default Garrisons</title>
   
-  <link rel="manifest" href="manifest.json?v=9">
+  <link rel="manifest" href="manifest.json?v=10">
   <meta name="theme-color" content="#ffc107">
   
   <meta name="mobile-web-app-capable" content="yes">
@@ -16,14 +16,17 @@
   <link rel="icon" type="image/webp" href="images/favicon.webp">
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="apple-touch-icon" href="images/icon-180.png">
-  <link rel="stylesheet" href="css/style.css?v=3.36">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3.37">
   
   <script>
     if ('serviceWorker' in navigator) {
       // Only register if we are online (HTTP/HTTPS) to avoid errors when testing locally
       if (window.location.protocol.indexOf('http') === 0) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js?v=9', {
+          navigator.serviceWorker.register('./service-worker.js?v=10', {
             scope: new URL('./', window.location.href).pathname
           })
             .then((reg) => console.log('Service Worker registered.', reg))
@@ -157,6 +160,19 @@
           </svg>
           MORE PROJECTS
         </button>
+        <a
+          href="https://ko-fi.com/litku"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="kofi-btn"
+        >
+          <img
+            src="images/kofi_symbol.png"
+            class="kofi-icon"
+            alt="Ko-fi"
+          />
+          <span class="kofi-text">Buy me a coffee</span>
+        </a>
       </div>
     </div>
   </div>
@@ -265,6 +281,6 @@
   </div>
 
 <script src="js/maps.js"></script> 
-<script src="js/script.js?v=3.36"></script>
+<script src="js/script.js?v=3.37"></script>
 </body>
 </html>

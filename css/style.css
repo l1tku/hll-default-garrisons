@@ -1669,6 +1669,52 @@ select.btn-map-select option {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+.kofi-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  height: 40px;
+  background: #7baafa;
+  padding: 0 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #1f1f1f;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  font-weight: 900;
+  font-size: 12px;
+  gap: 8px;
+  margin-left: auto;
+  transition: all 0.2s ease;
+}
+
+.kofi-icon {
+  height: 22px;
+  width: auto;
+  flex-shrink: 0;
+  animation: kofi-idle 3s ease-in-out 2s infinite;
+}
+
+.kofi-text {
+  white-space: nowrap;
+}
+
+.kofi-btn:hover {
+  background: #6a9af0;
+  transform: translateY(-1px);
+}
+
+.kofi-btn:active {
+  transform: translateY(0);
+}
+
+@keyframes kofi-idle {
+  0%, 80%, 100% { transform: rotate(0deg); }
+  85% { transform: rotate(-10deg); }
+  90% { transform: rotate(8deg); }
+  95% { transform: rotate(-4deg); }
+}
+
 /* ==========================================
    CUSTOM DROPDOWNS
    ========================================== */
@@ -2729,6 +2775,29 @@ button.btn-map-select:hover { border-left-color: #ffffff; }
         /* Reset padding since Grid Gap handles the spacing */
         padding: 0 !important;
         margin: 0 !important;
+    }
+
+    .modal-footer a[href*="ko-fi"] {
+        flex: 0 0 54px !important;
+        width: 54px !important;
+        height: 54px !important;
+        padding: 0 !important;
+        justify-content: center !important;
+        background: #7baafa !important;
+        border: none !important;
+        border-radius: 4px !important;
+        margin-left: 0 !important;
+    }
+    .modal-footer .kofi-text {
+        display: none !important;
+    }
+    .modal-footer .kofi-icon {
+        width: 32px !important;
+        height: 32px !important;
+        flex-shrink: 0 !important;
+        filter: none !important;
+        object-fit: contain !important;
+        animation: kofi-idle 3s ease-in-out infinite !important;
     }
 
 

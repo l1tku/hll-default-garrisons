@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.7] - 2026-06-14
+### Added
+- Added Ko-fi support button
+
 ## [1.0.6] - 2026-06-07
 ### Updated
 - Aligned PWA naming, browser titles, and installed-app metadata.
