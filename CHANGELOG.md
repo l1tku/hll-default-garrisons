@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.8] - 2026-09-16
+### Added
+- Added SEO meta description, Open Graph, Twitter card, and Schema.org WebSite metadata for proper Google Search listing and site name branding.
+- Added high-resolution 192x192 and 512x512 icon definitions for search engines and mobile devices.
+- Added Carentan preview thumbnail for Google Search and social sharing.
+
 ## [1.0.7] - 2026-06-14
 ### Added
 - Added Ko-fi support button
