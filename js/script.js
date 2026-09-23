@@ -8,8 +8,8 @@ if (typeof MAP_DATABASE === 'undefined') {
   alert('Error: Map data failed to load. Please refresh the page.');
 }
 
-const APP_VERSION = "v1.0.8"; // UPDATES EVERYWHERE
-const GAME_VERSION = "UPDATE 20"; // GAME VERSION
+const APP_VERSION = "v1.0.9"; // UPDATES EVERYWHERE
+const GAME_VERSION = "UPDATE 21"; // GAME VERSION
 
 // Version display updater - maps element IDs to version values
 const versionMap = {

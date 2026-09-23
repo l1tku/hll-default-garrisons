@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.9] - 2026-09-23
+### Changed
+- Updated game version compatibility to **Hell Let Loose Update 21**
+- Game version link now points to the new Update 21 changelog
+- Bumped Service Worker cache version to force refresh for returning visitors
+
 ## [1.0.8] - 2026-09-16
 ### Added
 - Added SEO meta description, Open Graph, Twitter card, and Schema.org WebSite metadata for proper Google Search listing and site name branding.
