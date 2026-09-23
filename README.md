@@ -61,8 +61,6 @@ The source code (HTML, CSS, JavaScript) of this project is licensed under the **
 
 # Version History
 
-All notable changes to this project will be documented in this file.
-
 ## [1.0.9] - 2026-09-23
 ### Changed
 - Updated game version compatibility to **Hell Let Loose Update 21**
