@@ -1,5 +1,5 @@
 # HLL Interactive Map for Default Garrisons
-**v1.0.9 — Updated for Hell Let Loose Update 21**
+**v1.1.0 — Updated for Hell Let Loose Update 21**
 
 A lightweight intel tool for **Hell Let Loose** offensive matches. It ships with an interactive garrison map that highlights every defender default spawn point on offensive maps so squad leads can plan their opening moves without guesswork.
 

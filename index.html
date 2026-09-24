@@ -6,7 +6,6 @@
   <title>HLL Default Garrisons</title>
   <meta name="description" content="Interactive Hell Let Loose tactical map for default garrison positions, offensive layouts, strongpoints, and recon timing for all maps and factions.">
   
-  <!-- Open Graph / Facebook / Discord -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://l1tku.github.io/hll-default-garrisons/">
   <meta property="og:site_name" content="HLL Default Garrisons">
@@ -14,13 +13,11 @@
   <meta property="og:description" content="Interactive Hell Let Loose tactical map for default garrison positions, offensive layouts, strongpoints, and recon timing for all maps and factions.">
   <meta property="og:image" content="https://l1tku.github.io/hll-default-garrisons/images/og_image.png">
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="HLL Default Garrisons">
   <meta name="twitter:description" content="Interactive Hell Let Loose tactical map for default garrison positions, offensive layouts, strongpoints, and recon timing for all maps and factions.">
   <meta name="twitter:image" content="https://l1tku.github.io/hll-default-garrisons/images/og_image_wide.png">
 
-  <!-- Google Site Name Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -32,7 +29,7 @@
   }
   </script>
   
-  <link rel="manifest" href="manifest.json?v=12">
+  <link rel="manifest" href="manifest.json?v=1.1.0-1">
   <meta name="theme-color" content="#ffc107">
   
   <meta name="mobile-web-app-capable" content="yes">
@@ -42,20 +39,19 @@
 
   <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="images/icon-512.png">
-  <link rel="icon" type="image/webp" href="images/favicon.webp?v=1.0.9">
-  <link rel="icon" type="image/png" href="images/favicon.png?v=1.0.9">
-  <link rel="apple-touch-icon" href="images/icon-180.png?v=1.0.9">
+  <link rel="icon" type="image/webp" href="images/favicon.webp?v=1.1.0-1">
+  <link rel="icon" type="image/png" href="images/favicon.png?v=1.1.0-1">
+  <link rel="apple-touch-icon" href="images/icon-180.png?v=1.1.0-1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=1.0.9">
+  <link rel="stylesheet" href="css/style.css?v=1.1.0-1">
   
   <script>
     if ('serviceWorker' in navigator) {
-      // Only register if we are online (HTTP/HTTPS) to avoid errors when testing locally
       if (window.location.protocol.indexOf('http') === 0) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js?v=12', {
+          navigator.serviceWorker.register('./service-worker.js?v=1.1.0-1', {
             scope: new URL('./', window.location.href).pathname
           })
             .then((reg) => console.log('Service Worker registered.', reg))
@@ -310,6 +306,6 @@
   </div>
 
 <script src="js/maps.js"></script> 
-<script src="js/script.js?v=1.0.9"></script>
+<script src="js/script.js?v=1.1.0-1"></script>
 </body>
 </html>

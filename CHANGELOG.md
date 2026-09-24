@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-09-23
+### Removed
+- Cleaned up redundant comments across `index.html`, `css/style.css`, `js/script.js`, and `js/maps.js`
+
 ## [1.0.9] - 2026-09-23
 ### Changed
 - Updated game version compatibility to **Hell Let Loose Update 21**
