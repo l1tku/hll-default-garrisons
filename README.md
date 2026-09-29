@@ -3,6 +3,19 @@
 
 A lightweight intel tool for **Hell Let Loose** offensive matches. It ships with an interactive garrison map that highlights every defender default spawn point on offensive maps so squad leads can plan their opening moves without guesswork.
 
+## Features
+- **Interactive Map:** Pan, zoom, and inspect high-resolution tactical maps with pinpoint precision.
+- **Garrison Locations:** Exact default garrison positions for every Offensive mode map layout.
+- **Garrison Control Bar:** Quickly cycle between garrisons with direct grid references (e.g., A1-5) and auto-zoom.
+- **Strongpoint Overlay Toggle:** Toggle strongpoint capture zones on or off.
+- **Sector Grid Toggle:** Toggle the map coordinate grid display on or off.
+- **Radius Rings Toggle:** Toggle the 15m and 50m proximity rings on or off.
+- **Faction Filters:** Toggle between All, Axis, or Allies to declutter the tactical view.
+- **Distance Scale Bar:** Dynamic ruler to accurately estimate distances in meters.
+- **Map Search:** Search bar to jump directly to any map.
+- **Mobile Ready:** Touch-optimized for seamless use on phones and tablets.
+- **More Projects:** Quick menu linking to companion calculators (Artillery & SPA) and GitHub.
+
 ## Installation & Local Usage
 ### Option 1: Live Web Access (Recommended)
 No installation required. Simply visit the [Live Demo Link](https://l1tku.github.io/hll-default-garrisons/) from any desktop or mobile browser.
@@ -29,18 +42,6 @@ No installation required. Simply visit the [Live Demo Link](https://l1tku.github
 - **One Finger Drag**: Pan the map.
 - **Tap Garrison**: Select and view details.
 - **Pinch**: Zoom in/out.
-
-## Features
-- **Interactive Map:** Pan, zoom, and inspect maps with scale readouts.
-- **Preloaded Intel:** Exact default garrison markers for every offensive map layout.
-- **Proximity Warnings:** Visual 15m (Locked) and 50m (Warning) radius rings show garrison influence areas.
-- **Dynamic Scaling:** Radius rings scale accurately to map scale at any zoom level.
-- **Faction Filters:** Toggle between All, Axis, or Allies to declutter the tactical view.
-- **Mobile Optimized:** Touch-friendly interface with native pinch-to-zoom and tap interactions.
-- **Garrison Control Bar:** Tactical navigation with left/right arrows, faction flag, garrison name, zoom toggle, and grid reference display (e.g., A1-5).
-- **Projects Hub:** Quick links to related tools (Artillery Calculator, SPA Calculator).
-- **Scale Indicator:** Real-time distance readout with dynamic bar (0-400m+).
-- **Map Search:** Filterable map selector with instant search.
 
 **Updated for Hell Let Loose Update 21**
 
