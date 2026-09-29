@@ -18,7 +18,7 @@ A lightweight intel tool for **Hell Let Loose** offensive matches. It ships with
 
 ## Installation & Local Usage
 ### Option 1: Live Web Access (Recommended)
-No installation required. Simply visit the [Live Demo Link](https://l1tku.github.io/hll-default-garrisons/) from any desktop or mobile browser.
+No installation required. Open [HLL Default Garrisons](https://l1tku.github.io/hll-default-garrisons/) in any browser.
 
 ### Option 2: Local Development
 1. **Clone** or download this repository.
