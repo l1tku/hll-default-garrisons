@@ -43,8 +43,6 @@ No installation required. Open [HLL Default Garrisons](https://l1tku.github.io/h
 - **Tap Garrison**: Select and view details.
 - **Pinch**: Zoom in/out.
 
-**Updated for Hell Let Loose Update 21**
-
 ## Disclaimer & Copyright
 
 This project is a community-made tool and is **not** affiliated with, endorsed by, or sponsored by Team17, Cover 6 Studios, or Black Matter.
