@@ -43,6 +43,34 @@ No installation required. Open [HLL Default Garrisons](https://l1tku.github.io/h
 - **Tap Garrison**: Select and view details.
 - **Pinch**: Zoom in/out.
 
+## Supported Maps
+* Carentan
+* Driel
+* El Alamein
+* Elsenborn Ridge
+* Foy
+* Hill 400
+* Hurtgen Forest
+* Juno Beach
+* Kharkov
+* Kursk
+* Mortain
+* Omaha Beach
+* Purple Heart Lane
+* Remagen
+* Sainte-Marie-du-Mont
+* Sainte-Mère-Église
+* Smolensk
+* Stalingrad
+* Tobruk
+* Utah Beach
+
+## Browser Support
+- Chrome/Chromium 80+
+- Firefox 75+
+- Safari 13+
+- Edge 80+
+
 ## Disclaimer & Copyright
 
 This project is a community-made tool and is **not** affiliated with, endorsed by, or sponsored by Team17, Cover 6 Studios, or Black Matter.
