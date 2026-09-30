@@ -14,7 +14,6 @@ A lightweight intel tool for **Hell Let Loose** offensive matches. It ships with
 - **Distance Scale Bar:** Dynamic ruler to accurately estimate distances in meters.
 - **Map Search:** Search bar to jump directly to any map.
 - **Mobile Ready:** Touch-optimized for seamless use on phones and tablets.
-- **More Projects:** Quick menu linking to companion calculators (Artillery & SPA) and GitHub.
 
 ## Installation & Local Usage
 ### Option 1: Live Web Access (Recommended)
