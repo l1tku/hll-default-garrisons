@@ -2186,14 +2186,58 @@ async function loadChangelog() {
 }
 
 function parseMarkdown(text) {
-    let html = text;
-    html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
-    html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>");
-    html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>");
-    html = html.replace(/^- (.+)$/gm, "<li>$1</li>");
-    html = html.replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>");
-    html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-    html = html.replace(/\n\n/g, "<br><br>");
+    function esc(s) {
+        return String(s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+    }
+
+    function inline(s) {
+        return esc(s)
+            .replace(/`([^`]+)`/g, "<code>$1</code>")
+            .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    }
+
+    let html = "";
+    let inList = false;
+
+    function closeList() {
+        if (inList) {
+            html += "</ul>";
+            inList = false;
+        }
+    }
+
+    text.split(/\r?\n/).forEach(function (line) {
+        if (/^#\s/.test(line)) return;
+        if (/^##\s/.test(line)) {
+            closeList();
+            html += "<h2>" + inline(line.replace(/^#+\s+/, "")) + "</h2>";
+            return;
+        }
+        if (/^###\s/.test(line)) {
+            closeList();
+            html += "<h3>" + inline(line.replace(/^#+\s+/, "")) + "</h3>";
+            return;
+        }
+        if (/^-\s+/.test(line)) {
+            if (!inList) {
+                html += "<ul>";
+                inList = true;
+            }
+            html += "<li>" + inline(line.replace(/^-\s+/, "")) + "</li>";
+            return;
+        }
+        if (line.trim() === "") {
+            closeList();
+            return;
+        }
+        closeList();
+        html += "<p>" + inline(line) + "</p>";
+    });
+
+    closeList();
     return html;
 }
 

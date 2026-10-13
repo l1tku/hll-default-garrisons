@@ -1797,6 +1797,19 @@ button.btn-map-select:hover { border-left-color: #ffffff; }
   color: rgba(255, 255, 255, 0.7);
 }
 
+.changelog-content p {
+  margin: 8px 0;
+}
+
+.changelog-content code {
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  color: #ffc107;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
 .changelog-content strong {
   color: rgba(255, 255, 255, 0.9);
 }
