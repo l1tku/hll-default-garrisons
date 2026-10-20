@@ -121,8 +121,19 @@ function showLoading() {
     if (loading) loading.style.display = 'flex';
 }
 
+function isStandaloneAppWindow() {
+    return (
+        (window.matchMedia &&
+            (window.matchMedia('(display-mode: standalone)').matches ||
+                window.matchMedia('(display-mode: window-controls-overlay)').matches)) ||
+        window.navigator.standalone === true
+    );
+}
+
 function updatePageTitle(mapName) {
-    document.title = `HLL Default Garrisons - ${mapName}`;
+    if (isStandaloneAppWindow()) {
+        document.title = mapName;
+    }
 }
 
 function hideLoading() {
