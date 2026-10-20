@@ -11,7 +11,10 @@
   <meta property="og:site_name" content="HLL Default Garrisons">
   <meta property="og:title" content="HLL Default Garrisons">
   <meta property="og:description" content="Interactive Hell Let Loose tactical map for default garrison positions, offensive layouts, strongpoints, and recon timing for all maps and factions.">
-  <meta property="og:image" content="https://l1tku.github.io/hll-default-garrisons/images/og_image.png">
+  <meta property="og:image" content="https://l1tku.github.io/hll-default-garrisons/images/og_image_wide.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="HLL Default Garrisons">
@@ -25,11 +28,22 @@
     "name": "HLL Default Garrisons",
     "alternateName": ["Hell Let Loose Default Garrisons", "HLL Garrisons"],
     "url": "https://l1tku.github.io/hll-default-garrisons/",
-    "image": "https://l1tku.github.io/hll-default-garrisons/images/og_image.png"
+    "image": "https://l1tku.github.io/hll-default-garrisons/images/og_image_wide.png"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "url": "https://l1tku.github.io/hll-default-garrisons/images/og_image_wide.png",
+    "contentUrl": "https://l1tku.github.io/hll-default-garrisons/images/og_image_wide.png",
+    "width": 1200,
+    "height": 630,
+    "caption": "HLL Default Garrisons"
   }
   </script>
   
-  <link rel="manifest" href="manifest.json?v=1.1.0-2">
+  <link rel="manifest" href="manifest.json?v=1.1.0-3">
   <meta name="theme-color" content="#ffc107">
   
   <meta name="mobile-web-app-capable" content="yes">
@@ -39,19 +53,19 @@
 
   <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="images/icon-512.png">
-  <link rel="icon" type="image/webp" href="images/favicon.webp?v=1.1.0-2">
-  <link rel="icon" type="image/png" href="images/favicon.png?v=1.1.0-2">
-  <link rel="apple-touch-icon" href="images/icon-180.png?v=1.1.0-2">
+  <link rel="icon" type="image/webp" href="images/favicon.webp?v=1.1.0-3">
+  <link rel="icon" type="image/png" href="images/favicon.png?v=1.1.0-3">
+  <link rel="apple-touch-icon" href="images/icon-180.png?v=1.1.0-3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=1.1.0-2">
+  <link rel="stylesheet" href="css/style.css?v=1.1.0-3">
   
   <script>
     if ('serviceWorker' in navigator) {
       if (window.location.protocol.indexOf('http') === 0) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js?v=1.1.0-2', {
+          navigator.serviceWorker.register('./service-worker.js?v=1.1.0-3', {
             scope: new URL('./', window.location.href).pathname
           })
             .then((reg) => console.log('Service Worker registered.', reg))
@@ -192,7 +206,7 @@
           class="kofi-btn"
         >
           <img
-            src="images/kofi_symbol.png"
+            src="images/kofi_symbol.webp"
             class="kofi-icon"
             alt="Ko-fi"
           />
@@ -261,7 +275,7 @@
 
       <div class="projects-list">
         <button class="footer-btn" onclick="window.open('https://l1tku.github.io/hll-arty-map-calculator/', '_blank')">
-          <img src="images/favicon_artillery.png" class="footer-project-icon" alt=""> 
+          <img src="images/project_artillery.webp" class="footer-project-icon" alt=""> 
           <span>HLL ARTY MAP CALCULATOR</span>
           <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -271,7 +285,7 @@
         </button>
 
         <button class="footer-btn" onclick="window.open('https://l1tku.github.io/hll-spa-calculator/', '_blank')">
-          <img src="images/favicon_spa.png" class="footer-project-icon" alt=""> 
+          <img src="images/project_spa.webp" class="footer-project-icon" alt=""> 
           <span>HLL SPA CALCULATOR</span>
           <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -281,7 +295,7 @@
         </button>
 
         <button class="footer-btn github-btn" onclick="window.open('https://github.com/l1tku', '_blank')">
-          <img src="images/github.png" class="footer-project-icon" alt=""> 
+          <img src="images/project_github.webp" class="footer-project-icon" alt=""> 
           <span>MY GITHUB</span>
           <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
@@ -306,6 +320,6 @@
   </div>
 
 <script src="js/maps.js"></script> 
-<script src="js/script.js?v=1.1.0-2"></script>
+<script src="js/script.js?v=1.1.0-3"></script>
 </body>
 </html>
