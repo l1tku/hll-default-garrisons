@@ -7,7 +7,7 @@ if (typeof MAP_DATABASE === 'undefined') {
   alert('Error: Map data failed to load. Please refresh the page.');
 }
 
-const APP_VERSION = "v1.1.0";
+const APP_VERSION = "v1.1.1";
 const GAME_VERSION = "UPDATE 21";
 
 const versionMap = {
@@ -1162,25 +1162,35 @@ function renderMapGrid(filter = "") {
         card.dataset.mapKey = key;
         if (key === activeMapKey) card.classList.add('active');
        
-        card.onclick = () => SelectMapFromGrid(key);
-       
-        const img = document.createElement("img");
-        img.className = "map-card-img";
-        img.alt = mapData.name;
-        
-        const imgPath = mapData.thumbnail || mapData.image;
-        img.src = imgPath; 
-        
-        img.onerror = () => {
-            img.style.display = 'none';
-            card.style.background = '#222';
-        };
+        const isReleased = mapData.released !== false;
+        if (!isReleased) card.classList.add('unreleased');
+
+        if (isReleased) {
+            card.onclick = () => SelectMapFromGrid(key);
+
+            const img = document.createElement("img");
+            img.className = "map-card-img";
+            img.alt = mapData.name;
+
+            const imgPath = mapData.thumbnail || mapData.image;
+            img.src = imgPath;
+
+            img.onerror = () => {
+                img.style.display = 'none';
+                card.style.background = '#222';
+            };
+            card.appendChild(img);
+        } else {
+            const status = document.createElement("div");
+            status.className = "map-card-status";
+            status.textContent = "NOT RELEASED";
+            card.appendChild(status);
+        }
        
         const label = document.createElement("div");
         label.className = "map-card-name";
         label.innerText = mapData.name;
        
-        card.appendChild(img);
         card.appendChild(label);
         grid.appendChild(card);
     });

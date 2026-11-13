@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-11-13
+
+### Added
+- Lake Balaton placeholder map (not released).
+- Website link in the Other Projects modal.
+
+### Changed
+- Dark color scheme and Dark Reader support.
+- Updated project labels.
+
+### Fixed
+- White flash on load.
+- Google thumbnail and page title.
+
 ## [1.1.0] - 2026-09-23
 
 ### Removed

@@ -1,14 +1,14 @@
 const CACHE_PREFIX = 'hll-default-garrisons-cache';
-const CACHE_VERSION = '1.1.0-5';
+const CACHE_VERSION = '1.1.1-1';
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 const APP_SHELL_URLS = [
   './',
   './index.html',
   './manifest.json',
   './CHANGELOG.md',
-  './css/style.css?v=1.1.0-5',
+  './css/style.css?v=1.1.1-1',
   './js/maps.js',
-  './js/script.js?v=1.1.0-5',
+  './js/script.js?v=1.1.1-1',
   './images/favicon.png',
   './images/favicon.webp',
   './images/project_artillery.webp',

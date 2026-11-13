@@ -859,4 +859,15 @@ UTA: {
       { label: "SUNKEN BRIDGE", id: "B14", gameX: -30810.0, gameY: 47853.0, radius: 3000.0, team: "ger", type: "strongpoint" }
     ] 
   },
+
+  BAL: {
+    name: "Lake Balaton",
+    image: "images/maps/map_lake_balaton.webp",
+    thumbnail: "images/maps/thumbnail/BAL.webp",
+    teams: { t1: "SOVIET UNION", t2: "GERMANY" },
+    widthMeters: 2000,
+    heightMeters: 2000,
+    strongpoints: [],
+    released: false
+  },
 };

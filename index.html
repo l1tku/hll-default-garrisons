@@ -57,7 +57,7 @@
   }
   </script>
   
-  <link rel="manifest" href="manifest.json?v=1.1.0-5">
+  <link rel="manifest" href="manifest.json?v=1.1.1-1">
   <meta name="theme-color" content="#ffc107">
   <meta name="color-scheme" content="dark">
   <meta name="darkreader-lock">
@@ -69,19 +69,19 @@
 
   <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="images/icon-512.png">
-  <link rel="icon" type="image/webp" href="images/favicon.webp?v=1.1.0-5">
-  <link rel="icon" type="image/png" href="images/favicon.png?v=1.1.0-5">
-  <link rel="apple-touch-icon" href="images/icon-180.png?v=1.1.0-5">
+  <link rel="icon" type="image/webp" href="images/favicon.webp?v=1.1.1-1">
+  <link rel="icon" type="image/png" href="images/favicon.png?v=1.1.1-1">
+  <link rel="apple-touch-icon" href="images/icon-180.png?v=1.1.1-1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=1.1.0-5">
+  <link rel="stylesheet" href="css/style.css?v=1.1.1-1">
   
   <script>
     if ('serviceWorker' in navigator) {
       if (window.location.protocol.indexOf('http') === 0) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js?v=1.1.0-5', {
+          navigator.serviceWorker.register('./service-worker.js?v=1.1.1-1', {
             scope: new URL('./', window.location.href).pathname
           })
             .then((reg) => console.log('Service Worker registered.', reg))
@@ -313,7 +313,7 @@
 
         <button class="footer-btn website-btn" onclick="window.open('https://l1tku.github.io/', '_blank')">
           <img src="images/project_website.webp" class="footer-project-icon" alt=""> 
-          <span>MY WEBSITE</span>
+          <span>WEBSITE</span>
           <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
             <polyline points="15 3 21 3 21 9"></polyline>
@@ -323,7 +323,7 @@
 
         <button class="footer-btn github-btn" onclick="window.open('https://github.com/l1tku', '_blank')">
           <img src="images/project_github.webp" class="footer-project-icon" alt=""> 
-          <span>MY GITHUB</span>
+          <span>GITHUB</span>
           <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
             <polyline points="15 3 21 3 21 9"></polyline>
@@ -347,6 +347,6 @@
   </div>
 
 <script src="js/maps.js"></script> 
-<script src="js/script.js?v=1.1.0-5"></script>
+<script src="js/script.js?v=1.1.1-1"></script>
 </body>
 </html>
