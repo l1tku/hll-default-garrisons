@@ -1654,7 +1654,8 @@ button.btn-map-select:hover { border-left-color: #ffffff; }
   justify-content: center;
 }
 
-.github-btn {
+.github-btn,
+.website-btn {
   border-left-color: #ffffff !important;
 }
 
