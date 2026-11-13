@@ -1357,6 +1357,11 @@ select.btn-map-select option {
     color: #8d8d8d;
 }
 
+.map-card.unreleased .map-card-img {
+    filter: grayscale(1);
+    opacity: 0.55;
+}
+
 .map-card-status {
     position: absolute;
     inset: 0;
@@ -1364,14 +1369,15 @@ select.btn-map-select option {
     align-items: center;
     justify-content: center;
     padding-bottom: 24px;
-    background: #2b2b2b;
-    color: #8d8d8d;
+    background: rgba(0, 0, 0, 0.45);
+    color: #e0e0e0;
     font-family: 'GothamSS', sans-serif;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
     text-align: center;
     text-transform: uppercase;
+    text-shadow: 0 1px 2px #000;
     pointer-events: none;
 }
 
